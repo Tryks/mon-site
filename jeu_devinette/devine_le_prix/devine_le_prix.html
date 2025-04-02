@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devine le Prix - Jeu Magnifique</title>
+    <link rel="stylesheet" href="devine_le_prix.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-trophy"></i> Devine le Prix</h1>
+            <p class="subtitle">Testez votre intuition et gagnez des récompenses!</p>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <div class="product-display">
+                    <img id="product-image" src="https://via.placeholder.com/300" alt="Produit à deviner">
+                    <div class="product-info">
+                        <h2 id="product-name">Nom du Produit</h2>
+                        <p id="product-description">Description du produit apparaîtra ici...</p>
+                    </div>
+                </div>
+
+                <div class="guess-section">
+                    <div class="price-range">
+                        <span id="min-price">0€</span>
+                        <input type="range" id="price-slider" min="0" max="1000" value="500">
+                        <span id="max-price">1000€</span>
+                    </div>
+
+                    <div class="guess-input">
+                        <input type="number" id="price-input" placeholder="Entrez votre estimation...">
+                        <button id="submit-guess"><i class="fas fa-paper-plane"></i> Valider</button>
+                    </div>
+
+                    <div class="hint-buttons">
+                        <button class="hint-btn" id="hint-10"><i class="fas fa-lightbulb"></i> Indice à 10% (5 pts)</button>
+                        <button class="hint-btn" id="hint-5"><i class="fas fa-bolt"></i> Indice à 5% (10 pts)</button>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <div id="result-message"></div>
+                    <div id="attempts-counter">Tentatives: 0/3</div>
+                </div>
+            </div>
+
+            <div class="stats-panel">
+                <div class="stat-box">
+                    <h3><i class="fas fa-chart-line"></i> Statistiques</h3>
+                    <p>Parties jouées: <span id="games-played">0</span></p>
+                    <p>Victoires: <span id="wins">0</span></p>
+                    <p>Score total: <span id="total-score">0</span></p>
+                </div>
+
+                <div class="settings-box">
+                    <h3><i class="fas fa-cog"></i> Options</h3>
+                    <label>
+                        <input type="checkbox" id="sound-toggle" checked> Sons
+                    </label>
+                    <label>
+                        <input type="checkbox" id="animations-toggle" checked> Animations
+                    </label>
+                    <label>
+                        Difficulté:
+                        <select id="difficulty-select">
+                            <option value="easy">Facile</option>
+                            <option value="medium" selected>Moyen</option>
+                            <option value="hard">Difficile</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <button id="new-game-btn"><i class="fas fa-redo"></i> Nouvelle Partie</button>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </footer>
+    </div>
+
+    <audio id="win-sound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
+    <audio id="lose-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+    <audio id="hint-sound" src="https://www.soundjay.com/buttons/sounds/button-21.mp3"></audio>
+
+    <script src="devine_le_prix.js"></script>
+</body>
+</html>

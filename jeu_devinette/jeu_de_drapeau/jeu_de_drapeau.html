@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu des Drapeaux - Devinez le Pays</title>
+    <link rel="stylesheet" href="jeu_de_drapeau.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-flag"></i> Jeu des Drapeaux</h1>
+            <div class="score-container">
+                <span id="score">0</span>
+                <span id="max-score">/ 0</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <div class="flag-container">
+                    <img id="flag-image" src="" alt="Drapeau à deviner">
+                    <div class="loading-animation">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+
+                <div class="options-container" id="options">
+                    <!-- Les options seront générées par JavaScript -->
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+
+                <button id="next-btn" class="btn next-btn" disabled>
+                    Suivant <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="controls">
+                <button id="hint-btn" class="btn hint-btn">
+                    <i class="fas fa-lightbulb"></i> Indice
+                </button>
+                <button id="new-game-btn" class="btn new-game-btn">
+                    <i class="fas fa-redo"></i> Nouvelle Partie
+                </button>
+            </div>
+        </main>
+
+        <div class="settings-panel">
+            <button id="settings-btn" class="btn settings-btn">
+                <i class="fas fa-cog"></i> Paramètres
+            </button>
+            <div class="settings-content" id="settings-content">
+                <h3><i class="fas fa-sliders-h"></i> Options de Jeu</h3>
+                <div class="setting-option">
+                    <label for="difficulty">Difficulté:</label>
+                    <select id="difficulty">
+                        <option value="easy">Facile (4 options)</option>
+                        <option value="medium" selected>Moyen (6 options)</option>
+                        <option value="hard">Difficile (8 options)</option>
+                    </select>
+                </div>
+                <div class="setting-option">
+                    <label for="region">Région:</label>
+                    <select id="region">
+                        <option value="all" selected>Tous les pays</option>
+                        <option value="europe">Europe</option>
+                        <option value="africa">Afrique</option>
+                        <option value="asia">Asie</option>
+                        <option value="americas">Amériques</option>
+                        <option value="oceania">Océanie</option>
+                    </select>
+                </div>
+                <div class="setting-option">
+                    <label for="questions">Nombre de questions:</label>
+                    <select id="questions">
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
+                        <option value="30">30</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <button id="apply-settings" class="btn apply-btn">
+                    Appliquer <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="result-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h2 id="result-title">Résultats du Jeu</h2>
+            <div class="result-stats">
+                <p>Score final: <span id="final-score">0</span>/<span id="total-questions">0</span></p>
+                <p>Pourcentage: <span id="percentage">0</span>%</p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+            </div>
+            <div class="result-actions">
+                <button id="play-again-btn" class="btn play-again-btn">
+                    <i class="fas fa-redo"></i> Rejouer
+                </button>
+                <button id="share-btn" class="btn share-btn">
+                    <i class="fas fa-share-alt"></i> Partager
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="jeu_de_drapeau.js"></script>
+</body>
+</html>

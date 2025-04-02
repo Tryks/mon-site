@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM Magnifique</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="qcm2.css">
+</head>
+
+<body>
+    <!-- partials/navigation.html -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-gamepad"></i>
+                <span>Game<span>Hub</span></span>
+            </a>
+
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-links">
+                        <i class="fas fa-home"></i> Accueil
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-links dropdown-toggle">
+                        <i class="fas fa-cards"></i> Jeux de cartes
+                        <span class="link-underline"></span>
+                        <i class="fas fa-chevron-down dropdown-icon"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="blackjack.html" class="dropdown-item">Blackjack</a></li>
+                        <li><a href="poker.html" class="dropdown-item">Poker</a></li>
+                        <li><a href="solitaire.html" class="dropdown-item">Solitaire</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="quiz.html" class="nav-links">
+                        <i class="fas fa-question-circle"></i> Quiz
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="about.html" class="nav-links">
+                        <i class="fas fa-info-circle"></i> À propos
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="qcm-container">
+        <div class="qcm-header">
+            <h1><i class="fas fa-brain"></i> QCM Challenge</h1>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+                <span id="progress-text">0/20</span>
+            </div>
+        </div>
+
+        <form id="qcm-form">
+            <!-- Questions seront générées par JavaScript -->
+        </form>
+
+        <div class="result-container" id="result-container">
+            <h2><i class="fas fa-trophy"></i> Résultats</h2>
+            <div id="result"></div>
+            <button id="restart-btn" class="btn"><i class="fas fa-redo"></i> Recommencer</button>
+        </div>
+
+        <!-- Question Bonus (cachée initialement) -->
+        <div class="bonus-question" id="bonus-question">
+            <h3><i class="fas fa-star"></i> Question Bonus</h3>
+            <p>Qui est le premier homme à avoir marché sur la Lune ?</p>
+            <div class="options">
+                <label>
+                    <input type="radio" name="q21" value="a"> Neil Armstrong
+                </label>
+                <label>
+                    <input type="radio" name="q21" value="b"> Buzz Aldrin
+                </label>
+                <label>
+                    <input type="radio" name="q21" value="c"> Michael Collins
+                </label>
+            </div>
+            <button id="submit-bonus" class="btn"><i class="fas fa-check"></i> Valider la réponse bonus</button>
+        </div>
+    </div>
+
+    <script src="qcm2.js"></script>
+</body>
+
+</html>

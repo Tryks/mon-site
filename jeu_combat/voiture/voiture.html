@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Racing Experience</title>
+    <link rel="stylesheet" href="voiture.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+        <h2>Chargement de l'expérience Ultimate Racing...</h2>
+    </div>
+
+    <div class="main-menu" id="mainMenu">
+        <h1>ULTIMATE RACING</h1>
+        <div class="menu-options">
+            <button id="startGame">Course Rapide</button>
+            <button id="careerMode">Mode Carrière</button>
+            <button id="multiplayer">Multijoueur</button>
+            <button id="optionsBtn">Options</button>
+            <button id="garageBtn">Garage</button>
+        </div>
+        <div class="version">Version 2.0</div>
+    </div>
+
+    <div class="options-menu hidden" id="optionsMenu">
+        <h2>Options</h2>
+        <div class="options-container">
+            <div class="option-group">
+                <h3>Graphiques</h3>
+                <label>
+                    Qualité: 
+                    <select id="graphicsQuality">
+                        <option value="low">Faible</option>
+                        <option value="medium" selected>Moyenne</option>
+                        <option value="high">Élevée</option>
+                        <option value="ultra">Ultra</option>
+                    </select>
+                </label>
+                <label>
+                    <input type="checkbox" id="motionBlur" checked> Flou de mouvement
+                </label>
+                <label>
+                    <input type="checkbox" id="shadows" checked> Ombres
+                </label>
+            </div>
+            
+            <div class="option-group">
+                <h3>Audio</h3>
+                <label>
+                    Volume principal: 
+                    <input type="range" id="masterVolume" min="0" max="100" value="80">
+                </label>
+                <label>
+                    Volume moteur: 
+                    <input type="range" id="engineVolume" min="0" max="100" value="90">
+                </label>
+                <label>
+                    Volume musique: 
+                    <input type="range" id="musicVolume" min="0" max="100" value="70">
+                </label>
+            </div>
+            
+            <div class="option-group">
+                <h3>Contrôles</h3>
+                <div class="controls">
+                    <div>
+                        <span>Accélérer:</span>
+                        <button class="control-btn" id="accelerateBtn">Flèche Haut</button>
+                    </div>
+                    <div>
+                        <span>Freiner:</span>
+                        <button class="control-btn" id="brakeBtn">Flèche Bas</button>
+                    </div>
+                    <div>
+                        <span>Tourner à gauche:</span>
+                        <button class="control-btn" id="leftBtn">Flèche Gauche</button>
+                    </div>
+                    <div>
+                        <span>Tourner à droite:</span>
+                        <button class="control-btn" id="rightBtn">Flèche Droite</button>
+                    </div>
+                </div>
+                <label>
+                    <input type="checkbox" id="invertSteering"> Inverser la direction
+                </label>
+            </div>
+        </div>
+        <button id="backToMenu">Retour au menu</button>
+    </div>
+
+    <div class="garage-menu hidden" id="garageMenu">
+        <h2>Garage</h2>
+        <div class="garage-container">
+            <div class="car-display">
+                <div class="car-3d-view" id="car3dView">
+                    <!-- La voiture 3D sera rendue ici -->
+                </div>
+                <div class="car-info">
+                    <h3 id="carName">Ferrari SF90 Stradale</h3>
+                    <div class="car-stats">
+                        <div class="stat">
+                            <span>Vitesse max:</span>
+                            <div class="stat-bar"><div class="stat-fill" style="width: 95%;"></div></div>
+                            <span>340 km/h</span>
+                        </div>
+                        <div class="stat">
+                            <span>Accélération:</span>
+                            <div class="stat-bar"><div class="stat-fill" style="width: 98%;"></div></div>
+                            <span>2.5s (0-100)</span>
+                        </div>
+                        <div class="stat">
+                            <span>Freinage:</span>
+                            <div class="stat-bar"><div class="stat-fill" style="width: 90%;"></div></div>
+                            <span>32m (100-0)</span>
+                        </div>
+                        <div class="stat">
+                            <span>Maniabilité:</span>
+                            <div class="stat-bar"><div class="stat-fill" style="width: 88%;"></div></div>
+                            <span>1.2G</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="car-customization">
+                <h3>Personnalisation</h3>
+                <div class="custom-options">
+                    <div class="custom-group">
+                        <h4>Couleur de carrosserie</h4>
+                        <div class="color-options">
+                            <div class="color-option" style="background-color: #ff0000;" data-color="#ff0000"></div>
+                            <div class="color-option" style="background-color: #0000ff;" data-color="#0000ff"></div>
+                            <div class="color-option" style="background-color: #00ff00;" data-color="#00ff00"></div>
+                            <div class="color-option" style="background-color: #ffff00;" data-color="#ffff00"></div>
+                            <div class="color-option" style="background-color: #000000;" data-color="#000000"></div>
+                            <div class="color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="custom-group">
+                        <h4>Jantes</h4>
+                        <div class="rim-options">
+                            <div class="rim-option" data-rim="1">
+                                <img src="https://via.placeholder.com/60x60?text=Jante+1" alt="Jante 1">
+                            </div>
+                            <div class="rim-option" data-rim="2">
+                                <img src="https://via.placeholder.com/60x60?text=Jante+2" alt="Jante 2">
+                            </div>
+                            <div class="rim-option" data-rim="3">
+                                <img src="https://via.placeholder.com/60x60?text=Jante+3" alt="Jante 3">
+                            </div>
+                            <div class="rim-option" data-rim="4">
+                                <img src="https://via.placeholder.com/60x60?text=Jante+4" alt="Jante 4">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="custom-group">
+                        <h4>Performance</h4>
+                        <div class="upgrade-options">
+                            <div class="upgrade">
+                                <span>Moteur</span>
+                                <div class="upgrade-levels">
+                                    <span class="level active">1</span>
+                                    <span class="level">2</span>
+                                    <span class="level">3</span>
+                                    <span class="level">4</span>
+                                    <span class="level">5</span>
+                                </div>
+                            </div>
+                            <div class="upgrade">
+                                <span>Transmission</span>
+                                <div class="upgrade-levels">
+                                    <span class="level active">1</span>
+                                    <span class="level">2</span>
+                                    <span class="level">3</span>
+                                    <span class="level">4</span>
+                                </div>
+                            </div>
+                            <div class="upgrade">
+                                <span>Suspension</span>
+                                <div class="upgrade-levels">
+                                    <span class="level active">1</span>
+                                    <span class="level">2</span>
+                                    <span class="level">3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button id="backToMenuFromGarage">Retour au menu</button>
+    </div>
+
+    <div class="game-container hidden" id="gameContainer">
+        <div class="hud">
+            <div class="speedometer">
+                <div class="speed-value" id="speedValue">0</div>
+                <div class="speed-unit">km/h</div>
+                <div class="rpm-meter" id="rpmMeter"></div>
+            </div>
+            <div class="gear-indicator" id="gearIndicator">N</div>
+            <div class="lap-time">
+                <div class="current-lap" id="currentLap">00:00.000</div>
+                <div class="best-lap" id="bestLap">--:--.---</div>
+            </div>
+            <div class="position-indicator">
+                <span>Position:</span>
+                <span id="position">1/12</span>
+            </div>
+            <div class="mini-map" id="miniMap">
+                <!-- La mini-carte sera affichée ici -->
+            </div>
+        </div>
+        
+        <canvas id="gameCanvas"></canvas>
+        
+        <div class="pause-menu hidden" id="pauseMenu">
+            <h2>Jeu en pause</h2>
+            <button id="resumeGame">Reprendre</button>
+            <button id="optionsInGame">Options</button>
+            <button id="quitToMenu">Quitter vers le menu</button>
+        </div>
+    </div>
+
+    <audio id="engineSound" loop>
+        <source src="https://www.soundjay.com/mechanical/sounds/car-engine-01.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="backgroundMusic" loop>
+        <source src="https://www.soundjay.com/music/sounds/retro-synthwave-01.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="voiture.js"></script>
+</body>
+</html>

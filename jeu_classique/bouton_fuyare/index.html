@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bouton Hyperluminique</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            cursor: none;
+        }
+        #hyper-btn {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #ff0000, #990000);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #ff0000;
+            pointer-events: none;
+            transition: transform 0.001s;
+            z-index: 100;
+        }
+        #cursor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            mix-blend-mode: difference;
+        }
+        #stats {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-family: monospace;
+            font-size: 24px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="hyper-btn"></div>
+    <div id="cursor"></div>
+    <div id="stats">Tentatives: <span id="attempts">0</span></div>
+
+    <script>
+        const btn = document.getElementById('hyper-btn');
+        const cursor = document.getElementById('cursor');
+        const attemptsDisplay = document.getElementById('attempts');
+        
+        // Configuration
+        const HYPER_SPEED = 100; // 100x plus rapide
+        const SAFE_DISTANCE = 500; // Distance de sécurité en pixels
+        const TELEPORT_DISTANCE = 1000; // Distance de téléportation
+        let attempts = 0;
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        
+        // Initialisation
+        function init() {
+            positionButton();
+            document.addEventListener('mousemove', trackCursor);
+            document.addEventListener('click', countAttempt);
+            requestAnimationFrame(update);
+        }
+        
+        // Suivi du curseur
+        function trackCursor(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = `${mouseX - 10}px`;
+            cursor.style.top = `${mouseY - 10}px`;
+        }
+        
+        // Positionnement aléatoire
+        function positionButton() {
+            const angle = Math.random() * Math.PI * 2;
+            const distance = TELEPORT_DISTANCE;
+            
+            let newX = mouseX + Math.cos(angle) * distance;
+            let newY = mouseY + Math.sin(angle) * distance;
+            
+            // Assurer qu'il reste dans la fenêtre
+            newX = Math.max(0, Math.min(window.innerWidth - 60, newX));
+            newY = Math.max(0, Math.min(window.innerHeight - 60, newY));
+            
+            btn.style.left = `${newX}px`;
+            btn.style.top = `${newY}px`;
+        }
+        
+        // Mise à jour en temps réel
+        function update() {
+            const btnRect = btn.getBoundingClientRect();
+            const btnX = btnRect.left + btnRect.width / 2;
+            const btnY = btnRect.top + btnRect.height / 2;
+            
+            // Calcul de la distance
+            const dx = mouseX - btnX;
+            const dy = mouseY - btnY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Si le curseur est trop proche
+            if (distance < SAFE_DISTANCE) {
+                // Calcul de la direction opposée
+                const angle = Math.atan2(dy, dx);
+                
+                // Déplacement hyper rapide
+                const moveX = Math.cos(angle + Math.PI) * HYPER_SPEED * (SAFE_DISTANCE - distance);
+                const moveY = Math.sin(angle + Math.PI) * HYPER_SPEED * (SAFE_DISTANCE - distance);
+                
+                // Nouvelle position
+                let newX = btnRect.left + moveX;
+                let newY = btnRect.top + moveY;
+                
+                // Téléportation si on arrive au bord
+                if (newX < 0 || newX > window.innerWidth - 60 || 
+                    newY < 0 || newY > window.innerHeight - 60) {
+                    positionButton();
+                } else {
+                    btn.style.left = `${newX}px`;
+                    btn.style.top = `${newY}px`;
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        // Comptage des tentatives
+        function countAttempt() {
+            attempts++;
+            attemptsDisplay.textContent = attempts;
+            
+            // Téléportation immédiate après un clic
+            positionButton();
+        }
+        
+        // Démarrer le jeu
+        init();
+    </script>
+</body>
+</html>

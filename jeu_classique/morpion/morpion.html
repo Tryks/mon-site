@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morpion Magnifique</title>
+    <link rel="stylesheet" href="morpion.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-times-circle"></i> Morpion Magnifique <i class="far fa-circle"></i></h1>
+            <div class="game-info">
+                <div class="score">
+                    <span id="playerX-score">0</span> - <span id="playerO-score">0</span>
+                </div>
+                <div class="current-player">
+                    Tour: <span id="current-player">X</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-container">
+                <div class="board" id="board">
+                    <!-- Les cases seront générées par JavaScript -->
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="new-game" class="btn"><i class="fas fa-redo"></i> Nouvelle partie</button>
+                <button id="reset-score" class="btn"><i class="fas fa-trash-alt"></i> Réinitialiser scores</button>
+                
+                <div class="options">
+                    <h3>Options</h3>
+                    <div class="option-group">
+                        <label for="theme-select">Thème:</label>
+                        <select id="theme-select" class="form-control">
+                            <option value="classic">Classique</option>
+                            <option value="dark">Sombre</option>
+                            <option value="nature">Nature</option>
+                            <option value="ocean">Océan</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="ai-difficulty">Difficulté IA:</label>
+                        <select id="ai-difficulty" class="form-control">
+                            <option value="easy">Facile</option>
+                            <option value="medium">Moyen</option>
+                            <option value="hard">Difficile</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label>
+                            <input type="checkbox" id="sound-toggle" checked> Sons
+                        </label>
+                    </div>
+                    <div class="option-group">
+                        <label>
+                            <input type="checkbox" id="animation-toggle" checked> Animations
+                        </label>
+                    </div>
+                    <div class="option-group">
+                        <label>
+                            <input type="checkbox" id="ai-toggle"> Jouer contre IA
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="modal" id="result-modal">
+            <div class="modal-content">
+                <h2 id="result-message"></h2>
+                <button id="close-modal" class="btn"><i class="fas fa-times"></i> Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="click-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3" preload="auto"></audio>
+    <audio id="win-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" preload="auto"></audio>
+    <audio id="draw-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-retro-arcade-lose-2027.mp3" preload="auto"></audio>
+
+    <script src="morpion.js"></script>
+</body>
+</html>

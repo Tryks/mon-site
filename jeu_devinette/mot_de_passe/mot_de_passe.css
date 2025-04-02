@@ -1,0 +1,123 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.game-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.password-display {
+    margin: 20px 0;
+    padding: 10px;
+    background: #eee;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 1.5em;
+    letter-spacing: 3px;
+}
+
+input {
+    padding: 10px;
+    width: 80%;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.2em;
+    text-transform: uppercase;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+button {
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#guess-btn {
+    background: #2ecc71;
+}
+
+#guess-btn:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
+}
+
+#hint-btn {
+    background: #f39c12;
+}
+
+#hint-btn:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+}
+
+#result {
+    margin: 15px 0;
+    font-weight: bold;
+    min-height: 24px;
+}
+
+#attempts {
+    color: #555;
+    font-weight: bold;
+}
+
+.correct-position {
+    color: #2ecc71;
+}
+
+.wrong-position {
+    color: #e67e22;
+}
+
+.game-over {
+    color: #e74c3c;
+    font-weight: bold;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+.logo {
+    color: white;
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease;
+}
+
+.logo span {
+    color: var(--nav-accent);
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}

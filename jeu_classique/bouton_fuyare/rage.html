@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LE BOUTON DE LA RAGE ULTIME</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: white;
+            font-family: 'Impact', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='red' stroke-width='2'/%3E%3C/svg%3E") 16 16, auto;
+            text-align: center;
+        }
+
+        #rage-btn {
+            position: absolute;
+            padding: 25px 50px;
+            background: #00ff00;
+            color: black;
+            border: none;
+            border-radius: 50px;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 0 30px #00ff00;
+            text-transform: uppercase;
+            transition: all 0.1s linear;
+            z-index: 100;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        #message {
+            position: fixed;
+            bottom: 100px;
+            font-size: 36px;
+            color: white;
+            text-shadow: 0 0 15px currentColor;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+            max-width: 80%;
+        }
+
+        #anger-meter {
+            position: fixed;
+            top: 30px;
+            width: 80%;
+            height: 30px;
+            background: #333;
+            border-radius: 15px;
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        #anger-level {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #00ff00, #ffff00, #ff9900, #ff0000, #800000);
+            transition: width 0.5s;
+        }
+
+        #stage-display {
+            position: fixed;
+            top: 70px;
+            font-size: 24px;
+            color: #ccc;
+            z-index: 100;
+        }
+
+        .stage-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 5px;
+            background: #333;
+            border: 2px solid #555;
+        }
+
+        .stage-indicator.active {
+            background: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+
+        #score-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #ccc;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="anger-meter">
+        <div id="anger-level"></div>
+    </div>
+    <div id="stage-display">
+        <span class="stage-indicator" id="stage-1"></span>
+        <span class="stage-indicator" id="stage-2"></span>
+        <span class="stage-indicator" id="stage-3"></span>
+        <span class="stage-indicator" id="stage-4"></span>
+    </div>
+    <div id="score-display">Score: <span id="score">0</span></div>
+
+    <button id="rage-btn">CLIQUE-MOI!</button>
+    <div id="message"></div>
+
+    <script>
+        const btn = document.getElementById('rage-btn');
+        const message = document.getElementById('message');
+        const angerLevel = document.getElementById('anger-level');
+        const scoreDisplay = document.getElementById('score');
+        const stageIndicators = [
+            document.getElementById('stage-1'),
+            document.getElementById('stage-2'),
+            document.getElementById('stage-3'),
+            document.getElementById('stage-4')
+        ];
+
+        // Variables du jeu
+        let score = 0;
+        let anger = 0;
+        let stage = 1;
+        let speed = 1;
+        let isMoving = false;
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+
+        // Messages par stade
+        const STAGE_MESSAGES = {
+            1: [
+                "Bravo champion!",
+                "T'es le meilleur!",
+                "Incroyable!",
+                "Clique encore!",
+                "Trop fort!"
+            ],
+            2: [
+                "Hé, doucement!",
+                "Tu m'énerves un peu...",
+                "Ça suffit maintenant!",
+                "Arrête un peu!",
+                "Tu commences à me saouler!"
+            ],
+            3: [
+                "PUTAIN ARRÊTE!",
+                "T'ES CHIANT!",
+                "VA TE FAIRE FOUTRE!",
+                "JE TE DÉTESTE!",
+                "TU ME FAIS PÉTER UN CÂBLE!"
+            ],
+            4: [
+                "T'ES QU'UN GROS NOOB!",
+                "T'ES PATHÉTIQUE!",
+                "MÊME MA MORTE FERAIT MIEUX!",
+                "T'ES LA HONTE DE TES PARENTS!",
+                "ABANDONNE, T'ES NULLISSIME!",
+                "T'ES AUSSI UTILE QU'UN VERRE EN CARTON!",
+                "TA VIE EST UN ÉCHEC!",
+                "TU PUE LA MISÈRE!",
+                "T'ES LE DERNIER DES BRANLOS!",
+                "TU MÉRITES DE MOURIR SEUL!"
+            ]
+        };
+
+        // Sons (utiliser des fichiers audio en réalité)
+        const SOUNDS = {
+            click: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3'),
+            angry: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-angry-cartoon-creature-28.mp3'),
+            teleport: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-quick-jump-arcade-game-239.mp3'),
+            humiliate: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-creepy-laugh-422.mp3')
+        };
+
+        // Initialisation
+        updateStage();
+        positionButton();
+        document.addEventListener('mousemove', trackMouse);
+        btn.addEventListener('click', handleClick);
+
+        // Fonctions
+        function trackMouse(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            if (stage >= 3) checkProximity();
+        }
+
+        function handleClick() {
+            score++;
+            anger += 5 + (score * 0.2);
+            
+            // Mise à jour du stade
+            if (anger >= 25 && stage === 1) stage = 2;
+            else if (anger >= 50 && stage === 2) stage = 3;
+            else if (anger >= 75 && stage === 3) stage = 4;
+            
+            updateStage();
+            updateStats();
+            showRandomMessage();
+            positionButton();
+            
+            // Jouer un son selon le stade
+            if (stage >= 3) SOUNDS.angry.play();
+            else SOUNDS.click.play();
+        }
+
+        function updateStage() {
+            // Vitesse selon le stade
+            speed = stage * 2;
+            
+            // Apparence du bouton
+            if (stage === 1) {
+                btn.style.background = "#00ff00";
+                btn.style.boxShadow = "0 0 30px #00ff00";
+                btn.style.color = "black";
+            } else if (stage === 2) {
+                btn.style.background = "#ffff00";
+                btn.style.boxShadow = "0 0 30px #ffff00";
+                btn.style.color = "black";
+            } else if (stage === 3) {
+                btn.style.background = "#ff6600";
+                btn.style.boxShadow = "0 0 40px #ff6600";
+                btn.style.color = "white";
+            } else {
+                btn.style.background = "#ff0000";
+                btn.style.boxShadow = "0 0 50px #ff0000";
+                btn.style.color = "white";
+                btn.textContent = "T'ES TROP NUL!";
+            }
+            
+            // Mise à jour des indicateurs de stade
+            stageIndicators.forEach((indicator, index) => {
+                if (index < stage) indicator.classList.add('active');
+                else indicator.classList.remove('active');
+            });
+        }
+
+        function updateStats() {
+            scoreDisplay.textContent = score;
+            angerLevel.style.width = `${anger}%`;
+        }
+
+        function showRandomMessage() {
+            const messages = STAGE_MESSAGES[stage];
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            
+            message.textContent = randomMessage;
+            message.style.color = stage === 1 ? "#00ff00" : 
+                                stage === 2 ? "#ffff00" : 
+                                stage === 3 ? "#ff6600" : "#ff0000";
+            message.style.opacity = 1;
+            
+            setTimeout(() => {
+                message.style.opacity = 0;
+            }, stage === 4 ? 3000 : 2000);
+        }
+
+        function positionButton() {
+            if (isMoving) return;
+            
+            if (stage === 4) {
+                // Téléportation ultra-rapide
+                teleportButton();
+                return;
+            }
+            
+            let newX, newY;
+            const padding = 50 + (stage * 50);
+            
+            do {
+                newX = Math.random() * (window.innerWidth - btn.offsetWidth);
+                newY = Math.random() * (window.innerHeight - btn.offsetHeight);
+            } while (
+                Math.abs(newX - mouseX) < padding && 
+                Math.abs(newY - mouseY) < padding
+            );
+            
+            btn.style.left = `${newX}px`;
+            btn.style.top = `${newY}px`;
+        }
+
+        function teleportButton() {
+            SOUNDS.teleport.play();
+            
+            let newX, newY;
+            const safeDistance = 300;
+            
+            do {
+                newX = Math.random() * (window.innerWidth - btn.offsetWidth);
+                newY = Math.random() * (window.innerHeight - btn.offsetHeight);
+            } while (
+                Math.sqrt(Math.pow(newX - mouseX, 2) + Math.pow(newY - mouseY, 2)) < safeDistance
+            );
+            
+            btn.style.transition = "none";
+            btn.style.left = `${newX}px`;
+            btn.style.top = `${newY}px`;
+            
+            setTimeout(() => {
+                btn.style.transition = "all 0.1s linear";
+            }, 10);
+            
+            // Humiliation aléatoire
+            if (Math.random() < 0.5) {
+                setTimeout(() => {
+                    showRandomMessage();
+                    SOUNDS.humiliate.play();
+                }, 200);
+            }
+        }
+
+        function checkProximity() {
+            if (isMoving) return;
+            
+            const btnRect = btn.getBoundingClientRect();
+            const btnCenterX = btnRect.left + btnRect.width / 2;
+            const btnCenterY = btnRect.top + btnRect.height / 2;
+            
+            const distance = Math.sqrt(
+                Math.pow(mouseX - btnCenterX, 2) + 
+                Math.pow(mouseY - btnCenterY, 2)
+            );
+            
+            if (distance < 200 + (stage * 50)) {
+                isMoving = true;
+                
+                if (stage === 4) {
+                    teleportButton();
+                } else {
+                    moveButtonAway();
+                }
+                
+                isMoving = false;
+            }
+        }
+
+        function moveButtonAway() {
+            const btnRect = btn.getBoundingClientRect();
+            const btnCenterX = btnRect.left + btnRect.width / 2;
+            const btnCenterY = btnRect.top + btnRect.height / 2;
+            
+            const angle = Math.atan2(
+                mouseY - btnCenterY, 
+                mouseX - btnCenterX
+            );
+            
+            const moveX = Math.cos(angle + Math.PI) * (20 * speed);
+            const moveY = Math.sin(angle + Math.PI) * (20 * speed);
+            
+            let newX = btnRect.left + moveX;
+            let newY = btnRect.top + moveY;
+            
+            // Vérification des bords
+            newX = Math.max(0, Math.min(window.innerWidth - btn.offsetWidth, newX));
+            newY = Math.max(0, Math.min(window.innerHeight - btn.offsetHeight, newY));
+            
+            btn.style.left = `${newX}px`;
+            btn.style.top = `${newY}px`;
+        }
+
+        // Mouvement continu aux stades élevés
+        setInterval(() => {
+            if (stage >= 3) checkProximity();
+        }, 50);
+    </script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --accent-color: #e74c3c;
+    --success-color: #2ecc71;
+    --text-color: #ecf0f1;
+    --background-color: #1a1a2e;
+    --card-table-color: #1e8449;
+    --card-back-color: #2980b9;
+    --card-red: #e74c3c;
+    --card-black: #2c3e50;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    overflow-x: hidden;
+}
+
+.game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.game-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.game-info {
+    display: flex;
+    gap: 25px;
+}
+
+.timer, .score {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2rem;
+}
+
+.timer i, .score i {
+    color: var(--accent-color);
+}
+
+.game-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.control-btn {
+    padding: 12px 20px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.control-btn:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.control-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: var(--secondary-color);
+}
+
+.game-board {
+    background-color: var(--card-table-color);
+    border-radius: 15px;
+    padding: 25px;
+    min-height: 600px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.foundations, .stock-and-waste {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.foundation, .stock, .waste {
+    width: 120px;
+    height: 160px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.stock {
+    cursor: pointer;
+}
+
+.card-back {
+    width: 100%;
+    height: 100%;
+    background-color: var(--card-back-color);
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.1),
+                inset 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.card-back::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.tableau {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pile {
+    width: 120px;
+    min-height: 160px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.card {
+    width: 120px;
+    height: 160px;
+    border-radius: 8px;
+    position: absolute;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.card.red {
+    color: var(--card-red);
+}
+
+.card.black {
+    color: var(--card-black);
+}
+
+.card .card-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.card .card-suit {
+    font-size: 2.5rem;
+    align-self: center;
+}
+
+.card .card-corner {
+    font-size: 1.2rem;
+    font-weight: bold;
+    transform: rotate(180deg);
+    align-self: flex-end;
+}
+
+.card.face-down {
+    background-color: var(--card-back-color);
+    color: transparent;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.1),
+                inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.card.face-down .card-value,
+.card.face-down .card-suit,
+.card.face-down .card-corner {
+    visibility: hidden;
+}
+
+.card.selected {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.card.hint {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+}
+
+.settings-panel {
+    position: absolute;
+    top: 120px;
+    right: 20px;
+    background-color: var(--primary-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    display: none;
+    width: 300px;
+}
+
+.settings-panel.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.settings-panel h3 {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-color);
+}
+
+.setting {
+    margin-bottom: 15px;
+}
+
+.setting label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.setting select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: none;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+.apply-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.apply-btn:hover {
+    background-color: #27ae60;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: var(--primary-color);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: modalFadeIn 0.4s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-content h2 {
+    margin-bottom: 15px;
+    color: var(--accent-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.stats {
+    margin: 20px 0;
+    font-size: 1.2rem;
+}
+
+.stats p {
+    margin: 10px 0;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.modal-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#play-again-btn {
+    background-color: var(--success-color);
+    color: white;
+}
+
+#share-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+.modal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hint-display {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(46, 204, 113, 0.9);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.hint-display.show {
+    opacity: 1;
+}
+
+/* Styles responsives */
+@media (max-width: 768px) {
+    .game-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .game-controls {
+        gap: 10px;
+    }
+    
+    .control-btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .foundation, .stock, .waste, .card {
+        width: 80px;
+        height: 110px;
+    }
+    
+    .pile {
+        width: 80px;
+        min-height: 110px;
+    }
+    
+    .card .card-value {
+        font-size: 1.2rem;
+    }
+    
+    .card .card-suit {
+        font-size: 1.8rem;
+    }
+    
+    .card .card-corner {
+        font-size: 0.9rem;
+    }
+    
+    .settings-panel {
+        width: 90%;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-board {
+        padding: 15px;
+    }
+    
+    .foundation, .stock, .waste, .card {
+        width: 60px;
+        height: 90px;
+    }
+    
+    .pile {
+        width: 60px;
+        min-height: 90px;
+    }
+    
+    .card {
+        padding: 5px;
+    }
+    
+    .card .card-value {
+        font-size: 1rem;
+    }
+    
+    .card .card-suit {
+        font-size: 1.4rem;
+    }
+    
+    .card .card-corner {
+        font-size: 0.7rem;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .modal-btn {
+        justify-content: center;
+    }
+}

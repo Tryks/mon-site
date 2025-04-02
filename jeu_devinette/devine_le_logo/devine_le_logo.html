@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devine le Logo - Édition Premium</title>
+    <link rel="stylesheet" href="devine_le_logo.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <div class="container">
+        <header>
+            <h1><span class="logo-icon"><i class="fas fa-question-circle"></i></span> Devine le Logo</h1>
+            <p class="subtitle">Testez vos connaissances des marques célèbres</p>
+        </header>
+
+        <main>
+            <div class="game-intro" id="intro-screen">
+                <div class="intro-content">
+                    <h2>Bienvenue dans le jeu Devine le Logo!</h2>
+                    <p>Sélectionnez votre mode de jeu et votre niveau de difficulté pour commencer.</p>
+                    
+                    <div class="game-options">
+                        <div class="option-section">
+                            <h3><i class="fas fa-gamepad"></i> Mode de jeu</h3>
+                            <div class="options">
+                                <button class="option-btn active" data-mode="classic">
+                                    <i class="fas fa-star"></i> Classique
+                                </button>
+                                <button class="option-btn" data-mode="time">
+                                    <i class="fas fa-clock"></i> Chrono
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="option-section">
+                            <h3><i class="fas fa-tachometer-alt"></i> Difficulté</h3>
+                            <div class="options">
+                                <button class="option-btn active" data-difficulty="easy">
+                                    <i class="fas fa-leaf"></i> Facile
+                                </button>
+                                <button class="option-btn" data-difficulty="medium">
+                                    <i class="fas fa-balance-scale"></i> Moyen
+                                </button>
+                                <button class="option-btn" data-difficulty="hard">
+                                    <i class="fas fa-fire"></i> Difficile
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="start-game" class="glow-btn">
+                        <i class="fas fa-play"></i> Commencer le jeu
+                    </button>
+                </div>
+            </div>
+
+            <div class="game-screen hidden" id="game-screen">
+                <div class="game-header">
+                    <div class="game-info">
+                        <span id="score-display"><i class="fas fa-trophy"></i> Score: <span id="score">0</span></span>
+                        <span id="timer-display" class="hidden"><i class="fas fa-clock"></i> Temps: <span id="timer">60</span>s</span>
+                        <span id="lives-display"><i class="fas fa-heart"></i> Vies: <span id="lives">3</span></span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
+                
+                <div class="game-content">
+                    <div class="logo-display">
+                        <div class="logo-container">
+                            <img id="logo-image" src="" alt="Logo à deviner">
+                            <div class="blur-overlay" id="blur-overlay"></div>
+                        </div>
+                        <div class="difficulty-indicator">
+                            <span id="current-difficulty">Facile</span>
+                        </div>
+                    </div>
+                    
+                    <div class="answer-section">
+                        <h3>Quelle est cette marque?</h3>
+                        <div class="answer-options" id="answer-options">
+                            <!-- Les options seront générées dynamiquement -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-controls">
+                    <button id="hint-btn" class="control-btn">
+                        <i class="fas fa-lightbulb"></i> Indice
+                    </button>
+                    <button id="skip-btn" class="control-btn">
+                        <i class="fas fa-forward"></i> Passer
+                    </button>
+                    <button id="quit-btn" class="control-btn">
+                        <i class="fas fa-sign-out-alt"></i> Quitter
+                    </button>
+                </div>
+            </div>
+
+            <div class="game-over-screen hidden" id="game-over-screen">
+                <div class="game-over-content">
+                    <h2>Partie Terminée!</h2>
+                    <div class="result-stats">
+                        <p><i class="fas fa-trophy"></i> <strong>Score final:</strong> <span id="final-score">0</span></p>
+                        <p><i class="fas fa-check-circle"></i> <strong>Bonnes réponses:</strong> <span id="correct-answers">0</span>/<span id="total-questions">0</span></p>
+                        <p><i class="fas fa-chart-line"></i> <strong>Précision:</strong> <span id="accuracy">0</span>%</p>
+                    </div>
+                    
+                    <div class="leaderboard">
+                        <h3><i class="fas fa-crown"></i> Classement</h3>
+                        <ol id="leaderboard-list">
+                            <!-- Le classement sera généré dynamiquement -->
+                        </ol>
+                    </div>
+                    
+                    <div class="game-over-buttons">
+                        <button id="play-again-btn" class="glow-btn">
+                            <i class="fas fa-redo"></i> Rejouer
+                        </button>
+                        <button id="change-mode-btn" class="glow-btn secondary">
+                            <i class="fas fa-cog"></i> Changer de mode
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <div class="hint-modal hidden" id="hint-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3><i class="fas fa-lightbulb"></i> Indice</h3>
+                <p id="hint-text">Chargement de l'indice...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2023 Devine le Logo - Édition Premium | Créé avec <i class="fas fa-heart"></i> pour les fans de marques</p>
+    </footer>
+
+    <audio id="correct-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.wav"></audio>
+    <audio id="wrong-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.wav"></audio>
+    <audio id="game-over-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-explosion-2759.wav"></audio>
+
+    <script src="devine_le_logo.js"></script>
+</body>
+</html>

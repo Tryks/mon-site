@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Magnifique</title>
+    <link rel="stylesheet" href="snake.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>SNAKE <span></span></h1>
+            <div class="score-display">
+                <span id="score">0</span>
+                <span id="high-score">0</span>
+            </div>
+        </div>
+        
+        <div class="game-board-container">
+            <canvas id="game-board"></canvas>
+            <div class="game-overlay" id="start-screen">
+                <h2>Prêt à jouer?</h2>
+                <button id="start-btn">COMMENCER</button>
+                <div class="controls-info">
+                    <p>Utilisez les flèches ou ZQSD pour diriger le serpent</p>
+                </div>
+            </div>
+            <div class="game-overlay" id="game-over-screen" style="display: none;">
+                <h2>Game Over!</h2>
+                <p id="final-score">Score: 0</p>
+                <button id="restart-btn">REJOUER</button>
+            </div>
+        </div>
+        
+        <div class="game-controls">
+            <div class="control-buttons">
+                <button id="up-btn"><i class="fas fa-arrow-up"></i></button>
+                <div>
+                    <button id="left-btn"><i class="fas fa-arrow-left"></i></button>
+                    <button id="right-btn"><i class="fas fa-arrow-right"></i></button>
+                </div>
+                <button id="down-btn"><i class="fas fa-arrow-down"></i></button>
+            </div>
+            
+            <button id="pause-btn"><i class="fas fa-pause"></i> Pause</button>
+        </div>
+        
+        <div class="game-settings">
+            <div class="settings-section">
+                <h3><i class="fas fa-palette"></i> Apparence</h3>
+                <div class="setting-option">
+                    <label for="snake-skin">Skin du serpent:</label>
+                    <select id="snake-skin">
+                        <option value="classic">Classique</option>
+                        <option value="gradient">Dégradé</option>
+                        <option value="stripes">Rayures</option>
+                        <option value="neon">Néon</option>
+                    </select>
+                </div>
+                <div class="setting-option">
+                    <label for="theme">Thème:</label>
+                    <select id="theme">
+                        <option value="light">Clair</option>
+                        <option value="dark">Sombre</option>
+                        <option value="nature">Nature</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3><i class="fas fa-cog"></i> Paramètres</h3>
+                <div class="setting-option">
+                    <label for="difficulty">Difficulté:</label>
+                    <select id="difficulty">
+                        <option value="easy">Facile</option>
+                        <option value="medium">Moyen</option>
+                        <option value="hard">Difficile</option>
+                    </select>
+                </div>
+                <div class="setting-option">
+                    <label for="grid-size">Taille de la grille:</label>
+                    <select id="grid-size">
+                        <option value="small">Petite</option>
+                        <option value="medium">Moyenne</option>
+                        <option value="large">Grande</option>
+                    </select>
+                </div>
+                <div class="setting-option">
+                    <label for="sound">Son:</label>
+                    <input type="checkbox" id="sound" checked>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="eat-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3"></audio>
+    <audio id="gameover-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-retro-arcade-lose-2027.mp3"></audio>
+
+    <script src="snake.js"></script>
+</body>
+</html>

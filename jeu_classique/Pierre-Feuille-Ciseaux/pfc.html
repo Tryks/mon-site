@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pierre-Feuille-Ciseaux - Édition Ultime</title>
+    <link rel="stylesheet" href="pfc.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pierre-Feuille-Ciseaux <span class="edition"></span></h1>
+            <div class="score-container">
+                <div class="score-box">
+                    <span class="score-label">Vous</span>
+                    <span id="player-score">0</span>
+                </div>
+                <div class="score-box">
+                    <span class="score-label">Ordinateur</span>
+                    <span id="computer-score">0</span>
+                </div>
+                <div class="score-box">
+                    <span class="score-label">Égalités</span>
+                    <span id="ties-score">0</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <div class="choices">
+                    <div class="choice" id="rock">
+                        <i class="fa-regular fa-hand-back-fist"></i>
+                        <span>Pierre</span>
+                    </div>
+                    <div class="choice" id="paper">
+                        <i class="fa-regular fa-hand"></i>
+                        <span>Feuille</span>
+                    </div>
+                    <div class="choice" id="scissors">
+                        <i class="fa-regular fa-hand-scissors"></i>
+                        <span>Ciseaux</span>
+                    </div>
+                </div>
+
+                <div class="battle-area">
+                    <div class="battle-choice player-choice">
+                        <div class="icon-placeholder"><i class="fa-solid fa-question"></i></div>
+                        <span>Votre choix</span>
+                    </div>
+                    <div class="vs">VS</div>
+                    <div class="battle-choice computer-choice">
+                        <div class="icon-placeholder"><i class="fa-solid fa-question"></i></div>
+                        <span>Ordinateur</span>
+                    </div>
+                </div>
+
+                <div class="result-container">
+                    <p id="result-message">Prêt à jouer ? Choisissez une option !</p>
+                    <div class="result-details hidden" id="result-details">
+                        <p><span id="result-explanation"></span></p>
+                        <button id="play-again">Rejouer</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-container hidden" id="stats-container">
+                <h2>Statistiques</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-value" id="total-games">0</span>
+                        <span class="stat-label">Parties jouées</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="win-rate">0%</span>
+                        <span class="stat-label">Taux de victoire</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="rock-usage">0%</span>
+                        <span class="stat-label">Pierre</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="paper-usage">0%</span>
+                        <span class="stat-label">Feuille</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="scissors-usage">0%</span>
+                        <span class="stat-label">Ciseaux</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="current-streak">0</span>
+                        <span class="stat-label">Série actuelle</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="settings">
+                <button id="toggle-stats"><i class="fas fa-chart-bar"></i> Statistiques</button>
+                <button id="toggle-sound"><i class="fas fa-volume-up"></i> Son</button>
+                <button id="change-theme"><i class="fas fa-palette"></i> Thème</button>
+                <button id="reset-stats"><i class="fas fa-trash"></i> Réinitialiser</button>
+            </div>
+            <div class="credits">
+                <p>Créé avec <i class="fas fa-heart"></i> par DeepSeek Chat</p>
+            </div>
+        </footer>
+    </div>
+
+    <audio id="win-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3"></audio>
+    <audio id="lose-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-retro-arcade-lose-2027.mp3"></audio>
+    <audio id="tie-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-neutral-interface-beep-2849.mp3"></audio>
+    <audio id="click-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3"></audio>
+
+    <script src="pfc.js"></script>
+</body>
+</html>

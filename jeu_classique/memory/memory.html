@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Ultimate Challenge</title>
+    <link rel="stylesheet" href="memory.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>Memory <span>Ultimate Challenge</span></h1>
+            <div class="stats">
+                <div class="stat">
+                    <i class="fas fa-clock"></i>
+                    <span id="time">00:00</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-redo"></i>
+                    <span id="moves">0</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-star"></i>
+                    <span id="score">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-panel">
+            <div class="setting-group">
+                <label for="difficulty">Difficulté:</label>
+                <select id="difficulty">
+                    <option value="easy">Facile (4x4)</option>
+                    <option value="medium">Moyen (6x6)</option>
+                    <option value="hard">Difficile (8x8)</option>
+                    <option value="impossible">Impossible (10x10)</option>
+                </select>
+            </div>
+
+            <div class="setting-group">
+                <label for="theme">Thème:</label>
+                <select id="theme">
+                    <option value="animals">Animaux</option>
+                    <option value="flags">Drapeaux</option>
+                    <option value="emoji">Emojis</option>
+                    <option value="landmarks">Monuments</option>
+                    <option value="space">Espace</option>
+                </select>
+            </div>
+
+            <div class="setting-group">
+                <label for="card-style">Style des cartes:</label>
+                <select id="card-style">
+                    <option value="classic">Classique</option>
+                    <option value="modern">Moderne</option>
+                    <option value="neon">Néon</option>
+                    <option value="wooden">Bois</option>
+                </select>
+            </div>
+
+            <div class="setting-group">
+                <label for="timer">Minuteur:</label>
+                <select id="timer">
+                    <option value="none">Aucun</option>
+                    <option value="count-up">Compteur ascendant</option>
+                    <option value="count-down">Compteur descendant (3 min)</option>
+                </select>
+            </div>
+
+            <div class="setting-group">
+                <label for="sound">Son:</label>
+                <select id="sound">
+                    <option value="on">Activé</option>
+                    <option value="off">Désactivé</option>
+                </select>
+            </div>
+
+            <div class="setting-group">
+                <label for="hints">Indices:</label>
+                <select id="hints">
+                    <option value="none">Aucun</option>
+                    <option value="peek">Aperçu initial</option>
+                    <option value="occasional">Occasionnels</option>
+                </select>
+            </div>
+
+            <button id="start-btn" class="btn start-btn">Commencer</button>
+            <button id="reset-btn" class="btn reset-btn">Réinitialiser</button>
+        </div>
+
+        <div class="game-board" id="game-board"></div>
+
+        <div class="modal" id="win-modal">
+            <div class="modal-content">
+                <h2>Félicitations!</h2>
+                <p>Vous avez gagné!</p>
+                <div class="final-stats">
+                    <p>Temps: <span id="final-time"></span></p>
+                    <p>Mouvements: <span id="final-moves"></span></p>
+                    <p>Score: <span id="final-score"></span></p>
+                </div>
+                <button id="play-again-btn" class="btn play-again-btn">Jouer à nouveau</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="flip-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3"></audio>
+    <audio id="match-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3"></audio>
+    <audio id="win-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3"></audio>
+
+    <script src="memory.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendu Ultra Réaliste</title>
+    <link rel="stylesheet" href="pendu.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>LE JEU DU PENDU</h1>
+            <div class="settings-btn" id="settingsBtn"><i class="fas fa-cog"></i></div>
+        </header>
+
+        <div class="settings-panel" id="settingsPanel">
+            <h2>Paramètres</h2>
+            <div class="settings-group">
+                <label for="difficulty">Difficulté:</label>
+                <select id="difficulty">
+                    <option value="easy">Facile</option>
+                    <option value="medium" selected>Moyen</option>
+                    <option value="hard">Difficile</option>
+                    <option value="expert">Expert</option>
+                </select>
+            </div>
+            <div class="settings-group">
+                <label for="theme">Thème:</label>
+                <select id="theme">
+                    <option value="classic" selected>Classique</option>
+                    <option value="dark">Sombre</option>
+                    <option value="nature">Nature</option>
+                    <option value="ocean">Océan</option>
+                </select>
+            </div>
+            <div class="settings-group">
+                <label for="language">Langue:</label>
+                <select id="language">
+                    <option value="fr" selected>Français</option>
+                    <option value="en">Anglais</option>
+                    <option value="es">Espagnol</option>
+                </select>
+            </div>
+            <div class="settings-group">
+                <label for="hintMode">Aides:</label>
+                <select id="hintMode">
+                    <option value="none">Aucune</option>
+                    <option value="rare">Occasionnelles</option>
+                    <option value="sometimes" selected>Parfois</option>
+                    <option value="often">Souvent</option>
+                </select>
+            </div>
+            <div class="settings-group">
+                <label for="sound">Son:</label>
+                <input type="checkbox" id="sound" checked>
+            </div>
+            <button id="saveSettings">Enregistrer</button>
+        </div>
+
+        <div class="game-area">
+            <div class="hangman-container">
+                <div class="hangman-drawing">
+                    <svg id="hangmanSVG" viewBox="0 0 300 300">
+                        <!-- Base -->
+                        <line x1="50" y1="280" x2="150" y2="280" class="scaffold" id="base"/>
+                        <!-- Poteau -->
+                        <line x1="100" y1="280" x2="100" y2="50" class="scaffold" id="pole"/>
+                        <!-- Traverse -->
+                        <line x1="100" y1="50" x2="200" y2="50" class="scaffold" id="beam"/>
+                        <!-- Corde -->
+                        <line x1="200" y1="50" x2="200" y2="80" class="scaffold" id="rope"/>
+                        
+                        <!-- Tête -->
+                        <circle cx="200" cy="100" r="20" class="body-part" id="head"/>
+                        <!-- Corps -->
+                        <line x1="200" y1="120" x2="200" y2="180" class="body-part" id="body"/>
+                        <!-- Bras gauche -->
+                        <line x1="200" y1="140" x2="170" y2="160" class="body-part" id="left-arm"/>
+                        <!-- Bras droit -->
+                        <line x1="200" y1="140" x2="230" y2="160" class="body-part" id="right-arm"/>
+                        <!-- Jambe gauche -->
+                        <line x1="200" y1="180" x2="170" y2="220" class="body-part" id="left-leg"/>
+                        <!-- Jambe droite -->
+                        <line x1="200" y1="180" x2="230" y2="220" class="body-part" id="right-leg"/>
+                        <!-- Visage (initialement caché) -->
+                        <path d="M190 95 Q200 105 210 95" class="face" id="mouth"/>
+                        <circle cx="193" cy="93" r="3" class="face" id="left-eye"/>
+                        <circle cx="207" cy="93" r="3" class="face" id="right-eye"/>
+                    </svg>
+                </div>
+                <div class="hangman-status">
+                    <div class="attempts">Tentatives restantes: <span id="remainingAttempts">7</span></div>
+                    <div class="category">Catégorie: <span id="currentCategory">Général</span></div>
+                    <div class="hint" id="hintArea">
+                        <button id="hintButton">Obtenir un indice</button>
+                        <div id="hintText"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="word-container">
+                <div class="word-display" id="wordDisplay"></div>
+                <div class="letters-used">
+                    <h3>Lettres utilisées:</h3>
+                    <div id="usedLetters"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="keyboard-container">
+            <div class="keyboard" id="keyboard"></div>
+            <div class="game-controls">
+                <button id="newGameBtn">Nouvelle partie</button>
+                <button id="changeCategoryBtn">Changer de catégorie</button>
+            </div>
+        </div>
+
+        <div class="modal" id="gameOverModal">
+            <div class="modal-content">
+                <h2 id="modalTitle">Partie Terminée!</h2>
+                <p id="modalMessage">Le mot était: <span id="correctWord"></span></p>
+                <div class="modal-stats">
+                    <p>Statistiques:</p>
+                    <ul>
+                        <li>Parties gagnées: <span id="wins">0</span></li>
+                        <li>Parties perdues: <span id="losses">0</span></li>
+                        <li>Taux de réussite: <span id="winRate">0%</span></li>
+                    </ul>
+                </div>
+                <button id="playAgainBtn">Jouer à nouveau</button>
+            </div>
+        </div>
+
+        <div class="category-modal" id="categoryModal">
+            <div class="category-content">
+                <h2>Choisissez une catégorie</h2>
+                <div class="category-options" id="categoryOptions"></div>
+                <button id="confirmCategoryBtn">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="correctSound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"></audio>
+    <audio id="wrongSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3"></audio>
+    <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+    <audio id="loseSound" src="https://assets.mixkit.co/sfx/preview/mixkit-sad-game-over-1943.mp3"></audio>
+    <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3"></audio>
+
+    <script src="pendu.js"></script>
+</body>
+</html>

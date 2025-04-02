@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Premium</title>
+    <link rel="stylesheet" href="sudoku.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="sudoku-container">
+        <header class="game-header">
+            <h1><i class="fas fa-th"></i> SUDOKU</h1>
+            <div class="header-controls">
+                <button id="themeToggle"><i class="fas fa-moon"></i></button>
+                <button id="helpBtn"><i class="fas fa-question-circle"></i></button>
+            </div>
+        </header>
+
+        <div class="game-container">
+            <div class="sudoku-board" id="board"></div>
+            
+            <div class="game-controls">
+                <div class="number-selector">
+                    <button class="num-btn" data-number="1">1</button>
+                    <button class="num-btn" data-number="2">2</button>
+                    <button class="num-btn" data-number="3">3</button>
+                    <button class="num-btn" data-number="4">4</button>
+                    <button class="num-btn" data-number="5">5</button>
+                    <button class="num-btn" data-number="6">6</button>
+                    <button class="num-btn" data-number="7">7</button>
+                    <button class="num-btn" data-number="8">8</button>
+                    <button class="num-btn" data-number="9">9</button>
+                    <button class="num-btn" id="eraseBtn"><i class="fas fa-eraser"></i></button>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="newGameBtn">Nouvelle partie</button>
+                    <button id="checkBtn">Vérifier</button>
+                    <button id="hintBtn">Indice</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="difficulty-selector">
+            <h3>Difficulté :</h3>
+            <div class="difficulty-options">
+                <button class="diff-btn active" data-diff="easy">Facile</button>
+                <button class="diff-btn" data-diff="medium">Moyen</button>
+                <button class="diff-btn" data-diff="hard">Difficile</button>
+            </div>
+        </div>
+
+        <div class="game-stats">
+            <div class="stat-box">
+                <span class="stat-label">Temps :</span>
+                <span id="timeDisplay">00:00</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Erreurs :</span>
+                <span id="errorCount">0</span>/3
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="winModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-trophy"></i> Félicitations !</h2>
+            <p>Vous avez résolu le Sudoku en <span id="finalTime">00:00</span> !</p>
+            <button id="playAgainBtn">Jouer à nouveau</button>
+        </div>
+    </div>
+
+    <div id="loseModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-times-circle"></i> Partie perdue</h2>
+            <p>Vous avez fait 3 erreurs !</p>
+            <button id="tryAgainBtn">Réessayer</button>
+        </div>
+    </div>
+
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-question-circle"></i> Aide</h2>
+            <div class="help-content">
+                <h3>Règles du Sudoku :</h3>
+                <p>Remplissez la grille avec des chiffres de 1 à 9 :</p>
+                <ul>
+                    <li>Chaque ligne doit contenir tous les chiffres de 1 à 9</li>
+                    <li>Chaque colonne doit contenir tous les chiffres de 1 à 9</li>
+                    <li>Chaque carré 3x3 doit contenir tous les chiffres de 1 à 9</li>
+                </ul>
+            </div>
+            <button id="closeHelpBtn">Fermer</button>
+        </div>
+    </div>
+
+    <script src="sudoku.js"></script>
+</body>
+</html>

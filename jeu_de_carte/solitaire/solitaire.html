@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solitaire - Jeu de Cartes</title>
+    <link rel="stylesheet" href="solitaire.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1><i class="fas fa-cards"></i> Solitaire</h1>
+            <div class="game-info">
+                <div class="timer">
+                    <i class="fas fa-clock"></i>
+                    <span id="time">00:00</span>
+                </div>
+                <div class="score">
+                    <i class="fas fa-star"></i>
+                    <span id="moves">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="game-controls">
+            <button id="new-game-btn" class="control-btn">
+                <i class="fas fa-redo"></i> Nouvelle partie
+            </button>
+            <button id="hint-btn" class="control-btn">
+                <i class="fas fa-lightbulb"></i> Indice
+            </button>
+            <button id="undo-btn" class="control-btn">
+                <i class="fas fa-undo"></i> Annuler
+            </button>
+            <button id="settings-btn" class="control-btn">
+                <i class="fas fa-cog"></i> Options
+            </button>
+        </div>
+
+        <div class="game-board">
+            <!-- Fondations (4 emplacements pour terminer les piles) -->
+            <div class="foundations">
+                <div class="foundation" id="foundation-1"></div>
+                <div class="foundation" id="foundation-2"></div>
+                <div class="foundation" id="foundation-3"></div>
+                <div class="foundation" id="foundation-4"></div>
+            </div>
+
+            <!-- Talon et déchets -->
+            <div class="stock-and-waste">
+                <div class="stock" id="stock">
+                    <div class="card-back"></div>
+                </div>
+                <div class="waste" id="waste"></div>
+            </div>
+
+            <!-- Tableau (7 piles de cartes) -->
+            <div class="tableau">
+                <div class="pile" id="pile-1"></div>
+                <div class="pile" id="pile-2"></div>
+                <div class="pile" id="pile-3"></div>
+                <div class="pile" id="pile-4"></div>
+                <div class="pile" id="pile-5"></div>
+                <div class="pile" id="pile-6"></div>
+                <div class="pile" id="pile-7"></div>
+            </div>
+        </div>
+
+        <div class="settings-panel" id="settings-panel">
+            <h3><i class="fas fa-sliders-h"></i> Options du jeu</h3>
+            <div class="setting">
+                <label for="card-style">Style de cartes:</label>
+                <select id="card-style">
+                    <option value="classic">Classique</option>
+                    <option value="modern">Moderne</option>
+                    <option value="elegant">Élégant</option>
+                </select>
+            </div>
+            <div class="setting">
+                <label for="card-back">Dos de carte:</label>
+                <select id="card-back">
+                    <option value="blue">Bleu</option>
+                    <option value="red">Rouge</option>
+                    <option value="green">Vert</option>
+                    <option value="pattern">Motif</option>
+                </select>
+            </div>
+            <div class="setting">
+                <label for="difficulty">Difficulté:</label>
+                <select id="difficulty">
+                    <option value="easy">Facile</option>
+                    <option value="medium" selected>Moyen</option>
+                    <option value="hard">Difficile</option>
+                </select>
+            </div>
+            <div class="setting">
+                <label for="animation-speed">Vitesse d'animation:</label>
+                <select id="animation-speed">
+                    <option value="fast">Rapide</option>
+                    <option value="normal" selected>Normale</option>
+                    <option value="slow">Lente</option>
+                </select>
+            </div>
+            <button id="apply-settings" class="apply-btn">Appliquer</button>
+        </div>
+
+        <div class="modal" id="win-modal">
+            <div class="modal-content">
+                <h2><i class="fas fa-trophy"></i> Félicitations!</h2>
+                <p>Vous avez gagné!</p>
+                <div class="stats">
+                    <p>Temps: <span id="final-time">00:00</span></p>
+                    <p>Mouvements: <span id="final-moves">0</span></p>
+                    <p>Score: <span id="final-score">0</span></p>
+                </div>
+                <div class="modal-buttons">
+                    <button id="play-again-btn" class="modal-btn">
+                        <i class="fas fa-redo"></i> Rejouer
+                    </button>
+                    <button id="share-btn" class="modal-btn">
+                        <i class="fas fa-share-alt"></i> Partager
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="hint-display" id="hint-display"></div>
+    </div>
+
+    <script src="solitaire.js"></script>
+</body>
+</html>

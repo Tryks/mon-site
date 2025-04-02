@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LE BOUTON QUI T'HUMILIE</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #111;
+            color: white;
+            font-family: 'Arial Black', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: none;
+            user-select: none;
+        }
+
+        #rage-btn {
+            position: absolute;
+            padding: 20px 40px;
+            background: linear-gradient(45deg, #ff0000, #ff6600);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 0 30px #ff0000;
+            text-transform: uppercase;
+            transition: transform 0.01s;
+            z-index: 100;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        #rage-btn:hover {
+            background: linear-gradient(45deg, #ff3300, #ff0000);
+        }
+
+        #taunt-message {
+            position: fixed;
+            bottom: 50px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 32px;
+            color: #ff0000;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        #counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #ff5555;
+        }
+
+        #cursor {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <button id="rage-btn">CLIQUE SI TU PEUX, NOOB!</button>
+    <div id="taunt-message"></div>
+    <div id="counter">Échecs: <span id="fail-count">0</span></div>
+    <div id="cursor"></div>
+
+    <script>
+        const btn = document.getElementById('rage-btn');
+        const tauntMessage = document.getElementById('taunt-message');
+        const failCount = document.getElementById('fail-count');
+        const cursor = document.getElementById('cursor');
+
+        let fails = 0;
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        const SPEED_MULTIPLIER = 100; // 100x plus rapide
+        const SAFE_DISTANCE = 300; // Distance minimale pour fuir
+
+        // Messages d'humiliation
+        const TAUNTS = [
+            "T'ES NUL!",
+            "MÊME MA GRAND-MÈRE FERAIT MIEUX!",
+            "T'ES TROP LENT!",
+            "C'EST PATHÉTIQUE!",
+            "ABANDONNE, T'Y ARRIVERAS JAMAIS!",
+            "T'ES AUSSI RAPIDE QU'UN ESCARGOT!",
+            "HAHAHAHA!",
+            "TU ME FAIS PITIÉ!",
+            "T'ES VRAIMENT MAUVAIS!",
+            "T'ES QU'UN GROS NOOB!",
+            "T'ES INCAPABLE!",
+            "TROP FACILE POUR MOI!",
+            "T'ES COMME UNE TORTUE DANS LA MÉlasse!",
+            "T'ES NULLISSIME!",
+            "TU ME FAIS PERDRE MON TEMPS!",
+            "T'ES UNE BLAGUE!",
+            "T'ES FAIBLE!",
+            "T'ES À PLEURER!",
+            "T'ES UN ZÉRO!",
+            "T'ES UNE HONTE!"
+        ];
+
+        // Initialisation
+        positionButton();
+        document.addEventListener('mousemove', trackCursor);
+        document.addEventListener('click', handleClick);
+        requestAnimationFrame(update);
+
+        // Suivi du curseur
+        function trackCursor(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = `${mouseX}px`;
+            cursor.style.top = `${mouseY}px`;
+        }
+
+        // Position aléatoire (loin du curseur)
+        function positionButton() {
+            let newX, newY;
+            const padding = 150;
+
+            do {
+                newX = padding + Math.random() * (window.innerWidth - btn.offsetWidth - padding * 2);
+                newY = padding + Math.random() * (window.innerHeight - btn.offsetHeight - padding * 2);
+            } while (
+                Math.abs(newX - mouseX) < SAFE_DISTANCE && 
+                Math.abs(newY - mouseY) < SAFE_DISTANCE
+            );
+
+            btn.style.left = `${newX}px`;
+            btn.style.top = `${newY}px`;
+        }
+
+        // Mise à jour en temps réel (100x plus rapide)
+        function update() {
+            const btnRect = btn.getBoundingClientRect();
+            const btnX = btnRect.left + btnRect.width / 2;
+            const btnY = btnRect.top + btnRect.height / 2;
+
+            const dx = mouseX - btnX;
+            const dy = mouseY - btnY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // Si le curseur est trop proche, on fuit
+            if (distance < SAFE_DISTANCE) {
+                const angle = Math.atan2(dy, dx);
+                const moveX = Math.cos(angle + Math.PI) * SPEED_MULTIPLIER;
+                const moveY = Math.sin(angle + Math.PI) * SPEED_MULTIPLIER;
+
+                let newX = btnRect.left + moveX;
+                let newY = btnRect.top + moveY;
+
+                // Téléportation si on sort de l'écran
+                if (newX < 0 || newX > window.innerWidth - btn.offsetWidth ||
+                    newY < 0 || newY > window.innerHeight - btn.offsetHeight) {
+                    positionButton();
+                } else {
+                    btn.style.left = `${newX}px`;
+                    btn.style.top = `${newY}px`;
+                }
+
+                // Insulte aléatoire
+                if (Math.random() < 0.2) {
+                    showTaunt(TAUNTS[Math.floor(Math.random() * TAUNTS.length)]);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        // Gestion des clics
+        function handleClick(e) {
+            const btnRect = btn.getBoundingClientRect();
+            const clickedX = e.clientX;
+            const clickedY = e.clientY;
+
+            // Vérification si le clic est sur le bouton (impossible)
+            if (
+                clickedX >= btnRect.left &&
+                clickedX <= btnRect.right &&
+                clickedY >= btnRect.top &&
+                clickedY <= btnRect.bottom
+            ) {
+                showTaunt("TRICHEUR! T'AS TRICHÉ!", true);
+            } else {
+                fails++;
+                failCount.textContent = fails;
+                showTaunt(TAUNTS[Math.floor(Math.random() * TAUNTS.length)]);
+                positionButton();
+            }
+        }
+
+        // Affichage des insultes
+        function showTaunt(text, isCheat = false) {
+            tauntMessage.textContent = text;
+            tauntMessage.style.color = isCheat ? "#00ff00" : "#ff0000";
+            tauntMessage.style.opacity = 1;
+
+            setTimeout(() => {
+                tauntMessage.style.opacity = 0;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

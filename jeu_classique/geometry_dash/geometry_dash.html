@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometry Dash Ultimate</title>
+    <link rel="stylesheet" href="geometry_dash.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <div class="menu-overlay" id="mainMenu">
+            <h1>GEOMETRY DASH ULTIMATE</h1>
+            <div class="menu-buttons">
+                <button id="playBtn">Jouer</button>
+                <button id="optionsBtn">Options</button>
+                <button id="levelsBtn">Niveaux</button>
+                <button id="shopBtn">Boutique</button>
+                <button id="statsBtn">Statistiques</button>
+            </div>
+            <div class="version">Version 2.0</div>
+        </div>
+        
+        <div class="options-menu hidden" id="optionsMenu">
+            <h2>OPTIONS</h2>
+            <div class="options-grid">
+                <div class="option">
+                    <label for="volume">Volume:</label>
+                    <input type="range" id="volume" min="0" max="100" value="70">
+                </div>
+                <div class="option">
+                    <label for="graphics">Qualité Graphique:</label>
+                    <select id="graphics">
+                        <option value="low">Faible</option>
+                        <option value="medium" selected>Moyenne</option>
+                        <option value="high">Élevée</option>
+                        <option value="ultra">Ultra</option>
+                    </select>
+                </div>
+                <div class="option">
+                    <label for="playerColor">Couleur du Joueur:</label>
+                    <input type="color" id="playerColor" value="#00FFFF">
+                </div>
+                <div class="option">
+                    <label for="bgColor">Couleur de Fond:</label>
+                    <input type="color" id="bgColor" value="#000033">
+                </div>
+                <div class="option">
+                    <label for="controls">Contrôles:</label>
+                    <select id="controls">
+                        <option value="space">Espace</option>
+                        <option value="up">Flèche Haut</option>
+                        <option value="click">Clic Souris</option>
+                    </select>
+                </div>
+                <div class="option">
+                    <label for="particles">Effets de Particules:</label>
+                    <input type="checkbox" id="particles" checked>
+                </div>
+            </div>
+            <button id="backBtn">Retour</button>
+        </div>
+        
+        <div class="game-ui hidden" id="gameUI">
+            <div class="score-display">Score: <span id="score">0</span></div>
+            <div class="coins-display">Pièces: <span id="coins">0</span></div>
+            <div class="fps-display">FPS: <span id="fps">0</span></div>
+        </div>
+        
+        <div class="pause-menu hidden" id="pauseMenu">
+            <h2>PAUSE</h2>
+            <button id="resumeBtn">Reprendre</button>
+            <button id="restartBtn">Recommencer</button>
+            <button id="exitBtn">Quitter</button>
+        </div>
+        
+        <div class="game-over-menu hidden" id="gameOverMenu">
+            <h2>GAME OVER</h2>
+            <div class="stats">
+                <p>Score: <span id="finalScore">0</span></p>
+                <p>Pièces collectées: <span id="finalCoins">0</span></p>
+                <p>Meilleur score: <span id="highScore">0</span></p>
+            </div>
+            <button id="retryBtn">Réessayer</button>
+            <button id="menuBtn">Menu Principal</button>
+        </div>
+    </div>
+    
+    <script src="geometry_dash.js"></script>
+</body>
+</html>
