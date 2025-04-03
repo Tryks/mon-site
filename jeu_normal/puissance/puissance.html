@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puissance 4 Épique</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1e1e32;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #ff8a00, #e52e71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px;
+            max-width: 1200px;
+        }
+
+        #game-board {
+            position: relative;
+            background-color: #0064c8;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 10px;
+            background-color: #0064c8;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #141428;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .cell:hover {
+            transform: scale(1.05);
+        }
+
+        .cell::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background-color: transparent;
+            z-index: 10;
+        }
+
+        .token {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+            transition: transform 0.3s ease-out;
+            transform: translateY(-500px);
+            z-index: 5;
+        }
+
+        .token.player1 {
+            background-color: #ff0000;
+            box-shadow: inset -3px -3px 5px rgba(0, 0, 0, 0.5), inset 3px 3px 5px rgba(255, 255, 255, 0.2);
+        }
+
+        .token.player2 {
+            background-color: #ffff00;
+            box-shadow: inset -3px -3px 5px rgba(0, 0, 0, 0.5), inset 3px 3px 5px rgba(255, 255, 255, 0.2);
+        }
+
+        .token.animate {
+            animation: drop 0.5s ease-out forwards;
+        }
+
+        @keyframes drop {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .controls {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #e52e71;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        select:hover, button:hover {
+            background-color: #444;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.primary {
+            background: linear-gradient(45deg, #ff8a00, #e52e71);
+            font-weight: bold;
+        }
+
+        .stats {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #1e1e32;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+            animation: modalAppear 0.3s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal h2 {
+            color: #ff8a00;
+            font-size: 2em;
+            margin-top: 0;
+        }
+
+        .modal p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .winner-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(600px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .theme-preview {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+        }
+
+        .theme-sample {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            #game-board {
+                padding: 10px;
+            }
+            
+            .cell {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .controls, .stats {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Puissance 4 Épique</h1>
+    </header>
+
+    <div class="game-container">
+        <div id="game-board">
+            <div id="board"></div>
+            <div id="winner-animation" class="winner-animation"></div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <h2>Options de jeu</h2>
+                <select id="difficulty">
+                    <option value="1">Facile</option>
+                    <option value="2" selected>Moyen</option>
+                    <option value="3">Difficile</option>
+                </select>
+                <select id="starting-player">
+                    <option value="random">Joueur aléatoire</option>
+                    <option value="human">Je commence</option>
+                    <option value="ai">IA commence</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <h2>Thème</h2>
+                <select id="theme-selector">
+                    <option value="classique">Classique</option>
+                    <option value="nature">Nature</option>
+                    <option value="noir">Noir et Blanc</option>
+                    <option value="arc-en-ciel">Arc-en-Ciel</option>
+                    <option value="retro">Rétro</option>
+                </select>
+                <div class="theme-preview">
+                    <div class="theme-sample" id="preview-p1"></div>
+                    <div class="theme-sample" id="preview-p2"></div>
+                    <div class="theme-sample" id="preview-board"></div>
+                    <div class="theme-sample" id="preview-bg"></div>
+                </div>
+            </div>
+
+            <button id="new-game" class="primary">Nouvelle Partie</button>
+            <button id="reset-stats">Réinitialiser les Stats</button>
+        </div>
+
+        <div class="stats">
+            <h2>Statistiques</h2>
+            <div class="stat-item">
+                <span>Parties jouées:</span>
+                <span id="games-played">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Victoires:</span>
+                <span id="wins">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Défaites:</span>
+                <span id="losses">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Matchs nuls:</span>
+                <span id="draws">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Taux de victoire:</span>
+                <span id="win-rate">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="result-title">Résultat</h2>
+            <p id="result-message"></p>
+            <button id="modal-close" class="primary">Fermer</button>
+        </div>
+    </div>
+
+    <audio id="sound-place" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..."></audio>
+    <audio id="sound-win" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..."></audio>
+    <audio id="sound-lose" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..."></audio>
+    <audio id="sound-draw" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..."></audio>
+    <audio id="sound-hover" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..."></audio>
+
+    <script>
+        // Constantes du jeu
+        const ROWS = 6;
+        const COLS = 7;
+        const EMPTY = 0;
+        const PLAYER1 = 1;
+        const PLAYER2 = 2;
+        
+        // État du jeu
+        let board = Array(ROWS).fill().map(() => Array(COLS).fill(EMPTY));
+        let currentPlayer = PLAYER1;
+        let gameOver = false;
+        let vsAI = true;
+        let difficulty = 2;
+        let stats = {
+            gamesPlayed: 0,
+            wins: 0,
+            losses: 0,
+            draws: 0
+        };
+        
+        // Thèmes
+        const themes = {
+            classique: {
+                player1: "#ff0000",
+                player2: "#ffff00",
+                board: "#0064c8",
+                background: "#1e1e32",
+                text: "#ffffff"
+            },
+            nature: {
+                player1: "#e74c3c",
+                player2: "#2ecc71",
+                board: "#3498db",
+                background: "#ecf0f1",
+                text: "#2c3e50"
+            },
+            noir: {
+                player1: "#000000",
+                player2: "#ffffff",
+                board: "#7f8c8d",
+                background: "#34495e",
+                text: "#ecf0f1"
+            },
+            "arc-en-ciel": {
+                player1: "#e74c3c",
+                player2: "#9b59b6",
+                board: "#3498db",
+                background: "#f1c40f",
+                text: "#2c3e50"
+            },
+            retro: {
+                player1: "#ff00ff",
+                player2: "#00ffff",
+                board: "#000000",
+                background: "#000033",
+                text: "#00ff00"
+            }
+        };
+        
+        let currentTheme = "classique";
+        
+        // DOM Elements
+        const boardElement = document.getElementById('board');
+        const difficultySelect = document.getElementById('difficulty');
+        const startingPlayerSelect = document.getElementById('starting-player');
+        const themeSelector = document.getElementById('theme-selector');
+        const newGameBtn = document.getElementById('new-game');
+        const resetStatsBtn = document.getElementById('reset-stats');
+        const resultModal = document.getElementById('result-modal');
+        const resultTitle = document.getElementById('result-title');
+        const resultMessage = document.getElementById('result-message');
+        const modalClose = document.getElementById('modal-close');
+        const winnerAnimation = document.getElementById('winner-animation');
+        
+        // Stats elements
+        const gamesPlayedEl = document.getElementById('games-played');
+        const winsEl = document.getElementById('wins');
+        const lossesEl = document.getElementById('losses');
+        const drawsEl = document.getElementById('draws');
+        const winRateEl = document.getElementById('win-rate');
+        
+        // Theme preview elements
+        const previewP1 = document.getElementById('preview-p1');
+        const previewP2 = document.getElementById('preview-p2');
+        const previewBoard = document.getElementById('preview-board');
+        const previewBg = document.getElementById('preview-bg');
+        
+        // Sons
+        const soundPlace = document.getElementById('sound-place');
+        const soundWin = document.getElementById('sound-win');
+        const soundLose = document.getElementById('sound-lose');
+        const soundDraw = document.getElementById('sound-draw');
+        const soundHover = document.getElementById('sound-hover');
+        
+        // Initialisation du jeu
+        function initGame() {
+            // Charger les stats
+            loadStats();
+            
+            // Créer le plateau
+            createBoard();
+            
+            // Appliquer le thème
+            applyTheme(currentTheme);
+            
+            // Écouteurs d'événements
+            setupEventListeners();
+            
+            // Commencer une nouvelle partie
+            startNewGame();
+        }
+        
+        function createBoard() {
+            boardElement.innerHTML = '';
+            
+            for (let row = 0; row < ROWS; row++) {
+                for (let col = 0; col < COLS; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    
+                    // Créer un jeton invisible pour chaque cellule
+                    const token = document.createElement('div');
+                    token.className = 'token';
+                    token.dataset.row = row;
+                    token.dataset.col = col;
+                    cell.appendChild(token);
+                    
+                    boardElement.appendChild(cell);
+                }
+            }
+        }
+        
+        function setupEventListeners() {
+            // Clic sur une cellule
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.addEventListener('click', () => handleCellClick(cell));
+                cell.addEventListener('mouseenter', () => playHoverSound());
+            });
+            
+            // Nouvelle partie
+            newGameBtn.addEventListener('click', startNewGame);
+            
+            // Réinitialiser les stats
+            resetStatsBtn.addEventListener('click', resetStats);
+            
+            // Fermer le modal
+            modalClose.addEventListener('click', () => {
+                resultModal.style.display = 'none';
+            });
+            
+            // Changer la difficulté
+            difficultySelect.addEventListener('change', () => {
+                difficulty = parseInt(difficultySelect.value);
+            });
+            
+            // Changer le thème
+            themeSelector.addEventListener('change', () => {
+                currentTheme = themeSelector.value;
+                applyTheme(currentTheme);
+                updateThemePreview();
+            });
+        }
+        
+        function playHoverSound() {
+            if (!gameOver) {
+                soundHover.currentTime = 0;
+                soundHover.play();
+            }
+        }
+        
+        function startNewGame() {
+            // Réinitialiser le plateau
+            board = Array(ROWS).fill().map(() => Array(COLS).fill(EMPTY));
+            
+            // Mettre à jour l'affichage
+            updateBoard();
+            
+            // Déterminer qui commence
+            const startingPlayer = startingPlayerSelect.value;
+            
+            if (startingPlayer === 'random') {
+                currentPlayer = Math.random() < 0.5 ? PLAYER1 : PLAYER2;
+            } else if (startingPlayer === 'human') {
+                currentPlayer = PLAYER1;
+            } else {
+                currentPlayer = PLAYER2;
+            }
+            
+            gameOver = false;
+            
+            // Si c'est au tour de l'IA, faire un mouvement
+            if (currentPlayer === PLAYER2 && vsAI) {
+                setTimeout(() => makeAIMove(), 500);
+            }
+        }
+        
+        function handleCellClick(cell) {
+            if (gameOver) return;
+            
+            const col = parseInt(cell.dataset.col);
+            
+            // Si c'est le tour de l'IA, ignorer le clic
+            if (currentPlayer === PLAYER2 && vsAI) return;
+            
+            // Trouver la première ligne vide dans cette colonne
+            const row = getFirstEmptyRow(col);
+            
+            if (row === -1) return; // Colonne pleine
+            
+            // Faire le mouvement
+            makeMove(row, col);
+        }
+        
+        function getFirstEmptyRow(col) {
+            for (let row = ROWS - 1; row >= 0; row--) {
+                if (board[row][col] === EMPTY) {
+                    return row;
+                }
+            }
+            return -1; // Colonne pleine
+        }
+        
+        function makeMove(row, col) {
+            if (gameOver || board[row][col] !== EMPTY) return;
+            
+            // Mettre à jour le plateau
+            board[row][col] = currentPlayer;
+            
+            // Jouer le son
+            soundPlace.currentTime = 0;
+            soundPlace.play();
+            
+            // Animer le jeton
+            animateToken(row, col, currentPlayer);
+            
+            // Vérifier si le mouvement est gagnant
+            if (checkWin(row, col)) {
+                gameOver = true;
+                stats.gamesPlayed++;
+                
+                if (currentPlayer === PLAYER1) {
+                    stats.wins++;
+                    showResult("Victoire !", "Félicitations, vous avez gagné !");
+                    soundWin.play();
+                    createConfetti();
+                } else {
+                    stats.losses++;
+                    showResult("Défaite", "L'IA a gagné. Essayez encore !");
+                    soundLose.play();
+                }
+                
+                updateStats();
+                return;
+            }
+            
+            // Vérifier si le plateau est plein (match nul)
+            if (isBoardFull()) {
+                gameOver = true;
+                stats.gamesPlayed++;
+                stats.draws++;
+                showResult("Match nul", "Le plateau est plein, aucun gagnant !");
+                soundDraw.play();
+                updateStats();
+                return;
+            }
+            
+            // Changer de joueur
+            currentPlayer = currentPlayer === PLAYER1 ? PLAYER2 : PLAYER1;
+            
+            // Si c'est au tour de l'IA, faire un mouvement
+            if (currentPlayer === PLAYER2 && vsAI) {
+                setTimeout(() => makeAIMove(), 500);
+            }
+        }
+        
+        function animateToken(row, col, player) {
+            const token = document.querySelector(`.token[data-row="${row}"][data-col="${col}"]`);
+            token.className = `token player${player}`;
+            token.classList.add('animate');
+            
+            // Supprimer la classe d'animation après qu'elle soit terminée
+            setTimeout(() => {
+                token.classList.remove('animate');
+            }, 500);
+        }
+        
+        function makeAIMove() {
+            if (gameOver) return;
+            
+            let col;
+            
+            // Niveau facile: aléatoire
+            if (difficulty === 1) {
+                const emptyCols = [];
+                for (let c = 0; c < COLS; c++) {
+                    if (board[0][c] === EMPTY) {
+                        emptyCols.push(c);
+                    }
+                }
+                col = emptyCols[Math.floor(Math.random() * emptyCols.length)];
+            } 
+            // Niveau moyen: mélange d'aléatoire et de stratégie
+            else if (difficulty === 2) {
+                // D'abord vérifier si l'IA peut gagner
+                col = findWinningMove(PLAYER2);
+                if (col === -1) {
+                    // Ensuite vérifier si le joueur peut gagner au prochain tour
+                    col = findWinningMove(PLAYER1);
+                    if (col === -1) {
+                        // Sinon, choisir aléatoirement
+                        const emptyCols = [];
+                        for (let c = 0; c < COLS; c++) {
+                            if (board[0][c] === EMPTY) {
+                                emptyCols.push(c);
+                            }
+                        }
+                        col = emptyCols[Math.floor(Math.random() * emptyCols.length)];
+                    }
+                }
+            } 
+            // Niveau difficile: algorithme minimax
+            else {
+                col = findBestMove();
+            }
+            
+            const row = getFirstEmptyRow(col);
+            makeMove(row, col);
+        }
+        
+        function findWinningMove(player) {
+            for (let col = 0; col < COLS; col++) {
+                const row = getFirstEmptyRow(col);
+                if (row === -1) continue;
+                
+                // Faire le mouvement temporaire
+                board[row][col] = player;
+                
+                // Vérifier si c'est gagnant
+                if (checkWin(row, col)) {
+                    // Annuler le mouvement temporaire
+                    board[row][col] = EMPTY;
+                    return col;
+                }
+                
+                // Annuler le mouvement temporaire
+                board[row][col] = EMPTY;
+            }
+            return -1;
+        }
+        
+        function findBestMove() {
+            // Implémentation simplifiée de l'algorithme minimax
+            // Pour un vrai Puissance 4, il faudrait une implémentation plus complète
+            
+            // D'abord vérifier si l'IA peut gagner immédiatement
+            const winningMove = findWinningMove(PLAYER2);
+            if (winningMove !== -1) return winningMove;
+            
+            // Ensuite vérifier si le joueur peut gagner au prochain tour
+            const blockingMove = findWinningMove(PLAYER1);
+            if (blockingMove !== -1) return blockingMove;
+            
+            // Essayer de jouer au centre (stratégie classique)
+            if (board[0][3] === EMPTY) return 3;
+            
+            // Sinon, choisir la colonne avec le meilleur score
+            const scores = Array(COLS).fill(0);
+            
+            for (let col = 0; col < COLS; col++) {
+                const row = getFirstEmptyRow(col);
+                if (row === -1) {
+                    scores[col] = -Infinity;
+                    continue;
+                }
+                
+                // Score basé sur la position (centre meilleur que les bords)
+                scores[col] = 3 - Math.abs(3 - col);
+                
+                // Bonus si cela crée des opportunités
+                if (row < ROWS - 1) {
+                    board[row][col] = PLAYER2;
+                    if (checkWinPotential(row, col, PLAYER2)) {
+                        scores[col] += 10;
+                    }
+                    board[row][col] = EMPTY;
+                }
+            }
+            
+            // Trouver la colonne avec le score maximum
+            let maxScore = -Infinity;
+            let bestCols = [];
+            
+            for (let col = 0; col < COLS; col++) {
+                if (scores[col] > maxScore) {
+                    maxScore = scores[col];
+                    bestCols = [col];
+                } else if (scores[col] === maxScore) {
+                    bestCols.push(col);
+                }
+            }
+            
+            return bestCols[Math.floor(Math.random() * bestCols.length)];
+        }
+        
+        function checkWinPotential(row, col, player) {
+            // Vérifie si ce mouvement pourrait mener à une victoire
+            const directions = [
+                [0, 1],   // Horizontal
+                [1, 0],    // Vertical
+                [1, 1],    // Diagonal \
+                [1, -1]     // Diagonal /
+            ];
+            
+            for (const [dx, dy] of directions) {
+                let count = 1;
+                
+                // Vérifier dans une direction
+                for (let i = 1; i < 4; i++) {
+                    const r = row + i * dx;
+                    const c = col + i * dy;
+                    
+                    if (r < 0 || r >= ROWS || c < 0 || c >= COLS || board[r][c] !== player) break;
+                    count++;
+                }
+                
+                // Vérifier dans la direction opposée
+                for (let i = 1; i < 4; i++) {
+                    const r = row - i * dx;
+                    const c = col - i * dy;
+                    
+                    if (r < 0 || r >= ROWS || c < 0 || c >= COLS || board[r][c] !== player) break;
+                    count++;
+                }
+                
+                if (count >= 4) return true;
+            }
+            
+            return false;
+        }
+        
+        function checkWin(row, col) {
+            const player = board[row][col];
+            const directions = [
+                [0, 1],   // Horizontal
+                [1, 0],    // Vertical
+                [1, 1],    // Diagonal \
+                [1, -1]     // Diagonal /
+            ];
+            
+            for (const [dx, dy] of directions) {
+                let count = 1;
+                
+                // Vérifier dans une direction
+                for (let i = 1; i < 4; i++) {
+                    const r = row + i * dx;
+                    const c = col + i * dy;
+                    
+                    if (r < 0 || r >= ROWS || c < 0 || c >= COLS || board[r][c] !== player) break;
+                    count++;
+                }
+                
+                // Vérifier dans la direction opposée
+                for (let i = 1; i < 4; i++) {
+                    const r = row - i * dx;
+                    const c = col - i * dy;
+                    
+                    if (r < 0 || r >= ROWS || c < 0 || c >= COLS || board[r][c] !== player) break;
+                    count++;
+                }
+                
+                if (count >= 4) return true;
+            }
+            
+            return false;
+        }
+        
+        function isBoardFull() {
+            return board[0].every(cell => cell !== EMPTY);
+        }
+        
+        function updateBoard() {
+            for (let row = 0; row < ROWS; row++) {
+                for (let col = 0; col < COLS; col++) {
+                    const token = document.querySelector(`.token[data-row="${row}"][data-col="${col}"]`);
+                    token.className = 'token';
+                    
+                    if (board[row][col] === PLAYER1) {
+                        token.classList.add('player1');
+                    } else if (board[row][col] === PLAYER2) {
+                        token.classList.add('player2');
+                    }
+                }
+            }
+        }
+        
+        function showResult(title, message) {
+            resultTitle.textContent = title;
+            resultMessage.textContent = message;
+            resultModal.style.display = 'flex';
+        }
+        
+        function createConfetti() {
+            winnerAnimation.innerHTML = '';
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                
+                // Position aléatoire
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 3 + 2;
+                
+                // Couleur aléatoire
+                const hue = Math.floor(Math.random() * 360);
+                confetti.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+                
+                // Style
+                confetti.style.left = `${left}%`;
+                confetti.style.width = `${Math.random() * 10 + 5}px`;
+                confetti.style.height = `${Math.random() * 10 + 5}px`;
+                confetti.style.animation = `confettiFall ${animationDuration}s linear forwards`;
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                
+                winnerAnimation.appendChild(confetti);
+            }
+        }
+        
+        function applyTheme(themeName) {
+            const theme = themes[themeName];
+            
+            // Appliquer les couleurs
+            document.documentElement.style.setProperty('--player1-color', theme.player1);
+            document.documentElement.style.setProperty('--player2-color', theme.player2);
+            document.documentElement.style.setProperty('--board-color', theme.board);
+            document.documentElement.style.setProperty('--bg-color', theme.background);
+            document.documentElement.style.setProperty('--text-color', theme.text);
+            
+            // Mettre à jour le body
+            document.body.style.backgroundColor = theme.background;
+            document.body.style.color = theme.text;
+            
+            // Mettre à jour le plateau
+            document.getElementById('game-board').style.backgroundColor = theme.board;
+            
+            // Mettre à jour les cellules vides
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.style.backgroundColor = theme.background;
+            });
+        }
+        
+        function updateThemePreview() {
+            const theme = themes[currentTheme];
+            previewP1.style.backgroundColor = theme.player1;
+            previewP2.style.backgroundColor = theme.player2;
+            previewBoard.style.backgroundColor = theme.board;
+            previewBg.style.backgroundColor = theme.background;
+        }
+        
+        function loadStats() {
+            const savedStats = localStorage.getItem('puissance4_stats');
+            if (savedStats) {
+                stats = JSON.parse(savedStats);
+                updateStats();
+            }
+        }
+        
+        function saveStats() {
+            localStorage.setItem('puissance4_stats', JSON.stringify(stats));
+        }
+        
+        function updateStats() {
+            gamesPlayedEl.textContent = stats.gamesPlayed;
+            winsEl.textContent = stats.wins;
+            lossesEl.textContent = stats.losses;
+            drawsEl.textContent = stats.draws;
+            
+            const winRate = stats.gamesPlayed > 0 
+                ? Math.round((stats.wins / stats.gamesPlayed) * 100) 
+                : 0;
+            winRateEl.textContent = `${winRate}%`;
+            
+            saveStats();
+        }
+        
+        function resetStats() {
+            if (confirm("Voulez-vous vraiment réinitialiser toutes vos statistiques ?")) {
+                stats = {
+                    gamesPlayed: 0,
+                    wins: 0,
+                    losses: 0,
+                    draws: 0
+                };
+                updateStats();
+            }
+        }
+        
+        // Démarrer le jeu lorsque la page est chargée
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>

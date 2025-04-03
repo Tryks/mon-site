@@ -1,13 +1,6 @@
 # mon-site
 idées de jeuy a faire :
 
-
-🎲 Jeux Classiques Revisités
-
-Démineur (Version améliorée avec différents thèmes)
-
-Puissance 4 (Avec mode solo contre IA et multijoueur)
-
 ♠️ Jeux de Cartes
 
 Bataille (Avec animations de cartes)
@@ -18,7 +11,6 @@ Jeu de 7 familles (Thème personnalisable)
 
 🧩 Jeux de Réflexion
 
-Picross (Grilles logiques avec créateur de niveaux)
 
 Échecs (Avec tutoriel intégré pour débutants)
 
@@ -27,7 +19,6 @@ Dames (Internationales, anglaises, etc.)
 ✍️ Jeux de Mots
 Wordle (Version française avec partage des résultats)
 
-Scrabble (Solo contre IA ou multijoueur)
 
 Motus (Jeu de télévision adapté)
 
@@ -219,4 +210,5 @@ il a beaucoup de d'erreurs dans les noms des jeux donc changer au plus vite!
 
 # PROMPTE 
 
-est ce que tu peux me faire un... . qui est magnifique super beau et avec plein d'option et encore plein d'autre choses d'autre pour rendre l'experience incroyable  et fait le dans un seul fichier
+est ce que tu peux me faire un Wordle (Version française avec partage des résultats)
+. qui est magnifique super beau et avec plein d'option et encore plein d'autre choses d'autre pour rendre l'experience incroyable  et fait le dans un seul fichier
