@@ -324,3 +324,9 @@ footer {
 .category-card:nth-child(6) .category-icon { color: #1abc9c; }
 .category-card:nth-child(7) .category-icon { color: #d35400; }
 .category-card:nth-child(8) .category-icon { color: #27ae60; }
+
+.page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
