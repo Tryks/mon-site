@@ -1,52 +1,52 @@
  // Données des catégories
  const categories = [
     {
-        name: "Action",
-        icon: "fas fa-fighter-jet",
-        count: 156,
-        description: "Jeux intenses avec des combats et de l'adrénaline"
+        name: "Cartes",
+        icon: "fas fa-club",
+        count: 3, // Black Jack, Solitaire, Poker
+        description: "Jeux de cartes classiques et stratégiques"
     },
     {
-        name: "Aventure",
-        icon: "fas fa-map",
-        count: 98,
-        description: "Exploration, quêtes et histoires captivantes"
+        name: "Devinette",
+        icon: "fas fa-question-circle",
+        count: 5, // Mot de passe, Pendu, Devine le prix, Devine le logo, N'appuie pas sur le bouton
+        description: "Jeux de déduction et de connaissances"
     },
     {
         name: "Stratégie",
         icon: "fas fa-chess",
-        count: 87,
-        description: "Réflexion, planification et prise de décision"
+        count: 3, // Echec, Morpion, Pierre-Feuille-Ciseaux
+        description: "Jeux de réflexion et de planification"
     },
     {
-        name: "Puzzle",
-        icon: "fas fa-puzzle-piece",
-        count: 112,
-        description: "Énigmes, casse-têtes et défis mentaux"
+        name: "Réflexion",
+        icon: "fas fa-brain",
+        count: 2, // Sudoku, Memory
+        description: "Jeux pour stimuler la mémoire et la logique"
     },
     {
-        name: "Sport",
-        icon: "fas fa-running",
-        count: 65,
-        description: "Simulations sportives et compétitions"
+        name: "Arcade",
+        icon: "fas fa-gamepad",
+        count: 3, // Snake, Geometry Dash, Voiture
+        description: "Jeux rapides et addictifs"
+    },
+    {
+        name: "Éducatif",
+        icon: "fas fa-graduation-cap",
+        count: 4, // Jeu de drapeau, Quiz d'anglais, Quiz de maths, QCM
+        description: "Jeux pour apprendre en s'amusant"
+    },
+    {
+        name: "Classique",
+        icon: "fas fa-dice",
+        count: 2, // Pierre-Feuille-Ciseaux, Memory
+        description: "Jeux intemporels et universels"
     },
     {
         name: "Course",
         icon: "fas fa-car",
-        count: 73,
-        description: "Vitesse, dépassement et compétition automobile"
-    },
-    {
-        name: "Multijoueur",
-        icon: "fas fa-users",
-        count: 124,
-        description: "Jeux en ligne avec d'autres joueurs"
-    },
-    {
-        name: "Simulation",
-        icon: "fas fa-helicopter",
-        count: 56,
-        description: "Expériences réalistes et immersives"
+        count: 1, // Voiture
+        description: "Jeux de vitesse et de conduite"
     }
 ];
 

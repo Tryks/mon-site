@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu des 7 Différences - Magnifique</title>
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #ff8a00;
+            --text-color: #ffffff;
+            --bg-color: #121212;
+            --card-color: #1e1e1e;
+            --success-color: #4caf50;
+            --error-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--accent-color), #ff00cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            background-color: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .images-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .image-wrapper {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            background-color: var(--card-color);
+        }
+
+        .image-wrapper:hover {
+            transform: translateY(-5px);
+        }
+
+        .image-wrapper img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            user-select: none;
+        }
+
+        .difference-area {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 138, 0, 0.3);
+            border: 2px dashed var(--accent-color);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .found {
+            background-color: rgba(76, 175, 80, 0.3);
+            border: 2px solid var(--success-color);
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background: var(--card-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        button.danger {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+        }
+
+        button.success {
+            background: linear-gradient(to right, #4CAF50, #2E8B57);
+        }
+
+        .timer {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #ff8a00, #ff00cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .options-panel {
+            background-color: var(--card-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .options-panel h2 {
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .option-group {
+            margin-bottom: 15px;
+        }
+
+        .option-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .difficulty-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .difficulty-buttons button {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+
+        .theme-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .theme-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .theme-button:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-button.active {
+            border-color: white;
+            transform: scale(1.1);
+        }
+
+        .game-modes {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .game-mode {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-mode:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .game-mode.active {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            font-weight: bold;
+        }
+
+        .hint-button {
+            position: relative;
+        }
+
+        .hint-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .victory-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .victory-screen.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .victory-content {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transform: scale(0.8);
+            animation: zoomIn 0.5s ease forwards;
+        }
+
+        .victory-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .victory-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .victory-stat {
+            text-align: center;
+        }
+
+        .victory-stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        .victory-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .zoom-controls {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            z-index: 20;
+        }
+
+        .zoom-button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); }
+            to { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .images-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .game-info {
+                flex-direction: column;
+            }
+            
+            .controls {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Les 7 Différences</h1>
+            <p class="subtitle">Trouvez les 7 différences entre les deux images</p>
+        </header>
+
+        <div class="game-container">
+            <div class="images-container">
+                <div class="image-wrapper" id="image1-wrapper">
+                    <img id="image1" src="https://via.placeholder.com/500x300/6a11cb/ffffff?text=Image+1" alt="Image 1">
+                    <div class="zoom-controls">
+                        <div class="zoom-button" onclick="zoomImage('image1-wrapper', 'in')">+</div>
+                        <div class="zoom-button" onclick="zoomImage('image1-wrapper', 'out')">-</div>
+                        <div class="zoom-button" onclick="zoomImage('image1-wrapper', 'reset')">↻</div>
+                    </div>
+                </div>
+                <div class="image-wrapper" id="image2-wrapper">
+                    <img id="image2" src="https://via.placeholder.com/500x300/2575fc/ffffff?text=Image+2" alt="Image 2">
+                    <div class="zoom-controls">
+                        <div class="zoom-button" onclick="zoomImage('image2-wrapper', 'in')">+</div>
+                        <div class="zoom-button" onclick="zoomImage('image2-wrapper', 'out')">-</div>
+                        <div class="zoom-button" onclick="zoomImage('image2-wrapper', 'reset')">↻</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-info">
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value" id="found-differences">0</div>
+                        <div class="stat-label">Trouvées</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value timer" id="game-timer">00:00</div>
+                        <div class="stat-label">Temps</div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="hint-button" class="hint-button" onclick="giveHint()">
+                        <span>Indice</span>
+                        <span class="hint-count">3</span>
+                    </button>
+                    <button class="secondary" onclick="toggleOptions()">
+                        <span>Options</span>
+                    </button>
+                    <button class="danger" onclick="resetGame()">
+                        <span>Recommencer</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="options-panel" id="options-panel">
+                <h2>Options du jeu</h2>
+                
+                <div class="option-group">
+                    <label>Difficulté</label>
+                    <div class="difficulty-buttons">
+                        <button class="secondary active" onclick="setDifficulty('easy')">Facile</button>
+                        <button class="secondary" onclick="setDifficulty('medium')">Moyen</button>
+                        <button class="secondary" onclick="setDifficulty('hard')">Difficile</button>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label>Thème</label>
+                    <div class="theme-buttons">
+                        <div class="theme-button active" style="background: linear-gradient(135deg, #6a11cb, #2575fc);" onclick="setTheme('default')"></div>
+                        <div class="theme-button" style="background: linear-gradient(135deg, #11998e, #38ef7d);" onclick="setTheme('nature')"></div>
+                        <div class="theme-button" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);" onclick="setTheme('sunset')"></div>
+                        <div class="theme-button" style="background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);" onclick="setTheme('ocean')"></div>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label>Mode de jeu</label>
+                    <div class="game-modes">
+                        <div class="game-mode active" onclick="setGameMode('classic')">Classique</div>
+                        <div class="game-mode" onclick="setGameMode('timer')">Contre la montre</div>
+                        <div class="game-mode" onclick="setGameMode('limited-hints')">Indices limités</div>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label for="image-select">Image</label>
+                    <select id="image-select" onchange="changeImageSet(this.value)">
+                        <option value="beach">Plage</option>
+                        <option value="forest">Forêt</option>
+                        <option value="city">Ville</option>
+                        <option value="space">Espace</option>
+                        <option value="custom">Personnalisée</option>
+                    </select>
+                </div>
+                
+                <div class="option-group" id="custom-image-group" style="display: none;">
+                    <label>Images personnalisées</label>
+                    <input type="file" id="image1-upload" accept="image/*" onchange="previewImage(this, 'image1')">
+                    <input type="file" id="image2-upload" accept="image/*" onchange="previewImage(this, 'image2')">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="victory-screen" id="victory-screen">
+        <div class="victory-content">
+            <h2>Félicitations !</h2>
+            <p>Vous avez trouvé toutes les différences !</p>
+            
+            <div class="victory-stats">
+                <div class="victory-stat">
+                    <div class="victory-stat-value" id="victory-time">00:00</div>
+                    <div class="victory-stat-label">Temps</div>
+                </div>
+                <div class="victory-stat">
+                    <div class="victory-stat-value" id="victory-hints">0</div>
+                    <div class="victory-stat-label">Indices utilisés</div>
+                </div>
+                <div class="victory-stat">
+                    <div class="victory-stat-value" id="victory-score">100%</div>
+                    <div class="victory-stat-label">Score</div>
+                </div>
+            </div>
+            
+            <div class="victory-buttons">
+                <button class="secondary" onclick="hideVictoryScreen()">
+                    <span>Fermer</span>
+                </button>
+                <button class="success" onclick="resetGame(); hideVictoryScreen()">
+                    <span>Rejouer</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables du jeu
+        let differences = [];
+        let foundDifferences = [];
+        let gameStartTime = null;
+        let timerInterval = null;
+        let hintsRemaining = 3;
+        let difficulty = 'easy';
+        let gameMode = 'classic';
+        let currentImageSet = 'beach';
+        
+        // Images prédéfinies (dans un vrai jeu, vous utiliseriez de vraies images)
+        const imageSets = {
+            beach: {
+                image1: 'https://via.placeholder.com/500x300/6a11cb/ffffff?text=Plage+1',
+                image2: 'https://via.placeholder.com/500x300/2575fc/ffffff?text=Plage+2',
+                differences: [
+                    {x: 20, y: 30, radius: 15},
+                    {x: 70, y: 45, radius: 15},
+                    {x: 30, y: 70, radius: 15},
+                    {x: 80, y: 20, radius: 15},
+                    {x: 60, y: 60, radius: 15},
+                    {x: 40, y: 40, radius: 15},
+                    {x: 10, y: 80, radius: 15}
+                ]
+            },
+            forest: {
+                image1: 'https://via.placeholder.com/500x300/11998e/ffffff?text=Forêt+1',
+                image2: 'https://via.placeholder.com/500x300/38ef7d/ffffff?text=Forêt+2',
+                differences: [
+                    {x: 15, y: 25, radius: 15},
+                    {x: 75, y: 35, radius: 15},
+                    {x: 25, y: 75, radius: 15},
+                    {x: 85, y: 15, radius: 15},
+                    {x: 65, y: 65, radius: 15},
+                    {x: 35, y: 45, radius: 15},
+                    {x: 5, y: 85, radius: 15}
+                ]
+            },
+            city: {
+                image1: 'https://via.placeholder.com/500x300/0f2027/ffffff?text=Ville+1',
+                image2: 'https://via.placeholder.com/500x300/2c5364/ffffff?text=Ville+2',
+                differences: [
+                    {x: 25, y: 35, radius: 15},
+                    {x: 65, y: 25, radius: 15},
+                    {x: 35, y: 65, radius: 15},
+                    {x: 75, y: 15, radius: 15},
+                    {x: 55, y: 55, radius: 15},
+                    {x: 45, y: 35, radius: 15},
+                    {x: 15, y: 75, radius: 15}
+                ]
+            },
+            space: {
+                image1: 'https://via.placeholder.com/500x300/000000/ffffff?text=Espace+1',
+                image2: 'https://via.placeholder.com/500x300/121212/ffffff?text=Espace+2',
+                differences: [
+                    {x: 30, y: 40, radius: 15},
+                    {x: 60, y: 30, radius: 15},
+                    {x: 40, y: 60, radius: 15},
+                    {x: 70, y: 20, radius: 15},
+                    {x: 50, y: 50, radius: 15},
+                    {x: 30, y: 30, radius: 15},
+                    {x: 20, y: 70, radius: 15}
+                ]
+            },
+            custom: {
+                image1: 'https://via.placeholder.com/500x300/6a11cb/ffffff?text=Image+1',
+                image2: 'https://via.placeholder.com/500x300/2575fc/ffffff?text=Image+2',
+                differences: [
+                    {x: 20, y: 30, radius: 15},
+                    {x: 70, y: 45, radius: 15},
+                    {x: 30, y: 70, radius: 15},
+                    {x: 80, y: 20, radius: 15},
+                    {x: 60, y: 60, radius: 15},
+                    {x: 40, y: 40, radius: 15},
+                    {x: 10, y: 80, radius: 15}
+                ]
+            }
+        };
+
+        // Initialisation du jeu
+        function initGame() {
+            // Charger l'ensemble d'images sélectionné
+            const imageSet = imageSets[currentImageSet];
+            document.getElementById('image1').src = imageSet.image1;
+            document.getElementById('image2').src = imageSet.image2;
+            
+            // Définir les différences en fonction de la difficulté
+            differences = JSON.parse(JSON.stringify(imageSet.differences));
+            
+            // Ajuster la taille des zones de différence selon la difficulté
+            differences.forEach(diff => {
+                if (difficulty === 'easy') {
+                    diff.radius = 20;
+                } else if (difficulty === 'medium') {
+                    diff.radius = 15;
+                } else {
+                    diff.radius = 10;
+                }
+            });
+            
+            // Réinitialiser les différences trouvées
+            foundDifferences = [];
+            updateFoundDifferences();
+            
+            // Réinitialiser les indices
+            hintsRemaining = 3;
+            updateHintsDisplay();
+            
+            // Démarrer le chronomètre
+            resetTimer();
+            startTimer();
+            
+            // Effacer les marqueurs de différence existants
+            clearDifferenceMarkers();
+            
+            // Ajouter les écouteurs d'événements
+            setupEventListeners();
+        }
+
+        // Configurer les écouteurs d'événements
+        function setupEventListeners() {
+            const image1 = document.getElementById('image1');
+            const image2 = document.getElementById('image2');
+            
+            image1.onclick = (e) => handleImageClick(e, 'image1');
+            image2.onclick = (e) => handleImageClick(e, 'image2');
+        }
+
+        // Gérer les clics sur les images
+        function handleImageClick(event, imageId) {
+            const image = document.getElementById(imageId);
+            const rect = image.getBoundingClientRect();
+            
+            // Calculer la position du clic en pourcentage de l'image
+            const x = ((event.clientX - rect.left) / rect.width) * 100;
+            const y = ((event.clientY - rect.top) / rect.height) * 100;
+            
+            // Vérifier si le clic correspond à une différence
+            checkForDifference(x, y, imageId);
+        }
+
+        // Vérifier si le clic correspond à une différence
+        function checkForDifference(x, y, imageId) {
+            let found = false;
+            
+            for (let i = 0; i < differences.length; i++) {
+                const diff = differences[i];
+                const distance = Math.sqrt(Math.pow(x - diff.x, 2) + Math.pow(y - diff.y, 2));
+                
+                if (distance <= diff.radius && !foundDifferences.includes(i)) {
+                    // Différence trouvée !
+                    foundDifferences.push(i);
+                    updateFoundDifferences();
+                    
+                    // Afficher le marqueur sur les deux images
+                    showDifferenceMarker(diff.x, diff.y, diff.radius, i);
+                    
+                    found = true;
+                    
+                    // Vérifier si toutes les différences ont été trouvées
+                    if (foundDifferences.length === differences.length) {
+                        endGame();
+                    }
+                    
+                    break;
+                }
+            }
+            
+            return found;
+        }
+
+        // Afficher un marqueur de différence
+        function showDifferenceMarker(x, y, radius, index) {
+            const image1Wrapper = document.getElementById('image1-wrapper');
+            const image2Wrapper = document.getElementById('image2-wrapper');
+            
+            createMarker(image1Wrapper, x, y, radius, index);
+            createMarker(image2Wrapper, x, y, radius, index);
+        }
+
+        // Créer un marqueur visuel
+        function createMarker(wrapper, x, y, radius, index) {
+            const marker = document.createElement('div');
+            marker.className = 'difference-area found';
+            marker.style.left = `${x}%`;
+            marker.style.top = `${y}%`;
+            marker.style.width = `${radius * 2}px`;
+            marker.style.height = `${radius * 2}px`;
+            marker.dataset.index = index;
+            
+            wrapper.appendChild(marker);
+        }
+
+        // Effacer tous les marqueurs de différence
+        function clearDifferenceMarkers() {
+            const markers = document.querySelectorAll('.difference-area');
+            markers.forEach(marker => marker.remove());
+        }
+
+        // Mettre à jour l'affichage des différences trouvées
+        function updateFoundDifferences() {
+            document.getElementById('found-differences').textContent = foundDifferences.length;
+        }
+
+        // Mettre à jour l'affichage des indices restants
+        function updateHintsDisplay() {
+            const hintButton = document.getElementById('hint-button');
+            const hintCount = hintButton.querySelector('.hint-count');
+            
+            hintCount.textContent = hintsRemaining;
+            
+            if (hintsRemaining === 0) {
+                hintButton.disabled = true;
+                hintButton.style.opacity = '0.6';
+            } else {
+                hintButton.disabled = false;
+                hintButton.style.opacity = '1';
+            }
+        }
+
+        // Donner un indice
+        function giveHint() {
+            if (hintsRemaining <= 0) return;
+            
+            // Trouver une différence non encore trouvée
+            let availableDiffs = [];
+            for (let i = 0; i < differences.length; i++) {
+                if (!foundDifferences.includes(i)) {
+                    availableDiffs.push(i);
+                }
+            }
+            
+            if (availableDiffs.length > 0) {
+                const randomIndex = Math.floor(Math.random() * availableDiffs.length);
+                const diffIndex = availableDiffs[randomIndex];
+                const diff = differences[diffIndex];
+                
+                // Afficher temporairement un marqueur clignotant
+                const image1Wrapper = document.getElementById('image1-wrapper');
+                const image2Wrapper = document.getElementById('image2-wrapper');
+                
+                const marker1 = createFlashingMarker(image1Wrapper, diff.x, diff.y, diff.radius);
+                const marker2 = createFlashingMarker(image2Wrapper, diff.x, diff.y, diff.radius);
+                
+                // Supprimer les marqueurs après 2 secondes
+                setTimeout(() => {
+                    marker1.remove();
+                    marker2.remove();
+                }, 2000);
+                
+                // Décrémenter le compteur d'indices
+                hintsRemaining--;
+                updateHintsDisplay();
+            }
+        }
+
+        // Créer un marqueur clignotant pour les indices
+        function createFlashingMarker(wrapper, x, y, radius) {
+            const marker = document.createElement('div');
+            marker.className = 'difference-area';
+            marker.style.left = `${x}%`;
+            marker.style.top = `${y}%`;
+            marker.style.width = `${radius * 2}px`;
+            marker.style.height = `${radius * 2}px`;
+            marker.style.animation = 'pulse 0.5s infinite';
+            
+            wrapper.appendChild(marker);
+            return marker;
+        }
+
+        // Gestion du chronomètre
+        function startTimer() {
+            gameStartTime = new Date();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const now = new Date();
+            const elapsed = Math.floor((now - gameStartTime) / 1000);
+            
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            
+            document.getElementById('game-timer').textContent = `${minutes}:${seconds}`;
+        }
+
+        function resetTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            document.getElementById('game-timer').textContent = '00:00';
+        }
+
+        // Fin du jeu
+        function endGame() {
+            clearInterval(timerInterval);
+            showVictoryScreen();
+        }
+
+        // Afficher l'écran de victoire
+        function showVictoryScreen() {
+            const victoryScreen = document.getElementById('victory-screen');
+            const now = new Date();
+            const elapsed = Math.floor((now - gameStartTime) / 1000);
+            
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            
+            // Calculer le score (moins de points pour plus de temps et d'indices utilisés)
+            const hintsUsed = 3 - hintsRemaining;
+            let score = 100 - (elapsed * 0.5) - (hintsUsed * 10);
+            score = Math.max(score, 0);
+            
+            document.getElementById('victory-time').textContent = `${minutes}:${seconds}`;
+            document.getElementById('victory-hints').textContent = hintsUsed;
+            document.getElementById('victory-score').textContent = `${Math.round(score)}%`;
+            
+            victoryScreen.classList.add('active');
+        }
+
+        function hideVictoryScreen() {
+            document.getElementById('victory-screen').classList.remove('active');
+        }
+
+        // Réinitialiser le jeu
+        function resetGame() {
+            clearInterval(timerInterval);
+            initGame();
+        }
+
+        // Fonctions d'options
+        function toggleOptions() {
+            const optionsPanel = document.getElementById('options-panel');
+            optionsPanel.style.display = optionsPanel.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function setDifficulty(level) {
+            difficulty = level;
+            
+            // Mettre à jour l'apparence des boutons
+            document.querySelectorAll('.difficulty-buttons button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            
+            // Redémarrer le jeu avec la nouvelle difficulté
+            resetGame();
+        }
+
+        function setTheme(theme) {
+            const root = document.documentElement;
+            
+            // Mettre à jour l'apparence des boutons
+            document.querySelectorAll('.theme-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            
+            // Définir les couleurs du thème
+            switch (theme) {
+                case 'nature':
+                    root.style.setProperty('--primary-color', '#11998e');
+                    root.style.setProperty('--secondary-color', '#38ef7d');
+                    root.style.setProperty('--accent-color', '#f46b45');
+                    break;
+                case 'sunset':
+                    root.style.setProperty('--primary-color', '#ff416c');
+                    root.style.setProperty('--secondary-color', '#ff4b2b');
+                    root.style.setProperty('--accent-color', '#ffc107');
+                    break;
+                case 'ocean':
+                    root.style.setProperty('--primary-color', '#0f2027');
+                    root.style.setProperty('--secondary-color', '#2c5364');
+                    root.style.setProperty('--accent-color', '#4da0b0');
+                    break;
+                default: // default
+                    root.style.setProperty('--primary-color', '#6a11cb');
+                    root.style.setProperty('--secondary-color', '#2575fc');
+                    root.style.setProperty('--accent-color', '#ff8a00');
+            }
+        }
+
+        function setGameMode(mode) {
+            gameMode = mode;
+            
+            // Mettre à jour l'apparence des boutons
+            document.querySelectorAll('.game-mode').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            
+            // Appliquer les règles du mode de jeu
+            if (mode === 'timer') {
+                // Mode contre la montre - ajouter un temps limite
+                // (implémentation plus complexe possible)
+            } else if (mode === 'limited-hints') {
+                hintsRemaining = 1; // Seulement 1 indice
+                updateHintsDisplay();
+            }
+        }
+
+        function changeImageSet(set) {
+            currentImageSet = set;
+            
+            // Afficher/masquer les options d'images personnalisées
+            const customImageGroup = document.getElementById('custom-image-group');
+            customImageGroup.style.display = set === 'custom' ? 'block' : 'none';
+            
+            // Redémarrer le jeu avec le nouvel ensemble d'images
+            resetGame();
+        }
+
+        function previewImage(input, imageId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    document.getElementById(imageId).src = e.target.result;
+                    
+                    // Pour une vraie implémentation, vous voudriez peut-être
+                    // permettre à l'utilisateur de marquer les différences
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Fonction de zoom
+        function zoomImage(wrapperId, action) {
+            const wrapper = document.getElementById(wrapperId);
+            const img = wrapper.querySelector('img');
+            
+            let currentScale = parseFloat(wrapper.dataset.scale) || 1;
+            
+            if (action === 'in') {
+                currentScale *= 1.2;
+            } else if (action === 'out') {
+                currentScale /= 1.2;
+            } else { // reset
+                currentScale = 1;
+            }
+            
+            // Limiter le zoom
+            currentScale = Math.min(Math.max(0.5, currentScale), 3);
+            
+            wrapper.dataset.scale = currentScale;
+            img.style.transform = `scale(${currentScale})`;
+        }
+
+        // Démarrer le jeu au chargement de la page
+        window.onload = initGame;
+    </script>
+</body>
+</html>

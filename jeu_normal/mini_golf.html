@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Golf Pro</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #70c5ce;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            user-select: none;
+        }
+        #gameContainer {
+            position: relative;
+            width: 800px;
+            margin: 20px auto;
+        }
+        canvas {
+            display: block;
+            background-color: #4CAF50;
+            border: 5px solid #8B4513;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            cursor: crosshair;
+        }
+        h1 {
+            color: #fff;
+            text-shadow: 2px 2px 4px #000;
+            margin-bottom: 5px;
+        }
+        .controls {
+            margin: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #8B4513;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background-color: #A0522D;
+            transform: scale(1.05);
+        }
+        .power-container {
+            margin: 10px;
+            width: 200px;
+        }
+        #power {
+            width: 100%;
+            height: 10px;
+            -webkit-appearance: none;
+            background: linear-gradient(to right, #4CAF50, #FFC107, #F44336);
+            border-radius: 5px;
+        }
+        #power::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 3px rgba(0,0,0,0.5);
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            width: 400px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .level-complete {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 24px;
+            display: none;
+            z-index: 100;
+        }
+        .sand {
+            background-color: #F4E7C3 !important;
+        }
+        .water {
+            background-color: #1E88E5 !important;
+        }
+        #power-value {
+            display: inline-block;
+            width: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mini Golf Pro</h1>
+    
+    <div id="gameContainer">
+        <div class="stats">
+            <div>Niveau: <span id="level">1</span>/5</div>
+            <div>Coups: <span id="strokes">0</span></div>
+            <div>Meilleur: <span id="bestScore">-</span></div>
+        </div>
+        
+        <canvas id="gameCanvas" width="800" height="500"></canvas>
+        
+        <div class="controls">
+            <button id="restart">Recommencer</button>
+            <div class="power-container">
+                <p>Puissance: <span id="power-value">50</span>%</p>
+                <input type="range" id="power" min="1" max="100" value="50">
+            </div>
+            <button id="nextLevel" disabled>Niveau Suivant</button>
+        </div>
+        
+        <div class="level-complete" id="levelComplete">
+            Niveau terminé en <span id="finalStrokes">0</span> coups!
+        </div>
+    </div>
+
+    <script>
+        // Configuration du jeu
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const powerSlider = document.getElementById('power');
+        const powerValue = document.getElementById('power-value');
+        const strokesDisplay = document.getElementById('strokes');
+        const levelDisplay = document.getElementById('level');
+        const bestScoreDisplay = document.getElementById('bestScore');
+        const restartBtn = document.getElementById('restart');
+        const nextLevelBtn = document.getElementById('nextLevel');
+        const levelCompleteDiv = document.getElementById('levelComplete');
+        const finalStrokesSpan = document.getElementById('finalStrokes');
+
+        // Variables du jeu
+        let currentLevel = 1;
+        let maxLevel = 5;
+        let ball = { x: 0, y: 0, radius: 10, dx: 0, dy: 0 };
+        let hole = { x: 0, y: 0, radius: 15 };
+        let obstacles = [];
+        let sandTraps = [];
+        let waterTraps = [];
+        let isMoving = false;
+        let strokes = 0;
+        let gameOver = false;
+        let bestScores = JSON.parse(localStorage.getItem('miniGolfBestScores')) || {};
+        let mouseX = 0;
+        let mouseY = 0;
+        
+        // Niveaux du jeu
+        const levels = [
+            { // Niveau 1 - Facile
+                ball: { x: 50, y: 250 },
+                hole: { x: 700, y: 250 },
+                obstacles: [
+                    { x: 200, y: 150, width: 20, height: 200 }
+                ],
+                sand: [
+                    { x: 400, y: 200, width: 100, height: 100 }
+                ],
+                water: []
+            },
+            { // Niveau 2 - Pente
+                ball: { x: 50, y: 450 },
+                hole: { x: 750, y: 50 },
+                obstacles: [
+                    { x: 150, y: 100, width: 20, height: 300 },
+                    { x: 300, y: 200, width: 200, height: 20 }
+                ],
+                sand: [
+                    { x: 500, y: 300, width: 150, height: 100 }
+                ],
+                water: [
+                    { x: 200, y: 400, width: 100, height: 50 }
+                ]
+            },
+            { // Niveau 3 - Couloir
+                ball: { x: 400, y: 450 },
+                hole: { x: 400, y: 50 },
+                obstacles: [
+                    { x: 150, y: 100, width: 500, height: 20 },
+                    { x: 150, y: 380, width: 500, height: 20 },
+                    { x: 300, y: 120, width: 20, height: 260 }
+                ],
+                sand: [
+                    { x: 160, y: 120, width: 140, height: 260 }
+                ],
+                water: [
+                    { x: 600, y: 120, width: 140, height: 260 }
+                ]
+            },
+            { // Niveau 4 - Labyrinthe
+                ball: { x: 50, y: 50 },
+                hole: { x: 750, y: 450 },
+                obstacles: [
+                    { x: 0, y: 100, width: 600, height: 20 },
+                    { x: 200, y: 200, width: 600, height: 20 },
+                    { x: 0, y: 300, width: 600, height: 20 },
+                    { x: 200, y: 400, width: 600, height: 20 },
+                    
+                    { x: 200, y: 0, width: 20, height: 220 },
+                    { x: 400, y: 100, width: 20, height: 220 },
+                    { x: 600, y: 0, width: 20, height: 220 },
+                    
+                    { x: 100, y: 200, width: 20, height: 220 },
+                    { x: 300, y: 300, width: 20, height: 220 },
+                    { x: 500, y: 200, width: 20, height: 220 },
+                    { x: 700, y: 300, width: 20, height: 220 }
+                ],
+                sand: [
+                    { x: 650, y: 100, width: 100, height: 100 }
+                ],
+                water: [
+                    { x: 650, y: 300, width: 100, height: 100 }
+                ]
+            },
+            { // Niveau 5 - Défi final
+                ball: { x: 400, y: 450 },
+                hole: { x: 400, y: 50 },
+                obstacles: [
+                    { x: 100, y: 100, width: 600, height: 20 },
+                    { x: 100, y: 380, width: 600, height: 20 },
+                    { x: 100, y: 120, width: 20, height: 260 },
+                    { x: 680, y: 120, width: 20, height: 260 },
+                    
+                    { x: 300, y: 150, width: 200, height: 20 },
+                    { x: 300, y: 330, width: 200, height: 20 },
+                    { x: 380, y: 170, width: 20, height: 160 }
+                ],
+                sand: [
+                    { x: 150, y: 150, width: 150, height: 200 },
+                    { x: 500, y: 150, width: 150, height: 200 }
+                ],
+                water: [
+                    { x: 300, y: 170, width: 80, height: 160 },
+                    { x: 420, y: 170, width: 80, height: 160 }
+                ]
+            }
+        ];
+
+        // Initialisation du jeu
+        function initGame() {
+            powerSlider.addEventListener('input', updatePowerDisplay);
+            restartBtn.addEventListener('click', resetLevel);
+            nextLevelBtn.addEventListener('click', nextLevel);
+            canvas.addEventListener('click', handleClick);
+            canvas.addEventListener('mousemove', updateMousePosition);
+            
+            loadLevel(currentLevel);
+            updateBestScoreDisplay();
+            gameLoop();
+        }
+
+        // Charger un niveau
+        function loadLevel(levelNum) {
+            const level = levels[levelNum - 1];
+            
+            ball = { 
+                x: level.ball.x, 
+                y: level.ball.y, 
+                radius: 10, 
+                dx: 0, 
+                dy: 0 
+            };
+            
+            hole = { 
+                x: level.hole.x, 
+                y: level.hole.y, 
+                radius: 15 
+            };
+            
+            obstacles = level.obstacles || [];
+            sandTraps = level.sand || [];
+            waterTraps = level.water || [];
+            
+            strokes = 0;
+            gameOver = false;
+            isMoving = false;
+            
+            levelDisplay.textContent = levelNum;
+            strokesDisplay.textContent = strokes;
+            nextLevelBtn.disabled = true;
+            levelCompleteDiv.style.display = 'none';
+            
+            draw();
+        }
+
+        // Mettre à jour l'affichage de la puissance
+        function updatePowerDisplay() {
+            powerValue.textContent = powerSlider.value;
+        }
+
+        // Mettre à jour la position de la souris
+        function updateMousePosition(e) {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        }
+
+        // Gérer le clic pour frapper la balle
+        function handleClick(e) {
+            if (isMoving || gameOver) return;
+
+            const power = powerSlider.value / 20;
+            const angle = Math.atan2(
+                mouseY - ball.y,
+                mouseX - ball.x
+            );
+
+            ball.dx = Math.cos(angle) * power;
+            ball.dy = Math.sin(angle) * power;
+            isMoving = true;
+            strokes++;
+            strokesDisplay.textContent = strokes;
+        }
+
+        // Dessiner la ligne de visée
+        function drawAimLine() {
+            if (isMoving || gameOver) return;
+
+            const power = powerSlider.value / 20;
+            const angle = Math.atan2(
+                mouseY - ball.y,
+                mouseX - ball.x
+            );
+            
+            // Ligne de direction
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.lineWidth = 3;
+            ctx.moveTo(ball.x, ball.y);
+            ctx.lineTo(
+                ball.x + Math.cos(angle) * 30 * power,
+                ball.y + Math.sin(angle) * 30 * power
+            );
+            ctx.stroke();
+            
+            // Point de visée
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.arc(
+                ball.x + Math.cos(angle) * 30 * power,
+                ball.y + Math.sin(angle) * 30 * power,
+                3, 0, Math.PI * 2
+            );
+            ctx.fill();
+            
+            // Cercle autour de la balle
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.arc(ball.x, ball.y, 30, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        // Dessiner les éléments du niveau
+        function drawLevelElements() {
+            // Zones de sable
+            ctx.fillStyle = '#F4E7C3';
+            sandTraps.forEach(sand => {
+                ctx.fillRect(sand.x, sand.y, sand.width, sand.height);
+            });
+
+            // Zones d'eau
+            ctx.fillStyle = '#1E88E5';
+            waterTraps.forEach(water => {
+                ctx.fillRect(water.x, water.y, water.width, water.height);
+            });
+
+            // Obstacles
+            ctx.fillStyle = '#8B4513';
+            obstacles.forEach(obstacle => {
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            });
+
+            // Trou
+            ctx.beginPath();
+            ctx.fillStyle = '#000';
+            ctx.arc(hole.x, hole.y, hole.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.fillStyle = '#333';
+            ctx.arc(hole.x, hole.y, hole.radius * 0.7, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Balle
+            ctx.beginPath();
+            ctx.fillStyle = '#fff';
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(200, 200, 200, 0.5)';
+            ctx.arc(ball.x - 3, ball.y - 3, ball.radius * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Dessiner le jeu
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawLevelElements();
+            drawAimLine();
+        }
+
+        // Vérifier les collisions
+        function checkCollisions() {
+            // Collision avec les obstacles
+            obstacles.forEach(obstacle => {
+                let testX = ball.x;
+                let testY = ball.y;
+                
+                if (ball.x < obstacle.x) testX = obstacle.x;
+                else if (ball.x > obstacle.x + obstacle.width) testX = obstacle.x + obstacle.width;
+                
+                if (ball.y < obstacle.y) testY = obstacle.y;
+                else if (ball.y > obstacle.y + obstacle.height) testY = obstacle.y + obstacle.height;
+                
+                const distX = ball.x - testX;
+                const distY = ball.y - testY;
+                const distance = Math.sqrt(distX * distX + distY * distY);
+                
+                if (distance <= ball.radius) {
+                    const angle = Math.atan2(distY, distX);
+                    const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy) * 0.7;
+                    
+                    ball.dx = Math.cos(angle) * speed;
+                    ball.dy = Math.sin(angle) * speed;
+                    
+                    ball.x += ball.dx * 2;
+                    ball.y += ball.dy * 2;
+                }
+            });
+            
+            // Zones de sable
+            sandTraps.forEach(sand => {
+                if (ball.x > sand.x && ball.x < sand.x + sand.width &&
+                    ball.y > sand.y && ball.y < sand.y + sand.height) {
+                    ball.dx *= 0.92;
+                    ball.dy *= 0.92;
+                }
+            });
+            
+            // Zones d'eau
+            waterTraps.forEach(water => {
+                if (ball.x > water.x && ball.x < water.x + water.width &&
+                    ball.y > water.y && ball.y < water.y + water.height) {
+                    resetBallPosition();
+                }
+            });
+
+            // Bords du canvas
+            if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
+                ball.dx *= -0.7;
+                ball.x = Math.max(ball.radius, Math.min(canvas.width - ball.radius, ball.x));
+            }
+            if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
+                ball.dy *= -0.7;
+                ball.y = Math.max(ball.radius, Math.min(canvas.height - ball.radius, ball.y));
+            }
+
+            // Vérifier si la balle est dans le trou
+            const distanceToHole = Math.sqrt(
+                Math.pow(ball.x - hole.x, 2) + Math.pow(ball.y - hole.y, 2)
+            );
+            if (distanceToHole < hole.radius - 5) {
+                completeLevel();
+            }
+        }
+
+        // Réinitialiser la position de la balle
+        function resetBallPosition() {
+            ball.x = levels[currentLevel - 1].ball.x;
+            ball.y = levels[currentLevel - 1].ball.y;
+            ball.dx = 0;
+            ball.dy = 0;
+            isMoving = false;
+            strokes++;
+            strokesDisplay.textContent = strokes;
+        }
+
+        // Niveau terminé
+        function completeLevel() {
+            gameOver = true;
+            isMoving = false;
+            
+            if (!bestScores[currentLevel] || strokes < bestScores[currentLevel]) {
+                bestScores[currentLevel] = strokes;
+                localStorage.setItem('miniGolfBestScores', JSON.stringify(bestScores));
+                updateBestScoreDisplay();
+            }
+            
+            finalStrokesSpan.textContent = strokes;
+            levelCompleteDiv.style.display = 'block';
+            
+            if (currentLevel < maxLevel) {
+                nextLevelBtn.disabled = false;
+            }
+        }
+
+        // Mettre à jour l'affichage du meilleur score
+        function updateBestScoreDisplay() {
+            const best = bestScores[currentLevel] || '-';
+            bestScoreDisplay.textContent = best;
+        }
+
+        // Niveau suivant
+        function nextLevel() {
+            levelCompleteDiv.style.display = 'none';
+            currentLevel++;
+            loadLevel(currentLevel);
+        }
+
+        // Réinitialiser le niveau
+        function resetLevel() {
+            loadLevel(currentLevel);
+        }
+
+        // Mettre à jour la position de la balle
+        function update() {
+            if (!isMoving) return;
+
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            ball.dx *= 0.98;
+            ball.dy *= 0.98;
+
+            if (Math.abs(ball.dx) < 0.05 && Math.abs(ball.dy) < 0.05) {
+                ball.dx = 0;
+                ball.dy = 0;
+                isMoving = false;
+            }
+
+            checkCollisions();
+        }
+
+        // Boucle de jeu
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Démarrer le jeu
+        initGame();
+    </script>
+</body>
+</html>

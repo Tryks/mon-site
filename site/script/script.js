@@ -2,160 +2,160 @@
 const games = [
     {
         title: "QCM",
-        description: "Explorez l'univers dans ce jeu d'aventure spatiale passionnant.",
-        category: "aventure",
+        description: "Testez vos connaissances avec ce questionnaire à choix multiples sur divers sujets.",
+        category: "quiz",
         image: "../img/img-qcm.jpeg",
         rating: 4.5,
         link: "../jeu_devinette/qcm/qcm2.html"
     },
     {
         title: "Black Jack",
-        description: "Survivez à une apocalypse zombie dans ce FPS intense. Trouvez des armes et des ressources pour rester en vie.",
-        category: "action",
+        description: "Affrontez le croupier dans ce jeu de cartes classique. Le but : atteindre 21 sans dépasser.",
+        category: "cartes",
         image: "../img/blackjack.jpeg",
         rating: 4.2,
         link: "../jeu_de_carte/blackjack/blackjack.html"
     },
     {
         title: "mot de passe",
-        description: "Améliorez vos compétences aux échecs avec ce jeu de stratégie classique. Plusieurs niveaux de difficulté disponibles.",
-        category: "stratégie",
+        description: "Devinez le mot mystère en utilisant les indices donnés. Un jeu de déduction passionnant.",
+        category: "devinette",
         image: "../img/mot-de-passe.jpeg",
         rating: 4.8,
         link: "../jeu_devinette/mot_de_passe/mot_de_passe.html"
     },
     {
         title: "pendu",
-        description: "Résolvez des centaines de puzzles captivants dans ce jeu qui stimule votre cerveau. Parfait pour les amateurs de défis.",
-        category: "puzzle",
+        description: "Trouvez le mot caché en proposant des lettres avant que le bonhomme ne soit pendu !",
+        category: "devinette",
         image: "../img/pendu.png",
         rating: 4.3,
         link: "../jeu_devinette/pendu/pendu.html"
     },
     {
         title: "sudoku",
-        description: "Devenez un champion du football dans ce jeu de sport réaliste. Jouez en solo ou en multijoueur en ligne.",
-        category: "sport",
+        description: "Remplissez la grille avec des chiffres de 1 à 9 sans répétition dans les lignes, colonnes ou carrés.",
+        category: "réflexion",
         image: "../img/sudoku.jpg",
         rating: 4.6,
         link: "../jeu_classique/sudoku/sudoku.html"
     },
     {
         title: "Echec",
-        description: "Course de voitures à haute vitesse avec des graphismes époustouflants. Personnalisez votre véhicule et défiez vos amis.",
-        category: "course",
+        description: "Jeu de stratégie millénaire où le but est de mettre en échec le roi adverse.",
+        category: "stratégie",
         image: "../img/echec.jpg",
         rating: 4.4,
         link: "../jeu_classique/echec/echec.html"
     },
     {
         title: "Jeu de drapeau",
-        description: "Jeu de combat multijoueur où le dernier survivant gagne. Choisissez votre stratégie et dominez l'arène.",
-        category: "multijoueur",
+        description: "Testez vos connaissances en reconnaissant les drapeaux des pays du monde.",
+        category: "éducatif",
         image: "../img/drapeau.webp",
         rating: 4.7,
         link: "../jeu_devinette/jeu_de_drapeau/jeu_de_drapeau.html"
     },
     {
         title: "Solitaire",
-        description: "Gérez votre propre ferme dans ce jeu de simulation relaxant. Cultivez, élevez des animaux et développez votre entreprise.",
-        category: "simulation",
+        description: "Jeu de cartes en solitaire où le but est de ranger toutes les cartes par couleur et valeur.",
+        category: "cartes",
         image: "../img/solitaire.jpg",
         rating: 4.1,
         link: "../jeu_de_carte/solitaire/solitaire.html"
     },
     {
         title: "Snake",
-        description: "Jeu d'enquête où vous devez résoudre un mystère dans un manoir hanté. Trouvez des indices et démasquez le coupable.",
-        category: "aventure",
+        description: "Contrôlez un serpent qui grandit en mangeant des fruits. Évitez de vous mordre la queue !",
+        category: "arcade",
         image: "../img/snake.jpg",
         rating: 4.5,
         link: "../jeu_classique/snake/snake.html"
     },
     {
         title: "devine le prix",
-        description: "Montrez vos compétences au basket dans ce jeu de sport rapide. Plusieurs modes de jeu disponibles.",
-        category: "sport",
+        description: "Estimez le prix de différents produits pour remporter la partie.",
+        category: "devinette",
         image: "../img/devine-le-prix.jpg",
         rating: 4.0,
         link: "../jeu_devinette/devine_le_prix/devine_le_prix.html"
     },
     {
         title: "Morpion",
-        description: "Jeu de mots addictif où vous devez trouver le plus de mots possible à partir d'un ensemble de lettres.",
-        category: "puzzle",
+        description: "Jeu de grille classique où il faut aligner 3 symboles identiques avant son adversaire.",
+        category: "stratégie",
         image: "../img/morpion.png",
         rating: 4.2,
         link: "../jeu_classique/morpion/morpion.html"
     },
     {
         title: "Poker",
-        description: "Jeu de stratégie en temps réel où vous devez construire une armée et conquérir des territoires.",
-        category: "stratégie",
+        description: "Jeu de cartes populaire où la stratégie et la psychologie sont essentielles pour bluffer ses adversaires.",
+        category: "cartes",
         image: "../img/poker.jpg",
         rating: 4.6,
         link: "../jeu_de_carte/poker/poker.html"
     },
     {
         title: "Pierre-Feuille-Ciseaux",
-        description: "Jeu de stratégie en temps réel où vous devez construire une armée et conquérir des territoires.",
-        category: "stratégie",
+        description: "Affrontez l'ordinateur dans ce jeu de mains classique où chaque symbole en bat un autre.",
+        category: "classique",
         image: "../img/pierre-feuille-ciseaux.webp",
         rating: 4.6,
         link: "../jeu_classique/Pierre-Feuille-Ciseaux/pfc.html"
     },
     {
         title: "Voiture",
-        description: "Jeu de stratégie en temps réel où vous devez construire une armée et conquérir des territoires.",
-        category: "stratégie",
+        description: "Jeu de course où vous devez éviter les obstacles et atteindre la ligne d'arrivée.",
+        category: "course",
         image: "../img/voiture.png",
         rating: 4.6,
         link: "../jeu_combat/voiture/voiture.html"
     },
     {
         title: "Memory",
-        description: "Jeu de stratégie en temps réel où vous devez construire une armée et conquérir des territoires.",
-        category: "stratégie",
+        description: "Retrouvez les paires de cartes identiques en mémorisant leur emplacement.",
+        category: "mémoire",
         image: "../img/memory.jpg",
         rating: 4.6,
         link: "../jeu_classique/memory/memory.html"
     },
     {
         title: "Geometry Dash",
-        description: "Jeu de stratégie en temps réel où vous devez construire une armée et conquérir des territoires.",
-        category: "stratégie",
+        description: "Jeu de plateforme rythmique où il faut sauter au bon moment pour éviter les obstacles.",
+        category: "arcade",
         image: "../img/geometry_dash.jpg",
         rating: 4.6,
         link: "../jeu_classique/geometry_dash/geometry_dash.html"
     },
     {
         title: "devine le logo",
-        description: "Jeu de stratégie en temps réel où vous devez construire une armée et conquérir des territoires.",
-        category: "stratégie",
+        description: "Reconnaissez les logos de marques célèbres dans ce jeu de culture générale.",
+        category: "devinette",
         image: "../img/logo.jpg",
         rating: 4.6,
         link: "../jeu_devinette/devine_le_logo/devine_le_logo.html"
     },
     {
         title: "Quiz d'anglais",
-        description: "Jeu de stratégie en temps réel où vous devez construire une armée et conquérir des territoires.",
-        category: "stratégie",
+        description: "Testez et améliorez votre anglais avec ce quiz de vocabulaire et grammaire.",
+        category: "éducatif",
         image: "../img/anglais.jpg",
         rating: 4.6,
         link: "../jeu_devinette/quiz/quiz_anglais/quiz_anglais.html"
     },
     {
         title: "Quiz de mathématiques",
-        description: "Jeu de stratégie en temps réel où vous devez construire une armée et conquérir des territoires.",
-        category: "stratégie",
+        description: "Résolvez des problèmes mathématiques de différents niveaux de difficulté.",
+        category: "éducatif",
         image: "../img/maths.jpg",
         rating: 4.6,
         link: "../jeu_devinette/quiz/quiz_math/quiz_math.html"
     },
     {
         title: "N'appuie pas sur le bouton",
-        description: "Jeu de stratégie en temps réel où vous devez construire une armée et conquérir des territoires.",
-        category: "stratégie",
+        description: "Jeu de réflexes où il faut résister à la tentation d'appuyer sur le bouton.",
+        category: "arcade",
         image: "../img/bouton.jpg",
         rating: 4.6,
         link: "../jeu_classique/bouton_fuyare/accueil.html"

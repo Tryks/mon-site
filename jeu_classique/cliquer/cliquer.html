@@ -1,0 +1,2077 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CosmoClick Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6e48aa;
+            --secondary-color: #9d50bb;
+            --accent-color: #4776e6;
+            --text-color: #ffffff;
+            --background-color: #1a1a2e;
+            --particle-color: rgba(110, 72, 170, 0.7);
+            --card-bg: rgba(26, 26, 46, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --danger-color: #F44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(110, 72, 170, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(157, 80, 187, 0.1) 0%, transparent 20%);
+            transition: all 0.3s ease;
+            padding: 10px;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            padding: 10px;
+        }
+
+        h1, h2, h3 {
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(110, 72, 170, 0.3);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px rgba(110, 72, 170, 0.5); }
+            to { text-shadow: 0 0 10px rgba(157, 80, 187, 0.8), 0 0 15px rgba(71, 118, 230, 0.6); }
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: rgba(26, 26, 46, 0.5);
+            border: none;
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--card-border);
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(110, 72, 170, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn i {
+            font-size: 1rem;
+        }
+
+        /* Game section */
+        .game-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .score-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--card-border);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 5px 0;
+            color: var(--text-color);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .click-area-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .click-area {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 
+                0 0 20px rgba(110, 72, 170, 0.6),
+                inset 0 0 10px rgba(255, 255, 255, 0.2);
+            transition: transform 0.1s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .click-area:hover {
+            box-shadow: 
+                0 0 25px rgba(110, 72, 170, 0.8),
+                inset 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .click-area:active {
+            transform: scale(0.95);
+            box-shadow: 
+                0 0 15px rgba(110, 72, 170, 0.4),
+                inset 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .click-area::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: rotate(0deg);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .click-text {
+            font-size: 1.4rem;
+            font-weight: bold;
+            z-index: 2;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .stat {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 12px;
+            min-width: 120px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--card-border);
+            transition: transform 0.3s;
+        }
+
+        .stat:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 3px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Upgrades */
+        .upgrades-section {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .section-title {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            font-size: 1.2rem;
+        }
+
+        .upgrades-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            width: 100%;
+        }
+
+        .upgrade {
+            background: linear-gradient(135deg, rgba(110, 72, 170, 0.2), rgba(71, 118, 230, 0.2));
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upgrade::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+        }
+
+        .upgrade:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(135deg, rgba(110, 72, 170, 0.3), rgba(71, 118, 230, 0.3));
+        }
+
+        .upgrade:active {
+            transform: translateY(0);
+        }
+
+        .upgrade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .upgrade-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upgrade-level {
+            background: rgba(71, 118, 230, 0.3);
+            padding: 2px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+        }
+
+        .upgrade-description {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            flex-grow: 1;
+        }
+
+        .upgrade-next {
+            font-size: 0.75rem;
+            color: var(--warning-color);
+            margin-bottom: 5px;
+            font-style: italic;
+        }
+
+        .upgrade-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .upgrade-cost {
+            font-weight: bold;
+            color: #ffcc00;
+            font-size: 0.95rem;
+        }
+
+        .upgrade-unlock {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 3px;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        .action-btn {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        .action-btn i {
+            font-size: 1rem;
+        }
+
+        /* Visual elements */
+        .particle {
+            position: absolute;
+            background: var(--particle-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-color);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Themes */
+        .theme-selector {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .theme-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid white;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px white;
+        }
+
+        /* Popups */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(5px);
+            padding: 15px;
+        }
+
+        .popup.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .popup-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .popup.active .popup-content {
+            transform: translateY(0);
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .popup-close:hover {
+            color: var(--accent-color);
+        }
+
+        .popup-title {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .popup-title i {
+            font-size: 1.4rem;
+        }
+
+        /* Skin shop */
+        .skins-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .skin-card {
+            background: rgba(26, 26, 46, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--card-border);
+            text-align: center;
+        }
+
+        .skin-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .skin-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .skin-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+
+        .skin-price {
+            font-weight: bold;
+            color: #ffcc00;
+            font-size: 0.85rem;
+        }
+
+        .skin-owned {
+            font-size: 0.7rem;
+            color: var(--success-color);
+            margin-top: 3px;
+        }
+
+        .skin-equipped {
+            font-size: 0.7rem;
+            color: var(--accent-color);
+            margin-top: 3px;
+            font-weight: bold;
+        }
+
+        /* Achievements */
+        .achievements-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .achievement-card {
+            background: rgba(26, 26, 46, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s;
+            border: 1px solid var(--card-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card.locked {
+            opacity: 0.6;
+            filter: grayscale(0.8);
+        }
+
+        .achievement-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+        }
+
+        .achievement-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .achievement-icon {
+            font-size: 1.5rem;
+            color: #ffcc00;
+            min-width: 40px;
+        }
+
+        .achievement-info {
+            text-align: left;
+        }
+
+        .achievement-name {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 3px;
+            font-size: 0.95rem;
+        }
+
+        .achievement-desc {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .achievement-locked {
+            font-size: 0.7rem;
+            color: var(--warning-color);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .achievement-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .achievement-progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        /* Settings */
+        .settings-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .setting-group {
+            background: rgba(26, 26, 46, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid var(--card-border);
+        }
+
+        .setting-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .setting-title i {
+            font-size: 1rem;
+        }
+
+        .setting-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .setting-label {
+            font-size: 0.85rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 25px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 25px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 19px;
+            width: 19px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(25px);
+        }
+
+        /* Achievement notification */
+        .achievement-notification {
+            position: fixed;
+            bottom: 10px;
+            right: -300px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            transition: right 0.5s;
+            z-index: 1000;
+            max-width: 280px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .achievement-notification-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: #ffcc00;
+        }
+
+        .achievement-notification-text h3 {
+            margin-bottom: 3px;
+            font-size: 1rem;
+        }
+
+        .achievement-notification-text p {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        /* Prestige section */
+        .prestige-container {
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid var(--card-border);
+            text-align: center;
+        }
+
+        .prestige-btn {
+            background: linear-gradient(to right, #FF512F, #DD2476);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+
+        .prestige-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .prestige-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Click animation */
+        @keyframes float-up {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-80px) scale(1.3); opacity: 0; }
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .score {
+                font-size: 3rem;
+            }
+            
+            .click-area {
+                width: 220px;
+                height: 220px;
+            }
+            
+            .nav-btn {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            
+            .action-btn {
+                padding: 12px 25px;
+            }
+            
+            .theme-selector {
+                bottom: 20px;
+                right: 20px;
+                gap: 10px;
+            }
+            
+            .theme-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 3.2rem;
+            }
+            
+            .click-area {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .upgrades-container {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .skins-container {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+            
+            .achievements-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme buttons -->
+    <div class="theme-selector">
+        <div class="theme-btn active" style="background: linear-gradient(135deg, #6e48aa, #9d50bb);" onclick="changeTheme('default')" title="Thème par défaut">
+            <i class="fas fa-moon"></i>
+        </div>
+        <div class="theme-btn" style="background: linear-gradient(135deg, #2c3e50, #4ca1af);" onclick="changeTheme('ocean')" title="Thème océan">
+            <i class="fas fa-water"></i>
+        </div>
+        <div class="theme-btn" style="background: linear-gradient(135deg, #ff4e50, #f9d423);" onclick="changeTheme('sunset')" title="Thème coucher de soleil">
+            <i class="fas fa-sun"></i>
+        </div>
+        <div class="theme-btn" style="background: linear-gradient(135deg, #11998e, #38ef7d);" onclick="changeTheme('forest')" title="Thème forêt">
+            <i class="fas fa-tree"></i>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Header with navigation -->
+        <div class="header">
+            <button class="nav-btn" onclick="openPopup('achievements')">
+                <i class="fas fa-trophy"></i>
+                <span>Succès</span>
+            </button>
+            <button class="nav-btn" onclick="openPopup('shop')">
+                <i class="fas fa-store"></i>
+                <span>Boutique</span>
+            </button>
+            <button class="nav-btn" onclick="openPopup('prestige')">
+                <i class="fas fa-star"></i>
+                <span>Prestige</span>
+            </button>
+            <button class="nav-btn" onclick="openPopup('settings')">
+                <i class="fas fa-cog"></i>
+                <span>Paramètres</span>
+            </button>
+        </div>
+
+        <!-- Main game section -->
+        <div class="game-section">
+            <h1>CosmoClick Pro</h1>
+            
+            <div class="score-container">
+                <div class="score" id="score">0</div>
+                <div>Points Cosmiques</div>
+            </div>
+            
+            <div class="click-area-container">
+                <div class="click-area" id="clickArea">
+                    <div class="click-text">CLIQUEZ !</div>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value" id="cps">0</div>
+                    <div class="stat-label">par seconde</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="clickValue">1</div>
+                    <div class="stat-label">par clic</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalClicks">0</div>
+                    <div class="stat-label">clics totaux</div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">
+                <i class="fas fa-rocket"></i>
+                Améliorations
+            </h2>
+            <div class="upgrades-container" id="upgradesContainer">
+                <!-- Upgrades will be added here by JavaScript -->
+            </div>
+            
+            <div class="prestige-container">
+                <h3 class="section-title">
+                    <i class="fas fa-star"></i>
+                    Système de Prestige
+                </h3>
+                <p>Prestigez pour réinitialiser votre progression et gagner des bonus permanents!</p>
+                <button class="prestige-btn" onclick="showPrestigeConfirmation()">
+                    <i class="fas fa-redo"></i> Prestiger
+                </button>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn" id="saveBtn">
+                    <i class="fas fa-save"></i>
+                    Sauvegarder
+                </button>
+                <button class="action-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i>
+                    Réinitialiser
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievements popup -->
+    <div class="popup" id="achievementsPopup">
+        <div class="popup-content">
+            <button class="popup-close" onclick="closePopup('achievements')">&times;</button>
+            <h2 class="popup-title">
+                <i class="fas fa-trophy"></i>
+                Succès
+            </h2>
+            <div class="achievements-container" id="achievementsContainer">
+                <!-- Achievements will be added here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Shop popup -->
+    <div class="popup" id="shopPopup">
+        <div class="popup-content">
+            <button class="popup-close" onclick="closePopup('shop')">&times;</button>
+            <h2 class="popup-title">
+                <i class="fas fa-store"></i>
+                Boutique Cosmique
+            </h2>
+            <div class="skins-container" id="skinsContainer">
+                <!-- Skins will be added here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Prestige popup -->
+    <div class="popup" id="prestigePopup">
+        <div class="popup-content">
+            <button class="popup-close" onclick="closePopup('prestige')">&times;</button>
+            <h2 class="popup-title">
+                <i class="fas fa-star"></i>
+                Prestige
+            </h2>
+            <div class="prestige-info">
+                <p>Prestigez pour réinitialiser votre progression et gagner des <strong>Étoiles de Prestige</strong> permanentes!</p>
+                <div class="stat" style="margin: 15px auto; max-width: 300px;">
+                    <div class="stat-value" id="prestigePoints">0</div>
+                    <div class="stat-label">Étoiles de Prestige</div>
+                </div>
+                <p>Vous gagnerez: <strong id="prestigeGain">0</strong> Étoiles de Prestige</p>
+                <p>Bonus actuel: <strong id="prestigeBonus">0%</strong> de bonus sur tous les gains</p>
+                <button class="prestige-btn" onclick="prestige()" style="margin-top: 20px;">
+                    <i class="fas fa-redo"></i> Confirmer le Prestige
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings popup -->
+    <div class="popup" id="settingsPopup">
+        <div class="popup-content">
+            <button class="popup-close" onclick="closePopup('settings')">&times;</button>
+            <h2 class="popup-title">
+                <i class="fas fa-cog"></i>
+                Paramètres
+            </h2>
+            <div class="settings-container">
+                <div class="setting-group">
+                    <h3 class="setting-title">
+                        <i class="fas fa-volume-up"></i>
+                        Audio
+                    </h3>
+                    <div class="setting-option">
+                        <span class="setting-label">Activer les sons</span>
+                        <label class="switch">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3 class="setting-title">
+                        <i class="fas fa-paint-brush"></i>
+                        Apparence
+                    </h3>
+                    <div class="setting-option">
+                        <span class="setting-label">Effets de particules</span>
+                        <label class="switch">
+                            <input type="checkbox" id="particlesToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-option">
+                        <span class="setting-label">Animations</span>
+                        <label class="switch">
+                            <input type="checkbox" id="animationsToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3 class="setting-title">
+                        <i class="fas fa-gamepad"></i>
+                        Gameplay
+                    </h3>
+                    <div class="setting-option">
+                        <span class="setting-label">Formatage des nombres</span>
+                        <label class="switch">
+                            <input type="checkbox" id="formatNumbersToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-option">
+                        <span class="setting-label">Sauvegarde automatique</span>
+                        <label class="switch">
+                            <input type="checkbox" id="autoSaveToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h3 class="setting-title">
+                        <i class="fas fa-info-circle"></i>
+                        À propos
+                    </h3>
+                    <p style="font-size: 0.85rem; margin-bottom: 10px;">CosmoClick Pro v2.0</p>
+                    <p style="font-size: 0.85rem;">Développé avec passion pour les fans de jeux incrémentiels!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievement notification -->
+    <div class="achievement-notification" id="achievementNotification">
+        <div class="achievement-notification-icon">🏆</div>
+        <div class="achievement-notification-text">
+            <h3 id="achievementTitle">Nouveau Succès!</h3>
+            <p id="achievementDesc">Description du succès</p>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        const game = {
+            score: 0,
+            clickValue: 1,
+            totalClicks: 0,
+            cps: 0,
+            prestigePoints: 0,
+            prestigeBonus: 0,
+            upgrades: [
+                { id: 1, name: "Astéroïde", description: "Produit 0.2 point cosmique par seconde", baseCost: 15, cost: 15, owned: 0, value: 0.2, unlockAt: 0, icon: "fas fa-meteor" },
+                { id: 2, name: "Planète", description: "Produit 1 point cosmique par seconde", baseCost: 100, cost: 100, owned: 0, value: 1, unlockAt: 50, icon: "fas fa-globe" },
+                { id: 3, name: "Étoile", description: "Produit 5 points cosmiques par seconde", baseCost: 500, cost: 500, owned: 0, value: 5, unlockAt: 200, icon: "fas fa-star" },
+                { id: 4, name: "Galaxie", description: "Produit 20 points cosmiques par seconde", baseCost: 2000, cost: 2000, owned: 0, value: 20, unlockAt: 1000, icon: "fas fa-galactic-republic" },
+                { id: 5, name: "Amas Galactique", description: "Produit 100 points cosmiques par seconde", baseCost: 10000, cost: 10000, owned: 0, value: 100, unlockAt: 5000, icon: "fas fa-cloud" },
+                { id: 6, name: "Trou Noir", description: "Produit 500 points cosmiques par seconde", baseCost: 50000, cost: 50000, owned: 0, value: 500, unlockAt: 20000, icon: "fas fa-circle-notch" },
+                { id: 7, name: "Supernova", description: "Double la valeur de chaque clic", baseCost: 1000, cost: 1000, owned: 0, value: 2, unlockAt: 500, type: "click", icon: "fas fa-fire" },
+                { id: 8, name: "Nébuleuse", description: "Triple la valeur de chaque clic", baseCost: 10000, cost: 10000, owned: 0, value: 3, unlockAt: 5000, type: "click", icon: "fas fa-cloud-moon" },
+                { id: 9, name: "Big Bang", description: "Multiplie par 5 la valeur de chaque clic", baseCost: 100000, cost: 100000, owned: 0, value: 5, unlockAt: 50000, type: "click", icon: "fas fa-atom" },
+                { id: 10, name: "Dimension", description: "Produit 0.5% de vos points par seconde", baseCost: 500000, cost: 500000, owned: 0, value: 0.005, unlockAt: 100000, type: "percentage", icon: "fas fa-dimension" },
+                { id: 11, name: "Multivers", description: "Double la production de toutes vos améliorations", baseCost: 1000000, cost: 1000000, owned: 0, value: 2, unlockAt: 500000, type: "multiplier", icon: "fas fa-layer-group" },
+                { id: 12, name: "Singularité", description: "Triple la production de toutes vos améliorations", baseCost: 5000000, cost: 5000000, owned: 0, value: 3, unlockAt: 2000000, type: "multiplier", icon: "fas fa-infinity" }
+            ],
+            achievements: [
+                { id: 1, name: "Premier Clic", description: "Effectuez votre premier clic", condition: (game) => game.totalClicks >= 1, unlocked: false, icon: "fas fa-mouse-pointer" },
+                { id: 2, name: "100 Clics", description: "Effectuez 100 clics", condition: (game) => game.totalClicks >= 100, unlocked: false, icon: "fas fa-hand-pointer" },
+                { id: 3, name: "1,000 Clics", description: "Effectuez 1,000 clics", condition: (game) => game.totalClicks >= 1000, unlocked: false, icon: "fas fa-mouse" },
+                { id: 4, name: "10,000 Clics", description: "Effectuez 10,000 clics", condition: (game) => game.totalClicks >= 10000, unlocked: false, icon: "fas fa-fingerprint" },
+                { id: 5, name: "100,000 Clics", description: "Effectuez 100,000 clics", condition: (game) => game.totalClicks >= 100000, unlocked: false, icon: "fas fa-bolt" },
+                { id: 6, name: "Premier Point", description: "Obtenez votre premier point cosmique", condition: (game) => game.score >= 1, unlocked: false, icon: "fas fa-coins" },
+                { id: 7, name: "100 Points", description: "Obtenez 100 points cosmiques", condition: (game) => game.score >= 100, unlocked: false, icon: "fas fa-piggy-bank" },
+                { id: 8, name: "1,000 Points", description: "Obtenez 1,000 points cosmiques", condition: (game) => game.score >= 1000, unlocked: false, icon: "fas fa-gem" },
+                { id: 9, name: "10,000 Points", description: "Obtenez 10,000 points cosmiques", condition: (game) => game.score >= 10000, unlocked: false, icon: "fas fa-crown" },
+                { id: 10, name: "100,000 Points", description: "Obtenez 100,000 points cosmiques", condition: (game) => game.score >= 100000, unlocked: false, icon: "fas fa-trophy" },
+                { id: 11, name: "1 Million", description: "Obtenez 1,000,000 points cosmiques", condition: (game) => game.score >= 1000000, unlocked: false, icon: "fas fa-award" },
+                { id: 12, name: "Première Amélioration", description: "Achetez votre première amélioration", condition: (game) => game.upgrades.some(u => u.owned > 0), unlocked: false, icon: "fas fa-shopping-cart" },
+                { id: 13, name: "Collectionneur", description: "Achetez 10 améliorations", condition: (game) => game.upgrades.reduce((sum, u) => sum + u.owned, 0) >= 10, unlocked: false, icon: "fas fa-boxes" },
+                { id: 14, name: "Expert Cosmique", description: "Achetez 25 améliorations", condition: (game) => game.upgrades.reduce((sum, u) => sum + u.owned, 0) >= 25, unlocked: false, icon: "fas fa-rocket" },
+                { id: 15, name: "Maître de l'Univers", description: "Achetez 50 améliorations", condition: (game) => game.upgrades.reduce((sum, u) => sum + u.owned, 0) >= 50, unlocked: false, icon: "fas fa-globe-americas" },
+                { id: 16, name: "Style Cosmique", description: "Achetez votre premier skin", condition: (game) => game.skins.filter(s => s.owned).length > 1, unlocked: false, icon: "fas fa-tshirt" },
+                { id: 17, name: "Collectionneur de Skins", description: "Achetez 5 skins", condition: (game) => game.skins.filter(s => s.owned).length >= 5, unlocked: false, icon: "fas fa-vest" },
+                { id: 18, name: "Fashionista Cosmique", description: "Achetez tous les skins", condition: (game) => game.skins.every(s => s.owned), unlocked: false, icon: "fas fa-rainbow" },
+                { id: 19, name: "Premier Prestige", description: "Effectuez votre premier prestige", condition: (game) => game.prestigePoints >= 1, unlocked: false, icon: "fas fa-star" },
+                { id: 20, name: "Vétéran", description: "Effectuez 5 prestiges", condition: (game) => game.prestigePoints >= 5, unlocked: false, icon: "fas fa-stars" },
+                { id: 21, name: "Légende", description: "Effectuez 10 prestiges", condition: (game) => game.prestigePoints >= 10, unlocked: false, icon: "fas fa-medal" }
+            ],
+            skins: [
+                { id: 1, name: "Classique", price: 0, owned: true, equipped: true, color1: "#6e48aa", color2: "#9d50bb", icon: "fas fa-circle" },
+                { id: 2, name: "Galaxie", price: 1000, owned: false, equipped: false, color1: "#2b5876", color2: "#4e4376", icon: "fas fa-galactic-republic" },
+                { id: 3, name: "Soleil", price: 2500, owned: false, equipped: false, color1: "#f12711", color2: "#f5af19", icon: "fas fa-sun" },
+                { id: 4, name: "Océan", price: 5000, owned: false, equipped: false, color1: "#1cb5e0", color2: "#000851", icon: "fas fa-water" },
+                { id: 5, name: "Forêt", price: 10000, owned: false, equipped: false, color1: "#11998e", color2: "#38ef7d", icon: "fas fa-tree" },
+                { id: 6, name: "Lave", price: 20000, owned: false, equipped: false, color1: "#f12711", color2: "#7b4397", icon: "fas fa-fire" },
+                { id: 7, name: "Arc-en-ciel", price: 50000, owned: false, equipped: false, color1: "#ff00cc", color2: "#333399", icon: "fas fa-rainbow" },
+                { id: 8, name: "Or", price: 100000, owned: false, equipped: false, color1: "#f6d365", color2: "#fda085", icon: "fas fa-coins" },
+                { id: 9, name: "Diamant", price: 250000, owned: false, equipped: false, color1: "#00d2ff", color2: "#3a7bd5", icon: "fas fa-gem" },
+                { id: 10, name: "Nuit Étoilée", price: 500000, owned: false, equipped: false, color1: "#0F2027", color2: "#2C5364", icon: "fas fa-moon" },
+                { id: 11, name: "Aurore", price: 1000000, owned: false, equipped: false, color1: "#F3904F", color2: "#3B4371", icon: "fas fa-sunrise" },
+                { id: 12, name: "Prisme", price: 2000000, owned: false, equipped: false, color1: "#00F260", color2: "#0575E6", icon: "fas fa-fire-alt" }
+            ],
+            settings: {
+                soundEnabled: true,
+                particlesEnabled: true,
+                animationsEnabled: true,
+                formatNumbers: true,
+                autoSave: true
+            },
+            lastUpdate: Date.now(),
+            saveVersion: 3
+        };
+
+        // DOM elements
+        const scoreElement = document.getElementById('score');
+        const clickArea = document.getElementById('clickArea');
+        const cpsElement = document.getElementById('cps');
+        const clickValueElement = document.getElementById('clickValue');
+        const totalClicksElement = document.getElementById('totalClicks');
+        const upgradesContainer = document.getElementById('upgradesContainer');
+        const achievementsContainer = document.getElementById('achievementsContainer');
+        const skinsContainer = document.getElementById('skinsContainer');
+        const saveBtn = document.getElementById('saveBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const achievementNotification = document.getElementById('achievementNotification');
+        const achievementTitle = document.getElementById('achievementTitle');
+        const achievementDesc = document.getElementById('achievementDesc');
+        const prestigePointsElement = document.getElementById('prestigePoints');
+        const prestigeGainElement = document.getElementById('prestigeGain');
+        const prestigeBonusElement = document.getElementById('prestigeBonus');
+        
+        // Settings elements
+        const soundToggle = document.getElementById('soundToggle');
+        const particlesToggle = document.getElementById('particlesToggle');
+        const animationsToggle = document.getElementById('animationsToggle');
+        const formatNumbersToggle = document.getElementById('formatNumbersToggle');
+        const autoSaveToggle = document.getElementById('autoSaveToggle');
+
+        // Initialize the game
+        function init() {
+            loadGame();
+            renderUpgrades();
+            renderAchievements();
+            renderSkins();
+            updateSettingsUI();
+            updateUI();
+            updatePrestigeInfo();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Game loop
+            setInterval(gameLoop, 100);
+            
+            // Auto-save
+            if (game.settings.autoSave) {
+                setInterval(saveGame, 30000);
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Click area
+            clickArea.addEventListener('click', handleClick);
+            
+            // Buttons
+            saveBtn.addEventListener('click', saveGame);
+            resetBtn.addEventListener('click', resetGame);
+            
+            // Settings
+            soundToggle.addEventListener('change', () => {
+                game.settings.soundEnabled = soundToggle.checked;
+                saveGame();
+            });
+            
+            particlesToggle.addEventListener('change', () => {
+                game.settings.particlesEnabled = particlesToggle.checked;
+                saveGame();
+            });
+            
+            animationsToggle.addEventListener('change', () => {
+                game.settings.animationsEnabled = animationsToggle.checked;
+                saveGame();
+            });
+            
+            formatNumbersToggle.addEventListener('change', () => {
+                game.settings.formatNumbers = formatNumbersToggle.checked;
+                updateUI();
+                saveGame();
+            });
+            
+            autoSaveToggle.addEventListener('change', () => {
+                game.settings.autoSave = autoSaveToggle.checked;
+                saveGame();
+            });
+        }
+
+        // Game loop
+        function gameLoop() {
+            const now = Date.now();
+            const deltaTime = (now - game.lastUpdate) / 1000; // in seconds
+            game.lastUpdate = now;
+            
+            // Calculate CPS with prestige bonus
+            const multiplier = 1 + (game.prestigeBonus / 100);
+            game.cps = game.upgrades.reduce((sum, upgrade) => {
+                if (upgrade.type === "percentage") {
+                    return sum + (upgrade.owned * upgrade.value * game.score * multiplier);
+                } else if (upgrade.type === "multiplier") {
+                    return sum * (upgrade.owned > 0 ? Math.pow(upgrade.value, upgrade.owned) : 1);
+                }
+                return sum + (upgrade.owned * (upgrade.type === 'click' ? 0 : upgrade.value * multiplier));
+            }, 0);
+            
+            // Add passive income
+            game.score += game.cps * deltaTime;
+            
+            // Update UI
+            updateUI();
+            
+            // Check achievements
+            checkAchievements();
+        }
+
+        // Handle click
+        function handleClick(event) {
+            const multiplier = 1 + (game.prestigeBonus / 100);
+            game.score += game.clickValue * multiplier;
+            game.totalClicks++;
+            
+            // Visual effects
+            if (game.settings.animationsEnabled) {
+                createFloatingText(`+${formatNumber(game.clickValue * multiplier)}`, 
+                                  { x: event.clientX, y: event.clientY }, 
+                                  { x: Math.random() * 80 - 40, y: -80 });
+                
+                if (game.settings.particlesEnabled) {
+                    createParticles(event);
+                }
+            }
+            
+            // Button animation
+            clickArea.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                clickArea.style.transform = 'scale(1)';
+            }, 100);
+            
+            // Sound
+            if (game.settings.soundEnabled) {
+                playSound('click');
+            }
+        }
+
+        // Buy upgrade
+        function buyUpgrade(upgradeId) {
+            const upgrade = game.upgrades.find(u => u.id === upgradeId);
+            
+            if (game.score >= upgrade.cost) {
+                game.score -= upgrade.cost;
+                upgrade.owned++;
+                
+                if (upgrade.type === 'click') {
+                    game.clickValue *= upgrade.value;
+                }
+                
+                // Increase cost (15% more per owned)
+                upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.owned));
+                
+                // Sound
+                if (game.settings.soundEnabled) {
+                    playSound('buy');
+                }
+                
+                // Visual effect
+                if (game.settings.animationsEnabled) {
+                    createFloatingText(`Acheté: ${upgrade.name}`, 
+                                      { x: window.innerWidth / 2, y: window.innerHeight / 2 }, 
+                                      { x: 0, y: -40 });
+                }
+                
+                updateUI();
+                renderUpgrades();
+            } else {
+                // Not enough points
+                if (game.settings.animationsEnabled) {
+                    createFloatingText('Pas assez!', 
+                                      { x: window.innerWidth / 2, y: window.innerHeight / 2 }, 
+                                      { x: 0, y: -15 }, 'red');
+                    
+                    // Shake animation
+                    upgradesContainer.style.transform = 'translateX(-5px)';
+                    setTimeout(() => {
+                        upgradesContainer.style.transform = 'translateX(5px)';
+                        setTimeout(() => {
+                            upgradesContainer.style.transform = 'translateX(0)';
+                        }, 50);
+                    }, 50);
+                }
+                
+                if (game.settings.soundEnabled) {
+                    playSound('error');
+                }
+            }
+        }
+
+        // Buy skin
+        function buySkin(skinId) {
+            const skin = game.skins.find(s => s.id === skinId);
+            
+            if (skin.price === 0) {
+                equipSkin(skinId);
+                return;
+            }
+            
+            if (game.score >= skin.price && !skin.owned) {
+                game.score -= skin.price;
+                skin.owned = true;
+                
+                // Sound
+                if (game.settings.soundEnabled) {
+                    playSound('buy');
+                }
+                
+                // Visual effect
+                if (game.settings.animationsEnabled) {
+                    createFloatingText(`Skin acheté: ${skin.name}`, 
+                                      { x: window.innerWidth / 2, y: window.innerHeight / 2 }, 
+                                      { x: 0, y: -40 });
+                }
+                
+                updateUI();
+                renderSkins();
+                checkAchievements();
+            } else if (skin.owned) {
+                equipSkin(skinId);
+            } else {
+                // Not enough points
+                if (game.settings.animationsEnabled) {
+                    createFloatingText('Pas assez!', 
+                                      { x: window.innerWidth / 2, y: window.innerHeight / 2 }, 
+                                      { x: 0, y: -15 }, 'red');
+                }
+                
+                if (game.settings.soundEnabled) {
+                    playSound('error');
+                }
+            }
+        }
+
+        // Equip skin
+        function equipSkin(skinId) {
+            game.skins.forEach(skin => {
+                skin.equipped = (skin.id === skinId);
+            });
+            
+            const skin = game.skins.find(s => s.id === skinId);
+            document.documentElement.style.setProperty('--primary-color', skin.color1);
+            document.documentElement.style.setProperty('--secondary-color', skin.color2);
+            document.documentElement.style.setProperty('--particle-color', `${skin.color1}80`);
+            
+            // Update display
+            renderSkins();
+            
+            // Sound
+            if (game.settings.soundEnabled) {
+                playSound('equip');
+            }
+            
+            // Visual effect
+            if (game.settings.animationsEnabled) {
+                createFloatingText(`Skin équipé: ${skin.name}`, 
+                                  { x: window.innerWidth / 2, y: window.innerHeight / 2 }, 
+                                  { x: 0, y: -40 });
+            }
+        }
+
+        // Update UI
+        function updateUI() {
+            scoreElement.textContent = formatNumber(Math.floor(game.score));
+            cpsElement.textContent = formatNumber(game.cps.toFixed(1));
+            clickValueElement.textContent = formatNumber(game.clickValue * (1 + (game.prestigeBonus / 100)));
+            totalClicksElement.textContent = formatNumber(game.totalClicks);
+        }
+
+        // Update prestige info
+        function updatePrestigeInfo() {
+            const gain = calculatePrestigeGain();
+            prestigePointsElement.textContent = formatNumber(game.prestigePoints);
+            prestigeGainElement.textContent = formatNumber(gain);
+            prestigeBonusElement.textContent = `${game.prestigeBonus}%`;
+        }
+
+        // Calculate prestige gain
+        function calculatePrestigeGain() {
+            return Math.floor(Math.sqrt(game.score / 1000000));
+        }
+
+        // Show prestige confirmation
+        function showPrestigeConfirmation() {
+            const gain = calculatePrestigeGain();
+            if (gain > 0) {
+                openPopup('prestige');
+                updatePrestigeInfo();
+            } else {
+                if (game.settings.animationsEnabled) {
+                    createFloatingText('Besoin de 1M+ points!', 
+                                      { x: window.innerWidth / 2, y: window.innerHeight / 2 }, 
+                                      { x: 0, y: -20 }, 'red');
+                }
+                
+                if (game.settings.soundEnabled) {
+                    playSound('error');
+                }
+            }
+        }
+
+        // Prestige reset
+        function prestige() {
+            const gain = calculatePrestigeGain();
+            
+            game.prestigePoints += gain;
+            game.prestigeBonus += gain * 5; // 5% bonus per prestige point
+            game.score = 0;
+            game.clickValue = 1;
+            game.totalClicks = 0;
+            game.cps = 0;
+            game.upgrades.forEach(upgrade => {
+                upgrade.owned = 0;
+                upgrade.cost = upgrade.baseCost;
+            });
+            
+            // Keep skins and achievements
+            game.skins[0].owned = true;
+            game.skins[0].equipped = true;
+            
+            // Visual effects
+            if (game.settings.animationsEnabled) {
+                createConfetti();
+                createFloatingText(`Prestige +${gain}!`, 
+                                  { x: window.innerWidth / 2, y: window.innerHeight / 2 }, 
+                                  { x: 0, y: -50 }, '#ffcc00');
+            }
+            
+            if (game.settings.soundEnabled) {
+                playSound('achievement');
+            }
+            
+            closePopup('prestige');
+            updateUI();
+            renderUpgrades();
+            checkAchievements();
+            saveGame();
+        }
+
+        // Render upgrades
+        function renderUpgrades() {
+            upgradesContainer.innerHTML = '';
+            
+            game.upgrades.forEach(upgrade => {
+                if (game.score >= upgrade.unlockAt || upgrade.owned > 0) {
+                    const upgradeElement = document.createElement('div');
+                    upgradeElement.className = 'upgrade';
+                    
+                    // Calculate next level effect
+                    let nextEffect = '';
+                    if (upgrade.type === 'click') {
+                        nextEffect = `Prochain niveau: x${upgrade.value} clics`;
+                    } else if (upgrade.type === 'percentage') {
+                        nextEffect = `Prochain niveau: +${(upgrade.value * 100).toFixed(1)}% de vos points/sec`;
+                    } else if (upgrade.type === 'multiplier') {
+                        nextEffect = `Prochain niveau: x${upgrade.value} production`;
+                    } else {
+                        nextEffect = `Prochain niveau: +${upgrade.value} pts/sec`;
+                    }
+                    
+                    upgradeElement.innerHTML = `
+                        <div class="upgrade-header">
+                            <div class="upgrade-title">
+                                <i class="${upgrade.icon}"></i>
+                                ${upgrade.name}
+                            </div>
+                            <div class="upgrade-level">Niv. ${upgrade.owned}</div>
+                        </div>
+                        <div class="upgrade-description">${upgrade.description}</div>
+                        <div class="upgrade-next">${nextEffect}</div>
+                        <div class="upgrade-footer">
+                            <div class="upgrade-cost">${formatNumber(upgrade.cost)} pts</div>
+                            <div class="upgrade-unlock">Débloqué à ${formatNumber(upgrade.unlockAt)} pts</div>
+                        </div>
+                    `;
+                    
+                    if (game.score >= upgrade.cost) {
+                        upgradeElement.style.opacity = '1';
+                        upgradeElement.style.cursor = 'pointer';
+                    } else {
+                        upgradeElement.style.opacity = '0.7';
+                        upgradeElement.style.cursor = 'not-allowed';
+                    }
+                    
+                    upgradeElement.addEventListener('click', () => buyUpgrade(upgrade.id));
+                    upgradesContainer.appendChild(upgradeElement);
+                }
+            });
+        }
+
+        // Render achievements
+        function renderAchievements() {
+            achievementsContainer.innerHTML = '';
+            
+            game.achievements.forEach(achievement => {
+                const achievementElement = document.createElement('div');
+                achievementElement.className = `achievement-card ${achievement.unlocked ? '' : 'locked'}`;
+                
+                // Calculate progress for progress-based achievements
+                let progress = 0;
+                if (achievement.condition.toString().includes('totalClicks')) {
+                    const target = parseInt(achievement.condition.toString().match(/>= (\d+)/)[1]);
+                    progress = Math.min(100, (game.totalClicks / target) * 100);
+                } else if (achievement.condition.toString().includes('score')) {
+                    const target = parseInt(achievement.condition.toString().match(/>= (\d+)/)[1]);
+                    progress = Math.min(100, (game.score / target) * 100);
+                } else if (achievement.condition.toString().includes('upgrades.reduce')) {
+                    const target = parseInt(achievement.condition.toString().match(/>= (\d+)/)[1]);
+                    const owned = game.upgrades.reduce((sum, u) => sum + u.owned, 0);
+                    progress = Math.min(100, (owned / target) * 100);
+                } else if (achievement.condition.toString().includes('skins.filter')) {
+                    const target = achievement.name.includes('tous') ? 
+                        game.skins.length - 1 : 
+                        parseInt(achievement.name.match(/\d+/)?.[0] || 5);
+                    const owned = game.skins.filter(s => s.owned).length - 1;
+                    progress = Math.min(100, (owned / target) * 100);
+                } else if (achievement.condition.toString().includes('prestigePoints')) {
+                    const target = parseInt(achievement.condition.toString().match(/>= (\d+)/)[1]);
+                    progress = Math.min(100, (game.prestigePoints / target) * 100);
+                }
+                
+                achievementElement.innerHTML = `
+                    <div class="achievement-header">
+                        <div class="achievement-icon">
+                            <i class="${achievement.icon}"></i>
+                        </div>
+                        <div class="achievement-info">
+                            <div class="achievement-name">${achievement.name}</div>
+                            <div class="achievement-desc">${achievement.description}</div>
+                            ${achievement.unlocked ? '' : `
+                                <div class="achievement-locked">${progress.toFixed(0)}% complété</div>
+                                <div class="achievement-progress">
+                                    <div class="achievement-progress-bar" style="width: ${progress}%"></div>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+                
+                achievementsContainer.appendChild(achievementElement);
+            });
+        }
+
+        // Render skins
+        function renderSkins() {
+            skinsContainer.innerHTML = '';
+            
+            game.skins.forEach(skin => {
+                const skinElement = document.createElement('div');
+                skinElement.className = 'skin-card';
+                skinElement.style.cursor = skin.owned ? 'pointer' : (game.score >= skin.price ? 'pointer' : 'not-allowed');
+                skinElement.style.opacity = skin.owned ? '1' : (game.score >= skin.price ? '0.8' : '0.6');
+                
+                skinElement.innerHTML = `
+                    <div class="skin-preview" style="background: linear-gradient(135deg, ${skin.color1}, ${skin.color2})">
+                        <i class="${skin.icon}"></i>
+                    </div>
+                    <div class="skin-name">${skin.name}</div>
+                    ${skin.price === 0 ? 
+                        '<div class="skin-price">GRATUIT</div>' : 
+                        `<div class="skin-price">${formatNumber(skin.price)} pts</div>`
+                    }
+                    ${skin.owned ? 
+                        (skin.equipped ? 
+                            '<div class="skin-equipped">ÉQUIPÉ</div>' : 
+                            '<div class="skin-owned">POSSÉDÉ</div>') : 
+                        ''
+                    }
+                `;
+                
+                skinElement.addEventListener('click', () => buySkin(skin.id));
+                skinsContainer.appendChild(skinElement);
+            });
+        }
+
+        // Check achievements
+        function checkAchievements() {
+            game.achievements.forEach(achievement => {
+                if (!achievement.unlocked && achievement.condition(game)) {
+                    achievement.unlocked = true;
+                    showAchievement(achievement.name, achievement.description);
+                    renderAchievements();
+                }
+            });
+        }
+
+        // Show achievement
+        function showAchievement(title, description) {
+            achievementTitle.textContent = title;
+            achievementDesc.textContent = description;
+            
+            // Animation
+            achievementNotification.style.right = '10px';
+            setTimeout(() => {
+                setTimeout(() => {
+                    achievementNotification.style.right = '-300px';
+                }, 3000);
+            }, 100);
+            
+            // Effects
+            if (game.settings.animationsEnabled) {
+                createConfetti();
+            }
+            
+            if (game.settings.soundEnabled) {
+                playSound('achievement');
+            }
+        }
+
+        // Create particles
+        function createParticles(e) {
+            const colors = [getComputedStyle(document.documentElement).getPropertyValue('--primary-color'), 
+                           getComputedStyle(document.documentElement).getPropertyValue('--secondary-color'),
+                           getComputedStyle(document.documentElement).getPropertyValue('--accent-color')];
+            
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 8 + 4;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.backgroundColor = color;
+                
+                const x = e.clientX - size / 2;
+                const y = e.clientY - size / 2;
+                
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                
+                document.body.appendChild(particle);
+                
+                // Animation
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 4 + 2;
+                const xVelocity = Math.cos(angle) * velocity;
+                const yVelocity = Math.sin(angle) * velocity;
+                
+                let posX = x;
+                let posY = y;
+                let opacity = 1;
+                
+                const animate = () => {
+                    posX += xVelocity;
+                    posY += yVelocity;
+                    opacity -= 0.02;
+                    
+                    particle.style.left = `${posX}px`;
+                    particle.style.top = `${posY}px`;
+                    particle.style.opacity = opacity;
+                    
+                    if (opacity > 0) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        particle.remove();
+                    }
+                };
+                
+                animate();
+            }
+        }
+
+        // Create floating text
+        function createFloatingText(text, position, velocity, color = '#ffffff') {
+            const floatingText = document.createElement('div');
+            floatingText.textContent = text;
+            floatingText.style.position = 'absolute';
+            floatingText.style.color = color;
+            floatingText.style.fontWeight = 'bold';
+            floatingText.style.fontSize = '1.2rem';
+            floatingText.style.pointerEvents = 'none';
+            floatingText.style.zIndex = '100';
+            floatingText.style.textShadow = '0 0 3px rgba(0,0,0,0.5)';
+            floatingText.style.left = `${position.x}px`;
+            floatingText.style.top = `${position.y}px`;
+            floatingText.style.transform = 'translate(-50%, -50%)';
+            floatingText.style.opacity = '1';
+            floatingText.style.transition = 'all 0.5s';
+            
+            document.body.appendChild(floatingText);
+            
+            let posX = position.x;
+            let posY = position.y;
+            let opacity = 1;
+            
+            const animate = () => {
+                posX += velocity.x * 0.1;
+                posY += velocity.y * 0.1;
+                opacity -= 0.01;
+                
+                floatingText.style.left = `${posX}px`;
+                floatingText.style.top = `${posY}px`;
+                floatingText.style.opacity = opacity;
+                
+                if (opacity > 0) {
+                    requestAnimationFrame(animate);
+                } else {
+                    floatingText.remove();
+                }
+            };
+            
+            animate();
+        }
+
+        // Create confetti
+        function createConfetti() {
+            const colors = [getComputedStyle(document.documentElement).getPropertyValue('--primary-color'), 
+                           getComputedStyle(document.documentElement).getPropertyValue('--secondary-color'),
+                           getComputedStyle(document.documentElement).getPropertyValue('--accent-color'),
+                           '#ffffff', '#ffcc00'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                
+                const size = Math.random() * 8 + 4;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const shape = Math.random() > 0.5 ? '50%' : '0';
+                
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                confetti.style.backgroundColor = color;
+                confetti.style.borderRadius = shape;
+                
+                const startX = Math.random() * window.innerWidth;
+                const startY = -10;
+                
+                confetti.style.left = `${startX}px`;
+                confetti.style.top = `${startY}px`;
+                
+                document.body.appendChild(confetti);
+                
+                // Animation
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 8 + 4;
+                const xVelocity = Math.cos(angle) * velocity * 0.5;
+                const rotation = Math.random() * 360;
+                const rotationSpeed = Math.random() * 8 - 4;
+                
+                let posX = startX;
+                let posY = startY;
+                let currentRotation = rotation;
+                let opacity = 1;
+                
+                const duration = Math.random() * 2000 + 1500;
+                const startTime = Date.now();
+                
+                const animate = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = elapsed / duration;
+                    
+                    if (progress < 1) {
+                        posX += xVelocity;
+                        posY += velocity * progress;
+                        currentRotation += rotationSpeed;
+                        opacity = 1 - progress * progress;
+                        
+                        confetti.style.left = `${posX}px`;
+                        confetti.style.top = `${posY}px`;
+                        confetti.style.transform = `rotate(${currentRotation}deg)`;
+                        confetti.style.opacity = opacity;
+                        
+                        requestAnimationFrame(animate);
+                    } else {
+                        confetti.remove();
+                    }
+                };
+                
+                // Start with delay
+                setTimeout(() => {
+                    confetti.style.opacity = '1';
+                    animate();
+                }, Math.random() * 300);
+            }
+        }
+
+        // Play sound
+        function playSound(type) {
+            if (typeof Audio === 'undefined') return;
+            
+            let sound;
+            const volume = 0.3;
+            
+            // Basic sounds for prototype
+            // In a real app you would use audio files
+            switch(type) {
+                case 'click':
+                    sound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU...');
+                    sound.volume = volume * 0.5;
+                    break;
+                case 'buy':
+                    sound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU...');
+                    sound.volume = volume;
+                    break;
+                case 'achievement':
+                    sound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU...');
+                    sound.volume = volume;
+                    break;
+                case 'error':
+                    sound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU...');
+                    sound.volume = volume;
+                    break;
+                case 'equip':
+                    sound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU...');
+                    sound.volume = volume;
+                    break;
+                default:
+                    return;
+            }
+            
+            sound.play().catch(e => console.log("Audio play failed:", e));
+        }
+
+        // Format number
+        function formatNumber(num) {
+            if (!game.settings.formatNumbers) return Math.floor(num);
+            
+            if (num >= 1e12) return (num / 1e12).toFixed(1) + 'T';
+            if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+            if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+            if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+            return Math.floor(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Open popup
+        function openPopup(type) {
+            const popup = document.getElementById(`${type}Popup`);
+            popup.classList.add('active');
+            
+            // Sound
+            if (game.settings.soundEnabled) {
+                playSound('click');
+            }
+        }
+
+        // Close popup
+        function closePopup(type) {
+            const popup = document.getElementById(`${type}Popup`);
+            popup.classList.remove('active');
+            
+            // Sound
+            if (game.settings.soundEnabled) {
+                playSound('click');
+            }
+        }
+
+        // Save game
+        function saveGame() {
+            localStorage.setItem('cosmoClickSave', JSON.stringify(game));
+            
+            if (game.settings.animationsEnabled) {
+                createFloatingText('Jeu sauvegardé!', 
+                                  { x: window.innerWidth - 80, y: window.innerHeight - 40 }, 
+                                  { x: 0, y: -15 }, '#00ff00');
+            }
+        }
+
+        // Load game
+        function loadGame() {
+            const save = localStorage.getItem('cosmoClickSave');
+            if (save) {
+                try {
+                    const parsed = JSON.parse(save);
+                    
+                    // Only load if save version matches
+                    if (parsed.saveVersion === game.saveVersion) {
+                        Object.assign(game, parsed);
+                        
+                        // Recalculate click value
+                        game.clickValue = 1;
+                        game.upgrades.forEach(upgrade => {
+                            if (upgrade.type === 'click' && upgrade.owned > 0) {
+                                game.clickValue *= Math.pow(upgrade.value, upgrade.owned);
+                            }
+                        });
+                        
+                        // Apply equipped skin
+                        const equippedSkin = game.skins.find(skin => skin.equipped);
+                        if (equippedSkin) {
+                            document.documentElement.style.setProperty('--primary-color', equippedSkin.color1);
+                            document.documentElement.style.setProperty('--secondary-color', equippedSkin.color2);
+                            document.documentElement.style.setProperty('--particle-color', `${equippedSkin.color1}80`);
+                        }
+                        
+                        if (game.settings.animationsEnabled) {
+                            createFloatingText('Jeu chargé!', 
+                                              { x: window.innerWidth / 2, y: window.innerHeight / 2 }, 
+                                              { x: 0, y: -40 }, '#00ff00');
+                        }
+                    }
+                } catch (e) {
+                    console.error('Failed to load save:', e);
+                }
+            }
+        }
+
+        // Update settings UI
+        function updateSettingsUI() {
+            soundToggle.checked = game.settings.soundEnabled;
+            particlesToggle.checked = game.settings.particlesEnabled;
+            animationsToggle.checked = game.settings.animationsEnabled;
+            formatNumbersToggle.checked = game.settings.formatNumbers;
+            autoSaveToggle.checked = game.settings.autoSave;
+        }
+
+        // Reset game
+        function resetGame() {
+            if (confirm('Êtes-vous sûr de vouloir réinitialiser le jeu? Toute votre progression sera perdue.')) {
+                localStorage.removeItem('cosmoClickSave');
+                
+                // Reset game state
+                game.score = 0;
+                game.clickValue = 1;
+                game.totalClicks = 0;
+                game.cps = 0;
+                game.prestigePoints = 0;
+                game.prestigeBonus = 0;
+                game.upgrades.forEach(upgrade => {
+                    upgrade.owned = 0;
+                    upgrade.cost = upgrade.baseCost;
+                });
+                game.achievements.forEach(achievement => {
+                    achievement.unlocked = false;
+                });
+                game.skins.forEach(skin => {
+                    skin.owned = false;
+                    skin.equipped = false;
+                });
+                // Reset default skin
+                game.skins[0].owned = true;
+                game.skins[0].equipped = true;
+                // Reset colors
+                document.documentElement.style.setProperty('--primary-color', '#6e48aa');
+                document.documentElement.style.setProperty('--secondary-color', '#9d50bb');
+                document.documentElement.style.setProperty('--particle-color', 'rgba(110, 72, 170, 0.7)');
+                
+                game.lastUpdate = Date.now();
+                
+                updateUI();
+                updatePrestigeInfo();
+                renderUpgrades();
+                renderAchievements();
+                renderSkins();
+                
+                if (game.settings.animationsEnabled) {
+                    createFloatingText('Jeu réinitialisé!', 
+                                      { x: window.innerWidth / 2, y: window.innerHeight / 2 }, 
+                                      { x: 0, y: -40 }, '#ff0000');
+                }
+            }
+        }
+
+        // Change theme
+        function changeTheme(theme) {
+            const themeBtns = document.querySelectorAll('.theme-btn');
+            
+            themeBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Find skin matching the theme
+            let skin;
+            switch(theme) {
+                case 'ocean':
+                    skin = game.skins.find(s => s.name === "Océan");
+                    break;
+                case 'sunset':
+                    skin = game.skins.find(s => s.name === "Soleil");
+                    break;
+                case 'forest':
+                    skin = game.skins.find(s => s.name === "Forêt");
+                    break;
+                default: // default theme
+                    skin = game.skins.find(s => s.name === "Classique");
+            }
+            
+            // Equip matching skin
+            if (skin) {
+                equipSkin(skin.id);
+            }
+        }
+
+        // Initialize the game when page loads
+        window.onload = init;
+    </script>
+</body>
+</html>

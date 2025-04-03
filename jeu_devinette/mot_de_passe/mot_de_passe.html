@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,84 +8,114 @@
     <link rel="stylesheet" href="mot_de_passe.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/nav.css">
-    </head>
-    <body>
-        <nav class="navbar">
-            <div class="navbar-container">
-                <a href="index.html" class="logo">
-                    <i class="fas fa-gamepad"></i>
-                    <span>Game<span>Hub</span></span>
-                </a>
-    
-                
-                <div class="menu-toggle" id="mobile-menu">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
-                
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="../index.html" class="nav-links active">
-                            <i class="fas fa-home"></i> Accueil
-                            <span class="link-underline"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-links dropdown-toggle">
-                            <i class="fas fa-info-circle"></i> Jeu de carte 
-                            <span class="link-underline"></span>
-                            <i class="fas fa-chevron-down dropdown-icon"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="../jeu_de_carte/blackjack/blackjack.html" class="dropdown-item">Blackjack</a></li>
-                            <li><a href="#" class="dropdown-item">Poker</a></li>
-                            <li><a href="#" class="dropdown-item">Solitaire</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-links dropdown-toggle">
-                            <i class="fas fa-briefcase"></i> Jeu de guerre
-                            <span class="link-underline"></span>
-                            <i class="fas fa-chevron-down dropdown-icon"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#" class="dropdown-item">Stratégie</a></li>
-                            <li><a href="#" class="dropdown-item">FPS</a></li>
-                            <li><a href="#" class="dropdown-item">MMORPG</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="../jeu_devinette/mot_de_passe.html" class="nav-links">
-                            <i class="fas fa-image"></i> Jeu TKT
-                            <span class="link-underline"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="../qcm/qcm.html" class="nav-links">
-                            <i class="fas fa-envelope"></i> QCM
-                            <span class="link-underline"></span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    <div class="game-container">
-        <h1>🔐 Devine le Mot de Passe</h1>
-        <p>Trouvez le mot de passe caché (5 caractères).</p>
-        
-        <div class="password-display" id="hint">*****</div>
-        
-        <input type="text" id="guess-input" placeholder="Entrez votre proposition" maxlength="5">
-        <div class="buttons">
-            <button id="guess-btn" disabled>Essayer</button>
-            <button id="hint-btn">Indice (<span id="hint-count">3</span>)</button>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <!-- Logo avec icône -->
+            <a href="/index.html" class="logo">
+                <i class="fas fa-gamepad"></i>
+                <span>Game<span>Hub</span></span>
+            </a>
+
+            <!-- Bouton menu mobile -->
+            <button class="menu-toggle" id="mobile-menu" aria-label="Menu mobile" aria-expanded="false">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <!-- Menu principal -->
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/site/index.html" class="nav-links">
+                        <i class="fas fa-home"></i> Accueil
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/nouveaux-jeux.html" class="nav-links">
+                        <i class="fas fa-star"></i> Nouveautés
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/jeux-populaires.html" class="nav-links">
+                        <i class="fas fa-fire"></i> Populaires
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/categories.html" class="nav-links">
+                        <i class="fas fa-th-large"></i> Catégories
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/a-propos.html" class="nav-links">
+                        <i class="fas fa-info-circle"></i> À propos
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+
+                <!-- Menu déroulant -->
+                <li class="nav-item dropdown">
+                    <button class="nav-links dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-gamepad"></i> Jeux
+                        <span class="link-underline"></span>
+                        <i class="fas fa-chevron-down dropdown-icon"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a href="#" class="dropdown-item" data-category="all"><i class="fas fa-th-list"></i> Tous les jeux</a></li>
+                        <li><a href="../jeu_de_carte/blackjack/blackjack.html" class="dropdown-item" data-category="cartes"><i class="fas fa-cards"></i> Jeux de cartes</a></li>
+                        <li><a href="#" class="dropdown-item" data-category="devinette"><i class="fas fa-question"></i> Jeux de devinette</a></li>
+                        <li><a href="#" class="dropdown-item" data-category="strategie"><i class="fas fa-chess"></i> Stratégie</a></li>
+                        <li><a href="#" class="dropdown-item" data-category="reflexion"><i class="fas fa-brain"></i> Réflexion</a></li>
+                        <li><a href="#" class="dropdown-item" data-category="arcade"><i class="fas fa-joystick"></i> Arcade</a></li>
+                        <li><a href="#" class="dropdown-item" data-category="educatif"><i class="fas fa-graduation-cap"></i> Éducatif</a></li>
+                        <li><a href="#" class="dropdown-item" data-category="cours"><i class="fas fa-book"></i> Cours</a></li>
+                        <li><a href="#" class="dropdown-item" data-category="classique"><i class="fas fa-history"></i> Classique</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
-        
-        <div id="result"></div>
-        <div id="attempts">Tentatives : 0/7</div>
+    </nav>
+
+    <!-- Barre de filtres (à placer dans votre contenu principal, PAS dans la nav) 
+    <div class="filters-container">
+        <div class="filters">
+            <button class="filter-btn active" data-category="all">Tous</button>
+            <button class="filter-btn" data-category="cartes">Cartes</button>
+            <button class="filter-btn" data-category="devinette">Devinette</button>
+            <button class="filter-btn" data-category="strategie">Stratégie</button>
+            <button class="filter-btn" data-category="reflexion">Réflexion</button>
+            <button class="filter-btn" data-category="arcade">Arcade</button>
+            <button class="filter-btn" data-category="educatif">Éducatif</button>
+            <button class="filter-btn" data-category="cours">Cours</button>
+            <button class="filter-btn" data-category="classique">Classique</button>
+        </div>
     </div>
-    <script src="/nav.js"></script>
-    <script src="mot_de_passe.js"></script>
-</body> 
-</html> 
+    -->
+</body>
+<div class="game-container">
+    <h1>🔐 Devine le Mot de Passe</h1>
+    <p>Trouvez le mot de passe caché (5 caractères).</p>
+
+    <div class="password-display" id="hint">*****</div>
+
+    <input type="text" id="guess-input" placeholder="Entrez votre proposition" maxlength="5">
+    <div class="buttons">
+        <button id="guess-btn" disabled>Essayer</button>
+        <button id="hint-btn">Indice (<span id="hint-count">3</span>)</button>
+    </div>
+
+    <div id="result"></div>
+    <div id="attempts">Tentatives : 0/7</div>
+</div>
+<script src="/nav.js"></script>
+<script src="mot_de_passe.js"></script>
+<script src="/site/script/script.js"></script>
+</body>
+
+</html>
