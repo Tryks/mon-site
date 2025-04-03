@@ -17,7 +17,6 @@ Uno (Version numérique avec règles personnalisables)
 Jeu de 7 familles (Thème personnalisable)
 
 🧩 Jeux de Réflexion
-Mastermind (Décoder la combinaison secrète) a faire 
 
 Picross (Grilles logiques avec créateur de niveaux)
 
