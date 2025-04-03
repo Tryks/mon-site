@@ -229,3 +229,6 @@ rendre le tout plus beau visuellement
 # Changement a faire :
 
 changer la page index et jeu detaile dans la page site ensuite regarder si tout est connécter en eux, ensuite finir le menu pour mettre su tous les jeu, le jeu de poker ne marche plus (a regarder)
+
+
+il a beaucoup de d'erreurs dans les noms des jeux donc changer au plus vite! 
