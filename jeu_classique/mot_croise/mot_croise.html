@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mots Croisés Magnifiques</title>
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff8a00;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--light);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--accent), #ff00cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+        
+        .crossword {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            grid-gap: 2px;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cell {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light);
+            color: var(--dark);
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px var(--accent);
+        }
+        
+        .cell.selected {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .cell.filled {
+            background-color: #e9ecef;
+        }
+        
+        .cell.correct {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .cell.incorrect {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .cell-number {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            font-size: 0.6rem;
+            color: var(--secondary);
+        }
+        
+        .clues {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .clue-section {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .clue-section h3 {
+            margin-top: 0;
+            color: var(--accent);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        
+        .clue-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .clue-item {
+            padding: 8px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .clue-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding-left: 5px;
+        }
+        
+        .clue-item.active {
+            background-color: var(--accent);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .clue-item.solved {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.secondary {
+            background: var(--dark);
+        }
+        
+        button.danger {
+            background: var(--danger);
+        }
+        
+        button.success {
+            background: var(--success);
+        }
+        
+        .timer {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+        
+        .difficulty-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .difficulty-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .difficulty-btn.active {
+            background-color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .hint-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .hint-container.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin-top: 20px;
+            max-width: 500px;
+        }
+        
+        .key {
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .key:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .key:active {
+            transform: scale(0.95);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.5s;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent);
+            opacity: 0;
+            z-index: 99;
+            animation: confettiFall 5s linear forwards;
+        }
+        
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .crossword {
+                grid-template-columns: repeat(15, 20px);
+            }
+            
+            .cell {
+                width: 20px;
+                height: 20px;
+                font-size: 1rem;
+            }
+            
+            .game-container {
+                flex-direction: column;
+            }
+            
+            .keyboard {
+                grid-template-columns: repeat(8, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mots Croisés Magnifiques</h1>
+        <p class="subtitle">L'expérience ultime de mots croisés avec toutes les options imaginables</p>
+        
+        <div class="timer" id="timer">00:00:00</div>
+        
+        <div class="difficulty-selector">
+            <div class="difficulty-btn active" data-difficulty="easy">Facile</div>
+            <div class="difficulty-btn" data-difficulty="medium">Moyen</div>
+            <div class="difficulty-btn" data-difficulty="hard">Difficile</div>
+        </div>
+        
+        <div class="game-container">
+            <div class="crossword" id="crossword"></div>
+            
+            <div class="clues">
+                <div class="clue-section">
+                    <h3>Horizontal</h3>
+                    <ul class="clue-list" id="horizontal-clues"></ul>
+                </div>
+                
+                <div class="clue-section">
+                    <h3>Vertical</h3>
+                    <ul class="clue-list" id="vertical-clues"></ul>
+                </div>
+                
+                <div class="hint-container" id="hint-container">
+                    <h3>Indice</h3>
+                    <p id="hint-text"></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="check-btn">Vérifier</button>
+            <button id="solve-btn" class="secondary">Résoudre</button>
+            <button id="hint-btn">Indice</button>
+            <button id="reset-btn" class="danger">Réinitialiser</button>
+            <button id="new-game-btn" class="success">Nouvelle Grille</button>
+        </div>
+        
+        <div class="keyboard" id="keyboard"></div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="words-solved">0</div>
+                <div>Mots trouvés</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="hints-used">0</div>
+                <div>Indices utilisés</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="accuracy">100%</div>
+                <div>Précision</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="congrats-modal">
+        <div class="modal-content">
+            <h2>Félicitations !</h2>
+            <p id="congrats-message">Vous avez complété la grille avec succès !</p>
+            <p id="stats-message"></p>
+            <button id="play-again-btn">Jouer à nouveau</button>
+        </div>
+    </div>
+    
+    <script>
+        // État du jeu
+        const gameState = {
+            grid: [],
+            words: [],
+            currentCell: null,
+            currentDirection: 'across',
+            difficulty: 'easy',
+            startTime: null,
+            timerInterval: null,
+            solvedWords: 0,
+            totalWords: 0,
+            hintsUsed: 0,
+            incorrectAttempts: 0,
+            totalAttempts: 0
+        };
+        
+        // Mots et définitions selon la difficulté
+        const wordData = {
+            easy: {
+                words: [
+                    { word: "CHAT", clue: "Animal domestique qui miaule" },
+                    { word: "FLEUR", clue: "Partie colorée d'une plante" },
+                    { word: "SOLEIL", clue: "Étoile de notre système" },
+                    { word: "LIVRE", clue: "Objet avec des pages à lire" },
+                    { word: "TABLE", clue: "Meuble avec une surface plane" },
+                    { word: "EAU", clue: "Liquide transparent vital" },
+                    { word: "CIEL", clue: "Espace au-dessus de nos têtes" },
+                    { word: "JARDIN", clue: "Espace avec des plantes et fleurs" },
+                    { word: "MUSIQUE", clue: "Art des sons et mélodies" },
+                    { word: "ECOLE", clue: "Lieu d'apprentissage" }
+                ]
+            },
+            medium: {
+                words: [
+                    { word: "PYTHON", clue: "Langage de programmation populaire" },
+                    { word: "AVOCAT", clue: "Fruit ou profession juridique" },
+                    { word: "BALEINE", clue: "Grand mammifère marin" },
+                    { word: "HORLOGE", clue: "Appareil qui indique l'heure" },
+                    { word: "VOLCAN", clue: "Montagne qui peut entrer en éruption" },
+                    { word: "BIBLIOTHEQUE", clue: "Lieu avec une collection de livres" },
+                    { word: "ORCHESTRE", clue: "Groupe de musiciens" },
+                    { word: "TELESCOPE", clue: "Instrument pour observer les étoiles" },
+                    { word: "CROISSANT", clue: "Viennoiserie en forme de lune" },
+                    { word: "PARAPLUIE", clue: "Objet pour se protéger de la pluie" }
+                ]
+            },
+            hard: {
+                words: [
+                    { word: "KALEIDOSCOPE", clue: "Instrument optique avec des motifs changeants" },
+                    { word: "XENOPHILE", clue: "Personne attirée par les cultures étrangères" },
+                    { word: "QUINTESSENCE", clue: "La forme la plus pure d'une substance" },
+                    { word: "ZYGOMATIQUE", clue: "Relatif aux pommettes" },
+                    { word: "PNEUMONIE", clue: "Infection des poumons" },
+                    { word: "ONOMATOPEE", clue: "Mot qui imite un son" },
+                    { word: "METAPHORE", clue: "Figure de style comparative" },
+                    { word: "SYNECDOCHE", clue: "Figure de style utilisant une partie pour le tout" },
+                    { word: "ANTONOMASE", clue: "Figure de style qui transforme un nom propre en nom commun" },
+                    { word: "OXYMORE", clue: "Figure de style qui associe deux termes contradictoires" }
+                ]
+            }
+        };
+        
+        // Initialisation du jeu
+        function initGame() {
+            resetGameState();
+            generateCrossword();
+            renderCrossword();
+            renderClues();
+            setupKeyboard();
+            startTimer();
+            updateStats();
+        }
+        
+        // Réinitialisation de l'état du jeu
+        function resetGameState() {
+            gameState.grid = Array(15).fill().map(() => Array(15).fill(null));
+            gameState.words = [];
+            gameState.currentCell = null;
+            gameState.currentDirection = 'across';
+            gameState.solvedWords = 0;
+            gameState.hintsUsed = 0;
+            gameState.incorrectAttempts = 0;
+            gameState.totalAttempts = 0;
+            
+            // Sélectionner les mots selon la difficulté
+            const data = wordData[gameState.difficulty];
+            const shuffledWords = [...data.words].sort(() => Math.random() - 0.5);
+            gameState.words = shuffledWords.slice(0, 10); // Prendre 10 mots
+            gameState.totalWords = gameState.words.length;
+        }
+        
+        // Génération de la grille de mots croisés
+        function generateCrossword() {
+            // Trier les mots du plus long au plus court
+            gameState.words.sort((a, b) => b.word.length - a.word.length);
+            
+            // Placer le premier mot au centre
+            const firstWord = gameState.words[0];
+            const startRow = Math.floor((15 - firstWord.word.length) / 2);
+            
+            placeWord(firstWord, startRow, 0, 'across');
+            
+            // Essayer de placer les autres mots
+            for (let i = 1; i < gameState.words.length; i++) {
+                const word = gameState.words[i];
+                if (!tryPlaceWord(word)) {
+                    console.log(`Impossible de placer le mot: ${word.word}`);
+                }
+            }
+            
+            // Ajouter les numéros aux mots
+            numberCells();
+        }
+        
+        // Essayer de placer un mot dans la grille
+        function tryPlaceWord(word) {
+            // Essayer d'abord en intersectant avec des mots existants
+            for (let i = 0; i < word.word.length; i++) {
+                const letter = word.word[i];
+                
+                // Chercher toutes les cellules avec cette lettre
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        if (gameState.grid[row][col] && gameState.grid[row][col].letter === letter) {
+                            // Essayer de placer verticalement si le mot existant est horizontal
+                            if (gameState.grid[row][col].across) {
+                                if (canPlaceVertical(word, row, col - i)) {
+                                    placeWord(word, row, col - i, 'down');
+                                    return true;
+                                }
+                            }
+                            
+                            // Essayer de placer horizontalement si le mot existant est vertical
+                            if (gameState.grid[row][col].down) {
+                                if (canPlaceAcross(word, row - i, col)) {
+                                    placeWord(word, row - i, col, 'across');
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Si aucune intersection trouvée, essayer de placer n'importe où
+            return tryPlaceRandom(word);
+        }
+        
+        // Essayer de placer un mot aléatoirement
+        function tryPlaceRandom(word) {
+            const maxAttempts = 100;
+            let attempts = 0;
+            
+            while (attempts < maxAttempts) {
+                attempts++;
+                
+                const direction = Math.random() > 0.5 ? 'across' : 'down';
+                let row, col;
+                
+                if (direction === 'across') {
+                    row = Math.floor(Math.random() * 15);
+                    col = Math.floor(Math.random() * (15 - word.word.length));
+                } else {
+                    row = Math.floor(Math.random() * (15 - word.word.length));
+                    col = Math.floor(Math.random() * 15);
+                }
+                
+                if (direction === 'across' && canPlaceAcross(word, row, col)) {
+                    placeWord(word, row, col, 'across');
+                    return true;
+                } else if (direction === 'down' && canPlaceVertical(word, row, col)) {
+                    placeWord(word, row, col, 'down');
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        // Vérifier si un mot peut être placé horizontalement
+        function canPlaceAcross(word, row, col) {
+            // Vérifier les limites
+            if (col + word.word.length > 15) return false;
+            
+            // Vérifier les conflits avec les mots existants
+            let hasIntersection = false;
+            
+            for (let i = 0; i < word.word.length; i++) {
+                const cell = gameState.grid[row][col + i];
+                
+                // Si la cellule est vide, vérifier les cellules adjacentes verticales
+                if (!cell) {
+                    // Vérifier au-dessus
+                    if (row > 0 && gameState.grid[row - 1][col + i]) return false;
+                    // Vérifier en dessous
+                    if (row < 14 && gameState.grid[row + 1][col + i]) return false;
+                    
+                    // Vérifier avant et après (sauf pour la première et dernière lettre)
+                    if (i > 0 && col + i > 0 && gameState.grid[row][col + i - 1] && !gameState.grid[row][col + i - 1].across) return false;
+                    if (i < word.word.length - 1 && col + i < 14 && gameState.grid[row][col + i + 1] && !gameState.grid[row][col + i + 1].across) return false;
+                } else {
+                    // Si la cellule n'est pas vide, la lettre doit correspondre
+                    if (cell.letter !== word.word[i]) return false;
+                    
+                    // Marquer qu'il y a une intersection
+                    hasIntersection = true;
+                    
+                    // Vérifier que la cellule ne fait pas déjà partie d'un mot horizontal
+                    if (cell.across) return false;
+                }
+            }
+            
+            // Vérifier les cellules avant et après le mot
+            if (col > 0 && gameState.grid[row][col - 1]) return false;
+            if (col + word.word.length < 15 && gameState.grid[row][col + word.word.length]) return false;
+            
+            // Pour les mots sans intersection, vérifier qu'ils ne sont pas trop proches d'autres mots
+            if (!hasIntersection) {
+                // Vérifier les rangées au-dessus et en dessous
+                const start = Math.max(0, col - 1);
+                const end = Math.min(15, col + word.word.length + 1);
+                
+                if (row > 0) {
+                    for (let i = start; i < end; i++) {
+                        if (gameState.grid[row - 1][i]) return false;
+                    }
+                }
+                
+                if (row < 14) {
+                    for (let i = start; i < end; i++) {
+                        if (gameState.grid[row + 1][i]) return false;
+                    }
+                }
+            }
+            
+            return true;
+        }
+        
+        // Vérifier si un mot peut être placé verticalement
+        function canPlaceVertical(word, row, col) {
+            // Vérifier les limites
+            if (row + word.word.length > 15) return false;
+            
+            // Vérifier les conflits avec les mots existants
+            let hasIntersection = false;
+            
+            for (let i = 0; i < word.word.length; i++) {
+                const cell = gameState.grid[row + i][col];
+                
+                // Si la cellule est vide, vérifier les cellules adjacentes horizontales
+                if (!cell) {
+                    // Vérifier à gauche
+                    if (col > 0 && gameState.grid[row + i][col - 1]) return false;
+                    // Vérifier à droite
+                    if (col < 14 && gameState.grid[row + i][col + 1]) return false;
+                    
+                    // Vérifier avant et après (sauf pour la première et dernière lettre)
+                    if (i > 0 && row + i > 0 && gameState.grid[row + i - 1][col] && !gameState.grid[row + i - 1][col].down) return false;
+                    if (i < word.word.length - 1 && row + i < 14 && gameState.grid[row + i + 1][col] && !gameState.grid[row + i + 1][col].down) return false;
+                } else {
+                    // Si la cellule n'est pas vide, la lettre doit correspondre
+                    if (cell.letter !== word.word[i]) return false;
+                    
+                    // Marquer qu'il y a une intersection
+                    hasIntersection = true;
+                    
+                    // Vérifier que la cellule ne fait pas déjà partie d'un mot vertical
+                    if (cell.down) return false;
+                }
+            }
+            
+            // Vérifier les cellules avant et après le mot
+            if (row > 0 && gameState.grid[row - 1][col]) return false;
+            if (row + word.word.length < 15 && gameState.grid[row + word.word.length][col]) return false;
+            
+            // Pour les mots sans intersection, vérifier qu'ils ne sont pas trop proches d'autres mots
+            if (!hasIntersection) {
+                // Vérifier les colonnes à gauche et à droite
+                const start = Math.max(0, row - 1);
+                const end = Math.min(15, row + word.word.length + 1);
+                
+                if (col > 0) {
+                    for (let i = start; i < end; i++) {
+                        if (gameState.grid[i][col - 1]) return false;
+                    }
+                }
+                
+                if (col < 14) {
+                    for (let i = start; i < end; i++) {
+                        if (gameState.grid[i][col + 1]) return false;
+                    }
+                }
+            }
+            
+            return true;
+        }
+        
+        // Placer un mot dans la grille
+        function placeWord(word, row, col, direction) {
+            const wordObj = {
+                word: word.word,
+                clue: word.clue || word.clue,
+                direction,
+                startRow: row,
+                startCol: col,
+                number: 0,
+                solved: false
+            };
+            
+            for (let i = 0; i < word.word.length; i++) {
+                const letter = word.word[i];
+                const cellRow = direction === 'across' ? row : row + i;
+                const cellCol = direction === 'across' ? col + i : col;
+                
+                if (!gameState.grid[cellRow][cellCol]) {
+                    gameState.grid[cellRow][cellCol] = {
+                        letter,
+                        across: direction === 'across' ? wordObj : null,
+                        down: direction === 'down' ? wordObj : null,
+                        userInput: '',
+                        number: 0
+                    };
+                } else {
+                    gameState.grid[cellRow][cellCol][direction] = wordObj;
+                }
+            }
+            
+            gameState.words.push(wordObj);
+        }
+        
+        // Numéroter les cellules
+        function numberCells() {
+            let number = 1;
+            
+            for (let row = 0; row < 15; row++) {
+                for (let col = 0; col < 15; col++) {
+                    const cell = gameState.grid[row][col];
+                    if (!cell) continue;
+                    
+                    const isStartOfAcross = cell.across && cell.across.startRow === row && cell.across.startCol === col;
+                    const isStartOfDown = cell.down && cell.down.startRow === row && cell.down.startCol === col;
+                    
+                    if (isStartOfAcross || isStartOfDown) {
+                        cell.number = number;
+                        if (isStartOfAcross) cell.across.number = number;
+                        if (isStartOfDown) cell.down.number = number;
+                        number++;
+                    }
+                }
+            }
+        }
+        
+        // Afficher la grille dans le DOM
+        function renderCrossword() {
+            const crosswordEl = document.getElementById('crossword');
+            crosswordEl.innerHTML = '';
+            
+            for (let row = 0; row < 15; row++) {
+                for (let col = 0; col < 15; col++) {
+                    const cell = gameState.grid[row][col];
+                    const cellEl = document.createElement('div');
+                    cellEl.className = 'cell';
+                    
+                    if (cell) {
+                        cellEl.dataset.row = row;
+                        cellEl.dataset.col = col;
+                        
+                        if (cell.number) {
+                            const numberEl = document.createElement('div');
+                            numberEl.className = 'cell-number';
+                            numberEl.textContent = cell.number;
+                            cellEl.appendChild(numberEl);
+                        }
+                        
+                        if (cell.userInput) {
+                            cellEl.textContent = cell.userInput;
+                            cellEl.classList.add('filled');
+                            
+                            // Vérifier si la lettre est correcte
+                            if (cell.userInput === cell.letter) {
+                                cellEl.classList.add('correct');
+                            } else {
+                                cellEl.classList.add('incorrect');
+                            }
+                        }
+                        
+                        cellEl.addEventListener('click', () => selectCell(row, col));
+                    } else {
+                        cellEl.style.backgroundColor = 'transparent';
+                        cellEl.style.pointerEvents = 'none';
+                    }
+                    
+                    crosswordEl.appendChild(cellEl);
+                }
+            }
+        }
+        
+        // Afficher les indices
+        function renderClues() {
+            const horizontalCluesEl = document.getElementById('horizontal-clues');
+            const verticalCluesEl = document.getElementById('vertical-clues');
+            
+            horizontalCluesEl.innerHTML = '';
+            verticalCluesEl.innerHTML = '';
+            
+            // Trier les mots par numéro
+            gameState.words.sort((a, b) => a.number - b.number);
+            
+            gameState.words.forEach(word => {
+                const clueItem = document.createElement('li');
+                clueItem.className = 'clue-item';
+                clueItem.dataset.number = word.number;
+                clueItem.dataset.direction = word.direction;
+                
+                if (word.solved) {
+                    clueItem.classList.add('solved');
+                }
+                
+                clueItem.innerHTML = `<strong>${word.number}.</strong> ${word.clue}`;
+                clueItem.addEventListener('click', () => selectWord(word.number, word.direction));
+                
+                if (word.direction === 'across') {
+                    horizontalCluesEl.appendChild(clueItem);
+                } else {
+                    verticalCluesEl.appendChild(clueItem);
+                }
+            });
+        }
+        
+        // Sélectionner une cellule
+        function selectCell(row, col) {
+            // Désélectionner la cellule précédente
+            if (gameState.currentCell) {
+                const prevCellEl = document.querySelector(`.cell[data-row="${gameState.currentCell.row}"][data-col="${gameState.currentCell.col}"]`);
+                if (prevCellEl) prevCellEl.classList.remove('selected');
+            }
+            
+            const cell = gameState.grid[row][col];
+            if (!cell) return;
+            
+            // Sélectionner la nouvelle cellule
+            const cellEl = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+            cellEl.classList.add('selected');
+            
+            gameState.currentCell = { row, col };
+            
+            // Basculer la direction si on clique deux fois sur la même cellule
+            if (gameState.currentCell.row === row && gameState.currentCell.col === col) {
+                if (cell.across && cell.down) {
+                    gameState.currentDirection = gameState.currentDirection === 'across' ? 'down' : 'across';
+                }
+            } else {
+                // Par défaut, prendre la direction du mot le plus long
+                if (cell.across && cell.down) {
+                    gameState.currentDirection = cell.across.word.length > cell.down.word.length ? 'across' : 'down';
+                } else if (cell.across) {
+                    gameState.currentDirection = 'across';
+                } else {
+                    gameState.currentDirection = 'down';
+                }
+            }
+            
+            // Mettre en surbrillance le mot sélectionné
+            highlightWord();
+        }
+        
+        // Sélectionner un mot à partir de la liste d'indices
+        function selectWord(number, direction) {
+            gameState.currentDirection = direction;
+            
+            // Trouver le mot correspondant
+            const word = gameState.words.find(w => w.number === number && w.direction === direction);
+            if (!word) return;
+            
+            // Sélectionner la première cellule du mot
+            selectCell(word.startRow, word.startCol);
+        }
+        
+        // Mettre en surbrillance le mot sélectionné
+        function highlightWord() {
+            // Retirer la surbrillance de tous les mots
+            document.querySelectorAll('.clue-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Retirer la sélection de toutes les cellules
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.classList.remove('selected-word');
+            });
+            
+            if (!gameState.currentCell) return;
+            
+            const cell = gameState.grid[gameState.currentCell.row][gameState.currentCell.col];
+            if (!cell) return;
+            
+            const word = cell[gameState.currentDirection];
+            if (!word) return;
+            
+            // Mettre en surbrillance l'indice
+            const clueItem = document.querySelector(`.clue-item[data-number="${word.number}"][data-direction="${word.direction}"]`);
+            if (clueItem) clueItem.classList.add('active');
+            
+            // Mettre en surbrillance les cellules du mot
+            for (let i = 0; i < word.word.length; i++) {
+                const row = word.direction === 'across' ? word.startRow : word.startRow + i;
+                const col = word.direction === 'across' ? word.startCol + i : word.startCol;
+                
+                const cellEl = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                if (cellEl) cellEl.classList.add('selected-word');
+            }
+        }
+        
+        // Configurer le clavier virtuel
+        function setupKeyboard() {
+            const keyboardEl = document.getElementById('keyboard');
+            keyboardEl.innerHTML = '';
+            
+            const letters = 'AZERTYUIOPQSDFGHJKLMWXCVBN';
+            
+            for (let letter of letters) {
+                const key = document.createElement('div');
+                key.className = 'key';
+                key.textContent = letter;
+                key.addEventListener('click', () => inputLetter(letter));
+                keyboardEl.appendChild(key);
+            }
+            
+            // Ajouter une touche pour effacer
+            const deleteKey = document.createElement('div');
+            deleteKey.className = 'key';
+            deleteKey.textContent = '⌫';
+            deleteKey.addEventListener('click', deleteLetter);
+            keyboardEl.appendChild(deleteKey);
+        }
+        
+        // Entrer une lettre
+        function inputLetter(letter) {
+            if (!gameState.currentCell) return;
+            
+            const { row, col } = gameState.currentCell;
+            const cell = gameState.grid[row][col];
+            if (!cell) return;
+            
+            cell.userInput = letter.toUpperCase();
+            gameState.totalAttempts++;
+            
+            // Passer à la cellule suivante
+            moveToNextCell();
+            
+            // Vérifier si le mot est complet
+            checkWordCompletion();
+            
+            renderCrossword();
+            updateStats();
+        }
+        
+        // Effacer une lettre
+        function deleteLetter() {
+            if (!gameState.currentCell) return;
+            
+            const { row, col } = gameState.currentCell;
+            const cell = gameState.grid[row][col];
+            if (!cell || !cell.userInput) return;
+            
+            cell.userInput = '';
+            renderCrossword();
+            
+            // Vérifier si le mot est complet
+            checkWordCompletion();
+            updateStats();
+        }
+        
+        // Passer à la cellule suivante
+        function moveToNextCell() {
+            if (!gameState.currentCell) return;
+            
+            const { row, col } = gameState.currentCell;
+            const cell = gameState.grid[row][col];
+            if (!cell) return;
+            
+            const word = cell[gameState.currentDirection];
+            if (!word) return;
+            
+            let nextRow, nextCol;
+            
+            if (gameState.currentDirection === 'across') {
+                const index = col - word.startCol;
+                if (index < word.word.length - 1) {
+                    nextRow = row;
+                    nextCol = col + 1;
+                }
+            } else {
+                const index = row - word.startRow;
+                if (index < word.word.length - 1) {
+                    nextRow = row + 1;
+                    nextCol = col;
+                }
+            }
+            
+            if (nextRow !== undefined && nextCol !== undefined) {
+                selectCell(nextRow, nextCol);
+            }
+        }
+        
+        // Vérifier si un mot est complet
+        function checkWordCompletion() {
+            if (!gameState.currentCell) return;
+            
+            const { row, col } = gameState.currentCell;
+            const cell = gameState.grid[row][col];
+            if (!cell) return;
+            
+            const word = cell[gameState.currentDirection];
+            if (!word || word.solved) return;
+            
+            // Vérifier si toutes les lettres sont remplies
+            let complete = true;
+            let correct = true;
+            
+            for (let i = 0; i < word.word.length; i++) {
+                const cellRow = word.direction === 'across' ? word.startRow : word.startRow + i;
+                const cellCol = word.direction === 'across' ? word.startCol + i : word.startCol;
+                
+                const currentCell = gameState.grid[cellRow][cellCol];
+                if (!currentCell.userInput) {
+                    complete = false;
+                    break;
+                }
+                
+                if (currentCell.userInput !== currentCell.letter) {
+                    correct = false;
+                }
+            }
+            
+            if (complete) {
+                if (correct) {
+                    word.solved = true;
+                    gameState.solvedWords++;
+                    
+                    // Marquer toutes les lettres comme correctes
+                    for (let i = 0; i < word.word.length; i++) {
+                        const cellRow = word.direction === 'across' ? word.startRow : word.startRow + i;
+                        const cellCol = word.direction === 'across' ? word.startCol + i : word.startCol;
+                        
+                        const currentCell = gameState.grid[cellRow][cellCol];
+                        currentCell.userInput = currentCell.letter;
+                    }
+                    
+                    // Vérifier si tout le puzzle est résolu
+                    checkPuzzleCompletion();
+                } else {
+                    gameState.incorrectAttempts++;
+                }
+                
+                renderClues();
+            }
+        }
+        
+        // Vérifier si tout le puzzle est résolu
+        function checkPuzzleCompletion() {
+            const allSolved = gameState.words.every(word => word.solved);
+            
+            if (allSolved) {
+                clearInterval(gameState.timerInterval);
+                showCongratulations();
+            }
+        }
+        
+        // Vérifier les réponses
+        function checkAnswers() {
+            let hasIncorrect = false;
+            
+            for (let row = 0; row < 15; row++) {
+                for (let col = 0; col < 15; col++) {
+                    const cell = gameState.grid[row][col];
+                    if (!cell || !cell.userInput) continue;
+                    
+                    if (cell.userInput !== cell.letter) {
+                        cell.userInput = '';
+                        hasIncorrect = true;
+                    }
+                }
+            }
+            
+            if (hasIncorrect) {
+                gameState.incorrectAttempts++;
+                updateStats();
+            }
+            
+            renderCrossword();
+        }
+        
+        // Résoudre tout le puzzle
+        function solvePuzzle() {
+            if (confirm("Êtes-vous sûr de vouloir résoudre toute la grille ?")) {
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        const cell = gameState.grid[row][col];
+                        if (cell) {
+                            cell.userInput = cell.letter;
+                        }
+                    }
+                }
+                
+                gameState.words.forEach(word => {
+                    word.solved = true;
+                });
+                
+                gameState.solvedWords = gameState.words.length;
+                clearInterval(gameState.timerInterval);
+                renderCrossword();
+                renderClues();
+                updateStats();
+                showCongratulations();
+            }
+        }
+        
+        // Obtenir un indice
+        function getHint() {
+            if (!gameState.currentCell) {
+                alert("Veuillez sélectionner une cellule d'abord");
+                return;
+            }
+            
+            const { row, col } = gameState.currentCell;
+            const cell = gameState.grid[row][col];
+            if (!cell) return;
+            
+            const word = cell[gameState.currentDirection];
+            if (!word) return;
+            
+            if (word.solved) {
+                alert("Ce mot est déjà résolu !");
+                return;
+            }
+            
+            gameState.hintsUsed++;
+            updateStats();
+            
+            // Révéler une lettre aléatoire non résolue
+            const unrevealedIndices = [];
+            
+            for (let i = 0; i < word.word.length; i++) {
+                const cellRow = word.direction === 'across' ? word.startRow : word.startRow + i;
+                const cellCol = word.direction === 'across' ? word.startCol + i : word.startCol;
+                
+                const currentCell = gameState.grid[cellRow][cellCol];
+                if (!currentCell.userInput || currentCell.userInput !== currentCell.letter) {
+                    unrevealedIndices.push(i);
+                }
+            }
+            
+            if (unrevealedIndices.length > 0) {
+                const randomIndex = unrevealedIndices[Math.floor(Math.random() * unrevealedIndices.length)];
+                const cellRow = word.direction === 'across' ? word.startRow : word.startRow + randomIndex;
+                const cellCol = word.direction === 'across' ? word.startCol + randomIndex : word.startCol;
+                
+                const currentCell = gameState.grid[cellRow][cellCol];
+                currentCell.userInput = currentCell.letter;
+                
+                // Afficher l'indice
+                const hintContainer = document.getElementById('hint-container');
+                const hintText = document.getElementById('hint-text');
+                
+                hintText.textContent = `Lettre ${randomIndex + 1} du mot "${word.word}" révélée: ${currentCell.letter}`;
+                hintContainer.classList.add('show');
+                
+                // Masquer l'indice après 5 secondes
+                setTimeout(() => {
+                    hintContainer.classList.remove('show');
+                }, 5000);
+                
+                renderCrossword();
+                checkWordCompletion();
+            } else {
+                alert("Toutes les lettres de ce mot sont déjà correctes !");
+            }
+        }
+        
+        // Réinitialiser la grille
+        function resetGrid() {
+            if (confirm("Êtes-vous sûr de vouloir réinitialiser la grille ? Toutes vos réponses seront perdues.")) {
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        const cell = gameState.grid[row][col];
+                        if (cell) {
+                            cell.userInput = '';
+                        }
+                    }
+                }
+                
+                gameState.words.forEach(word => {
+                    word.solved = false;
+                });
+                
+                gameState.solvedWords = 0;
+                gameState.hintsUsed = 0;
+                gameState.incorrectAttempts = 0;
+                gameState.totalAttempts = 0;
+                
+                // Réinitialiser le timer
+                clearInterval(gameState.timerInterval);
+                gameState.startTime = new Date();
+                gameState.timerInterval = setInterval(updateTimer, 1000);
+                updateTimer();
+                
+                renderCrossword();
+                renderClues();
+                updateStats();
+            }
+        }
+        
+        // Démarrer le timer
+        function startTimer() {
+            gameState.startTime = new Date();
+            gameState.timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+        }
+        
+        // Mettre à jour le timer
+        function updateTimer() {
+            const now = new Date();
+            const elapsed = new Date(now - gameState.startTime);
+            
+            const hours = String(elapsed.getUTCHours()).padStart(2, '0');
+            const minutes = String(elapsed.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(elapsed.getUTCSeconds()).padStart(2, '0');
+            
+            document.getElementById('timer').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        
+        // Mettre à jour les statistiques
+        function updateStats() {
+            document.getElementById('words-solved').textContent = `${gameState.solvedWords}/${gameState.totalWords}`;
+            document.getElementById('hints-used').textContent = gameState.hintsUsed;
+            
+            const accuracy = gameState.totalAttempts > 0 
+                ? Math.round(((gameState.totalAttempts - gameState.incorrectAttempts) / gameState.totalAttempts) * 100)
+                : 100;
+                
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+        }
+        
+        // Afficher le message de félicitations
+        function showCongratulations() {
+            const modal = document.getElementById('congrats-modal');
+            const message = document.getElementById('congrats-message');
+            const statsMessage = document.getElementById('stats-message');
+            
+            const timeSpent = document.getElementById('timer').textContent;
+            const accuracy = document.getElementById('accuracy').textContent;
+            
+            message.textContent = `Vous avez complété la grille en ${timeSpent} !`;
+            statsMessage.textContent = `Précision: ${accuracy} | Indices utilisés: ${gameState.hintsUsed}`;
+            
+            // Ajouter des confettis
+            createConfetti();
+            
+            modal.style.display = 'flex';
+        }
+        
+        // Créer des confettis
+        function createConfetti() {
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8a00'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                
+                // Position aléatoire en haut de l'écran
+                confetti.style.left = `${Math.random() * 100}vw`;
+                
+                // Couleur aléatoire
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Taille aléatoire
+                const size = Math.random() * 10 + 5;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                
+                // Animation avec un délai aléatoire
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                
+                document.body.appendChild(confetti);
+                
+                // Supprimer le confetti après l'animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+        
+        // Changer la difficulté
+        function changeDifficulty(difficulty) {
+            gameState.difficulty = difficulty;
+            
+            // Mettre à jour l'affichage des boutons de difficulté
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.difficulty === difficulty) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Démarrer une nouvelle partie
+            initGame();
+        }
+        
+        // Écouteurs d'événements
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= 'a' && e.key <= 'z') {
+                inputLetter(e.key.toUpperCase());
+            } else if (e.key === 'Backspace') {
+                deleteLetter();
+            } else if (e.key === 'ArrowRight') {
+                if (gameState.currentCell) {
+                    const { row, col } = gameState.currentCell;
+                    if (col < 14) selectCell(row, col + 1);
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (gameState.currentCell) {
+                    const { row, col } = gameState.currentCell;
+                    if (col > 0) selectCell(row, col - 1);
+                }
+            } else if (e.key === 'ArrowDown') {
+                if (gameState.currentCell) {
+                    const { row, col } = gameState.currentCell;
+                    if (row < 14) selectCell(row + 1, col);
+                }
+            } else if (e.key === 'ArrowUp') {
+                if (gameState.currentCell) {
+                    const { row, col } = gameState.currentCell;
+                    if (row > 0) selectCell(row - 1, col);
+                }
+            }
+        });
+        
+        document.getElementById('check-btn').addEventListener('click', checkAnswers);
+        document.getElementById('solve-btn').addEventListener('click', solvePuzzle);
+        document.getElementById('hint-btn').addEventListener('click', getHint);
+        document.getElementById('reset-btn').addEventListener('click', resetGrid);
+        document.getElementById('new-game-btn').addEventListener('click', () => initGame());
+        document.getElementById('play-again-btn').addEventListener('click', () => {
+            document.getElementById('congrats-modal').style.display = 'none';
+            initGame();
+        });
+        
+        document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.addEventListener('click', () => changeDifficulty(btn.dataset.difficulty));
+        });
+        
+        // Initialiser le jeu au chargement
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+</html>
