@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Test Musical | Expérience Incroyable</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --accent: #fd79a8;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --success: #00b894;
+            --danger: #d63031;
+            --warning: #fdcb6e;
+            --info: #0984e3;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease;
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #fff, #a29bfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .game-area {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.8s ease;
+        }
+        
+        .player-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .song-info {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .song-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .song-artist {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: height 0.2s;
+        }
+        
+        .progress-container:hover {
+            height: 10px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), var(--primary));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.1s linear;
+            position: relative;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .progress-container:hover .progress-bar::after {
+            opacity: 1;
+        }
+        
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        
+        .btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-play {
+            background: var(--primary);
+            width: 70px;
+            height: 70px;
+            box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4);
+        }
+        
+        .btn-play:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: 1rem;
+        }
+        
+        .volume-slider {
+            width: 100px;
+            -webkit-appearance: none;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .volume-slider:hover {
+            opacity: 1;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .answer-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .answer-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 3px rgba(253, 121, 168, 0.3);
+        }
+        
+        .answer-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .btn-answer {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(253, 121, 168, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-answer:hover {
+            background: #ff8fab;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(253, 121, 168, 0.6);
+        }
+        
+        .btn-answer:active {
+            transform: translateY(0);
+        }
+        
+        .options-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .option-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .option-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .option-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .option-title i {
+            color: var(--accent);
+        }
+        
+        .option-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        select, input[type="number"] {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .results-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .results-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #2d3436 0%, #1e272e 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+            position: relative;
+        }
+        
+        .results-modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .close-modal:hover {
+            color: var(--danger);
+        }
+        
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--accent);
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-song {
+            font-weight: 600;
+        }
+        
+        .result-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .correct {
+            background: rgba(0, 184, 148, 0.2);
+            color: var(--success);
+        }
+        
+        .incorrect {
+            background: rgba(214, 48, 49, 0.2);
+            color: var(--danger);
+        }
+        
+        .final-score {
+            text-align: center;
+            margin: 2rem 0;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-modal {
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .btn-play-again {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-play-again:hover {
+            background: var(--secondary);
+        }
+        
+        .btn-share {
+            background: var(--info);
+            color: white;
+        }
+        
+        .btn-share:hover {
+            background: #74b9ff;
+        }
+        
+        .hint-section {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn-hint {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-hint:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .hint-text {
+            margin-top: 1rem;
+            text-align: center;
+            font-style: italic;
+            opacity: 0.8;
+            min-height: 20px;
+        }
+        
+        .timer-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--warning);
+        }
+        
+        .difficulty-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .easy {
+            background: rgba(0, 184, 148, 0.2);
+            color: var(--success);
+        }
+        
+        .medium {
+            background: rgba(253, 203, 110, 0.2);
+            color: var(--warning);
+        }
+        
+        .hard {
+            background: rgba(214, 48, 49, 0.2);
+            color: var(--danger);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1.2rem;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(30deg);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .options-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                gap: 1rem;
+            }
+            
+            .btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+            
+            .btn-play {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        
+        /* Dark theme variations */
+        body.dark-theme {
+            background: linear-gradient(135deg, #1e272e 0%, #2d3436 100%);
+        }
+        
+        body.dark-theme .game-area {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        body.dark-theme .option-card {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Light theme */
+        body.light-theme {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+        }
+        
+        body.light-theme h1 {
+            background: linear-gradient(to right, var(--dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        body.light-theme .game-area {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--dark);
+        }
+        
+        body.light-theme .option-card {
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--dark);
+        }
+        
+        body.light-theme .answer-input {
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--dark);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-theme .answer-input::placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+        
+        body.light-theme .btn {
+            color: var(--dark);
+        }
+        
+        body.light-theme select, 
+        body.light-theme input[type="number"] {
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--dark);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-theme .progress-container {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-theme .modal-content {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+        }
+        
+        body.light-theme .result-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-theme .close-modal {
+            color: rgba(0, 0, 0, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <div class="container">
+        <header>
+            <h1>BLIND TEST MUSICAL</h1>
+            <p class="subtitle">Découvrez une expérience de jeu incroyable avec des tonnes d'options personnalisables</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="game-area">
+                <div class="player-controls">
+                    <div class="song-info">
+                        <h2 class="song-title" id="songTitle">Prêt à jouer ?</h2>
+                        <p class="song-artist" id="songArtist">Choisissez vos options et cliquez sur Jouer</p>
+                        <div class="difficulty-badge easy" id="difficultyBadge">Facile</div>
+                    </div>
+                    
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="time-info">
+                        <span id="currentTime">0:00</span>
+                        <span id="duration">0:30</span>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="btn" id="btnPrev">
+                            <i class="fas fa-step-backward"></i>
+                        </button>
+                        <button class="btn btn-play" id="btnPlay">
+                            <i class="fas fa-play" id="playIcon"></i>
+                        </button>
+                        <button class="btn" id="btnNext">
+                            <i class="fas fa-step-forward"></i>
+                        </button>
+                        <div class="volume-control">
+                            <button class="btn" id="btnVolume">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
+                        </div>
+                    </div>
+                    
+                    <div class="timer-display" id="timerDisplay"></div>
+                </div>
+                
+                <div class="answer-section">
+                    <input type="text" class="answer-input" id="answerInput" placeholder="Entrez le titre de la chanson ou le nom de l'artiste...">
+                    <button class="btn-answer" id="btnAnswer">Valider</button>
+                    
+                    <div class="hint-section">
+                        <button class="btn-hint" id="btnHintTitle">
+                            <i class="fas fa-lightbulb"></i> Indice Titre
+                        </button>
+                        <button class="btn-hint" id="btnHintArtist">
+                            <i class="fas fa-lightbulb"></i> Indice Artiste
+                        </button>
+                    </div>
+                    <div class="hint-text" id="hintText"></div>
+                </div>
+                
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="scoreValue">0</div>
+                        <div class="stat-label">Score</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="streakValue">0</div>
+                        <div class="stat-label">Série</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="remainingValue">10</div>
+                        <div class="stat-label">Restantes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="correctValue">0</div>
+                        <div class="stat-label">Correctes</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="options-section">
+                <div class="option-card">
+                    <h3 class="option-title"><i class="fas fa-sliders-h"></i> Options de jeu</h3>
+                    <div class="option-content">
+                        <div class="form-group">
+                            <label for="gameMode">Mode de jeu</label>
+                            <select id="gameMode">
+                                <option value="classic">Classique</option>
+                                <option value="timeAttack">Contre-la-montre</option>
+                                <option value="survival">Survie</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="songCount">Nombre de chansons</label>
+                            <input type="number" id="songCount" min="1" max="50" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="songDuration">Durée d'écoute (secondes)</label>
+                            <input type="number" id="songDuration" min="5" max="60" value="30">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="option-card">
+                    <h3 class="option-title"><i class="fas fa-music"></i> Genre musical</h3>
+                    <div class="option-content">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="pop" checked>
+                            <label for="pop">Pop</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="rock" checked>
+                            <label for="rock">Rock</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="hiphop" checked>
+                            <label for="hiphop">Hip-Hop</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="electronic" checked>
+                            <label for="electronic">Électronique</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="jazz" checked>
+                            <label for="jazz">Jazz</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="classical" checked>
+                            <label for="classical">Classique</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="option-card">
+                    <h3 class="option-title"><i class="fas fa-cog"></i> Difficulté</h3>
+                    <div class="option-content">
+                        <div class="form-group">
+                            <label for="difficulty">Niveau de difficulté</label>
+                            <select id="difficulty">
+                                <option value="easy">Facile (hits populaires)</option>
+                                <option value="medium" selected>Moyen (mix varié)</option>
+                                <option value="hard">Difficile (titres obscurs)</option>
+                            </select>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="fadeIn" checked>
+                            <label for="fadeIn">Fondu d'entrée</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="randomStart" checked>
+                            <label for="randomStart">Démarrage aléatoire</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="showHints" checked>
+                            <label for="showHints">Autoriser les indices</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="results-modal" id="resultsModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 class="modal-title">Résultats</h2>
+            
+            <div class="final-score" id="finalScore">0/10</div>
+            
+            <div id="resultsList">
+                <!-- Results will be added here dynamically -->
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-modal btn-play-again" id="btnPlayAgain">
+                    <i class="fas fa-redo"></i> Rejouer
+                </button>
+                <button class="btn-modal btn-share" id="btnShare">
+                    <i class="fas fa-share-alt"></i> Partager
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Sample music library
+        const musicLibrary = {
+            easy: [
+                { title: "Shape of You", artist: "Ed Sheeran", genre: "pop", previewUrl: "https://p.scdn.co/mp3-preview/8439e18b5163a5ae71b886b1e382c87e0a75a533" },
+                { title: "Blinding Lights", artist: "The Weeknd", genre: "pop", previewUrl: "https://p.scdn.co/mp3-preview/3a5b32a1c8ff4f1c5a3c3a0e5d5a3f5a5d5a3f5a" },
+                { title: "Dance Monkey", artist: "Tones and I", genre: "pop", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" },
+                { title: "Uptown Funk", artist: "Mark Ronson ft. Bruno Mars", genre: "pop", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" },
+                { title: "Happy", artist: "Pharrell Williams", genre: "pop", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" }
+            ],
+            medium: [
+                { title: "Bohemian Rhapsody", artist: "Queen", genre: "rock", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" },
+                { title: "Hotel California", artist: "Eagles", genre: "rock", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" },
+                { title: "Billie Jean", artist: "Michael Jackson", genre: "pop", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" },
+                { title: "Smells Like Teen Spirit", artist: "Nirvana", genre: "rock", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" },
+                { title: "Sweet Child O'Mine", artist: "Guns N' Roses", genre: "rock", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" }
+            ],
+            hard: [
+                { title: "Bachelorette", artist: "Björk", genre: "electronic", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" },
+                { title: "Teardrop", artist: "Massive Attack", genre: "electronic", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" },
+                { title: "Paranoid Android", artist: "Radiohead", genre: "rock", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" },
+                { title: "Windowlicker", artist: "Aphex Twin", genre: "electronic", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" },
+                { title: "The Rip", artist: "Portishead", genre: "electronic", previewUrl: "https://p.scdn.co/mp3-preview/5a5b5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a" }
+            ]
+        };
+        
+        // Game state
+        const gameState = {
+            audio: new Audio(),
+            isPlaying: false,
+            currentSongIndex: 0,
+            selectedSongs: [],
+            score: 0,
+            streak: 0,
+            correctAnswers: 0,
+            gameStarted: false,
+            timer: null,
+            timeLeft: 0,
+            hintUsed: false,
+            results: [],
+            volume: 0.7
+        };
+        
+        // DOM elements
+        const elements = {
+            btnPlay: document.getElementById('btnPlay'),
+            playIcon: document.getElementById('playIcon'),
+            btnPrev: document.getElementById('btnPrev'),
+            btnNext: document.getElementById('btnNext'),
+            btnVolume: document.getElementById('btnVolume'),
+            volumeSlider: document.getElementById('volumeSlider'),
+            progressBar: document.getElementById('progressBar'),
+            progressContainer: document.getElementById('progressContainer'),
+            currentTime: document.getElementById('currentTime'),
+            duration: document.getElementById('duration'),
+            songTitle: document.getElementById('songTitle'),
+            songArtist: document.getElementById('songArtist'),
+            answerInput: document.getElementById('answerInput'),
+            btnAnswer: document.getElementById('btnAnswer'),
+            scoreValue: document.getElementById('scoreValue'),
+            streakValue: document.getElementById('streakValue'),
+            remainingValue: document.getElementById('remainingValue'),
+            correctValue: document.getElementById('correctValue'),
+            resultsModal: document.getElementById('resultsModal'),
+            closeModal: document.getElementById('closeModal'),
+            resultsList: document.getElementById('resultsList'),
+            finalScore: document.getElementById('finalScore'),
+            btnPlayAgain: document.getElementById('btnPlayAgain'),
+            btnShare: document.getElementById('btnShare'),
+            gameMode: document.getElementById('gameMode'),
+            songCount: document.getElementById('songCount'),
+            songDuration: document.getElementById('songDuration'),
+            difficulty: document.getElementById('difficulty'),
+            fadeIn: document.getElementById('fadeIn'),
+            randomStart: document.getElementById('randomStart'),
+            showHints: document.getElementById('showHints'),
+            btnHintTitle: document.getElementById('btnHintTitle'),
+            btnHintArtist: document.getElementById('btnHintArtist'),
+            hintText: document.getElementById('hintText'),
+            timerDisplay: document.getElementById('timerDisplay'),
+            difficultyBadge: document.getElementById('difficultyBadge'),
+            themeToggle: document.getElementById('themeToggle'),
+            pop: document.getElementById('pop'),
+            rock: document.getElementById('rock'),
+            hiphop: document.getElementById('hiphop'),
+            electronic: document.getElementById('electronic'),
+            jazz: document.getElementById('jazz'),
+            classical: document.getElementById('classical')
+        };
+        
+        // Initialize the game
+        function initGame() {
+            // Event listeners
+            elements.btnPlay.addEventListener('click', togglePlay);
+            elements.btnPrev.addEventListener('click', prevSong);
+            elements.btnNext.addEventListener('click', nextSong);
+            elements.btnAnswer.addEventListener('click', checkAnswer);
+            elements.volumeSlider.addEventListener('input', setVolume);
+            elements.btnVolume.addEventListener('click', toggleMute);
+            elements.progressContainer.addEventListener('click', setProgress);
+            elements.answerInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkAnswer();
+            });
+            elements.closeModal.addEventListener('click', closeResultsModal);
+            elements.btnPlayAgain.addEventListener('click', restartGame);
+            elements.btnShare.addEventListener('click', shareResults);
+            elements.btnHintTitle.addEventListener('click', () => giveHint('title'));
+            elements.btnHintArtist.addEventListener('click', () => giveHint('artist'));
+            elements.themeToggle.addEventListener('click', toggleTheme);
+            
+            // Set initial volume
+            gameState.audio.volume = gameState.volume;
+            
+            // Audio event listeners
+            gameState.audio.addEventListener('timeupdate', updateProgress);
+            gameState.audio.addEventListener('ended', songEnded);
+            gameState.audio.addEventListener('play', () => {
+                elements.playIcon.classList.remove('fa-play');
+                elements.playIcon.classList.add('fa-pause');
+                gameState.isPlaying = true;
+            });
+            gameState.audio.addEventListener('pause', () => {
+                elements.playIcon.classList.remove('fa-pause');
+                elements.playIcon.classList.add('fa-play');
+                gameState.isPlaying = false;
+            });
+            
+            // Set initial UI state
+            updateUI();
+        }
+        
+        // Start a new game
+        function startGame() {
+            // Reset game state
+            gameState.score = 0;
+            gameState.streak = 0;
+            gameState.correctAnswers = 0;
+            gameState.currentSongIndex = 0;
+            gameState.gameStarted = true;
+            gameState.results = [];
+            gameState.hintUsed = false;
+            
+            // Get selected genres
+            const selectedGenres = [];
+            if (elements.pop.checked) selectedGenres.push('pop');
+            if (elements.rock.checked) selectedGenres.push('rock');
+            if (elements.hiphop.checked) selectedGenres.push('hiphop');
+            if (elements.electronic.checked) selectedGenres.push('electronic');
+            if (elements.jazz.checked) selectedGenres.push('jazz');
+            if (elements.classical.checked) selectedGenres.push('classical');
+            
+            // Get songs based on difficulty and selected genres
+            const difficulty = elements.difficulty.value;
+            let availableSongs = [...musicLibrary[difficulty]];
+            
+            // Filter by selected genres if any are selected
+            if (selectedGenres.length > 0) {
+                availableSongs = availableSongs.filter(song => selectedGenres.includes(song.genre));
+            }
+            
+            // Shuffle and select songs
+            gameState.selectedSongs = shuffleArray(availableSongs).slice(0, parseInt(elements.songCount.value));
+            
+            // Update UI
+            elements.remainingValue.textContent = gameState.selectedSongs.length;
+            elements.correctValue.textContent = '0';
+            elements.scoreValue.textContent = '0';
+            elements.streakValue.textContent = '0';
+            
+            // Update difficulty badge
+            updateDifficultyBadge();
+            
+            // Load first song
+            loadSong(0);
+            
+            // Start timer if in time attack mode
+            if (elements.gameMode.value === 'timeAttack') {
+                startTimer();
+            }
+        }
+        
+        // Load a song
+        function loadSong(index) {
+            if (index < 0 || index >= gameState.selectedSongs.length) return;
+            
+            gameState.currentSongIndex = index;
+            const song = gameState.selectedSongs[index];
+            
+            // Update UI
+            elements.songTitle.textContent = "???";
+            elements.songArtist.textContent = "???";
+            elements.answerInput.value = "";
+            elements.hintText.textContent = "";
+            gameState.hintUsed = false;
+            
+            // Set audio source
+            gameState.audio.src = song.previewUrl;
+            
+            // Set duration display
+            const duration = parseInt(elements.songDuration.value);
+            elements.duration.textContent = formatTime(duration);
+            
+            // Random start if enabled
+            if (elements.randomStart.checked && gameState.audio.duration) {
+                const randomTime = Math.random() * (gameState.audio.duration - duration);
+                gameState.audio.currentTime = Math.max(0, randomTime);
+            } else {
+                gameState.audio.currentTime = 0;
+            }
+            
+            // Fade in if enabled
+            if (elements.fadeIn.checked) {
+                gameState.audio.volume = 0;
+                const fadeInInterval = setInterval(() => {
+                    if (gameState.audio.volume < gameState.volume) {
+                        gameState.audio.volume += 0.05;
+                    } else {
+                        clearInterval(fadeInInterval);
+                    }
+                }, 100);
+            }
+            
+            // Play the song
+            gameState.audio.play().catch(e => console.log("Auto-play prevented:", e));
+            
+            // Update remaining songs count
+            elements.remainingValue.textContent = gameState.selectedSongs.length - index - 1;
+        }
+        
+        // Toggle play/pause
+        function togglePlay() {
+            if (!gameState.gameStarted) {
+                startGame();
+                return;
+            }
+            
+            if (gameState.isPlaying) {
+                gameState.audio.pause();
+            } else {
+                gameState.audio.play();
+            }
+        }
+        
+        // Previous song
+        function prevSong() {
+            if (gameState.currentSongIndex > 0) {
+                loadSong(gameState.currentSongIndex - 1);
+            }
+        }
+        
+        // Next song (skip)
+        function nextSong() {
+            if (gameState.currentSongIndex < gameState.selectedSongs.length - 1) {
+                recordResult(false, true);
+                loadSong(gameState.currentSongIndex + 1);
+            } else {
+                endGame();
+            }
+        }
+        
+        // Song ended
+        function songEnded() {
+            if (gameState.currentSongIndex < gameState.selectedSongs.length - 1) {
+                recordResult(false, false);
+                loadSong(gameState.currentSongIndex + 1);
+            } else {
+                endGame();
+            }
+        }
+        
+        // Check answer
+        function checkAnswer() {
+            if (!gameState.gameStarted || !gameState.selectedSongs.length) return;
+            
+            const answer = elements.answerInput.value.trim().toLowerCase();
+            const song = gameState.selectedSongs[gameState.currentSongIndex];
+            const titleMatch = song.title.toLowerCase().includes(answer) || answer.includes(song.title.toLowerCase());
+            const artistMatch = song.artist.toLowerCase().includes(answer) || answer.includes(song.artist.toLowerCase());
+            
+            if (titleMatch || artistMatch) {
+                // Correct answer
+                gameState.score += 100;
+                if (!gameState.hintUsed) gameState.score += 50; // Bonus for no hint
+                gameState.streak += 1;
+                gameState.correctAnswers += 1;
+                
+                // Bonus for streak
+                if (gameState.streak >= 3) {
+                    gameState.score += gameState.streak * 20;
+                }
+                
+                // Update UI
+                elements.songTitle.textContent = song.title;
+                elements.songArtist.textContent = song.artist;
+                elements.answerInput.value = "";
+                
+                // Show feedback
+                showFeedback(true);
+                
+                // Record result
+                recordResult(true, false);
+                
+                // Load next song after delay
+                setTimeout(() => {
+                    if (gameState.currentSongIndex < gameState.selectedSongs.length - 1) {
+                        loadSong(gameState.currentSongIndex + 1);
+                    } else {
+                        endGame();
+                    }
+                }, 2000);
+            } else {
+                // Wrong answer
+                gameState.streak = 0;
+                showFeedback(false);
+            }
+            
+            // Update UI
+            updateUI();
+        }
+        
+        // Record result
+        function recordResult(isCorrect, wasSkipped) {
+            const song = gameState.selectedSongs[gameState.currentSongIndex];
+            gameState.results.push({
+                title: song.title,
+                artist: song.artist,
+                correct: isCorrect,
+                skipped: wasSkipped,
+                hintUsed: gameState.hintUsed
+            });
+        }
+        
+        // Show feedback
+        function showFeedback(isCorrect) {
+            const feedback = document.createElement('div');
+            feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedback.textContent = isCorrect ? 'Correct !' : 'Incorrect !';
+            feedback.style.position = 'fixed';
+            feedback.style.top = '50%';
+            feedback.style.left = '50%';
+            feedback.style.transform = 'translate(-50%, -50%)';
+            feedback.style.fontSize = '3rem';
+            feedback.style.fontWeight = 'bold';
+            feedback.style.color = isCorrect ? 'var(--success)' : 'var(--danger)';
+            feedback.style.zIndex = '1000';
+            feedback.style.textShadow = '0 2px 10px rgba(0, 0, 0, 0.3)';
+            feedback.style.animation = 'fadeInOut 1.5s ease-out';
+            
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 1500);
+        }
+        
+        // Give hint
+        function giveHint(type) {
+            if (!elements.showHints.checked || gameState.hintUsed || !gameState.gameStarted) return;
+            
+            const song = gameState.selectedSongs[gameState.currentSongIndex];
+            let hint = '';
+            
+            if (type === 'title') {
+                // Reveal some letters in title
+                const revealed = Math.ceil(song.title.length / 2);
+                hint = song.title.split('').map((char, i) => {
+                    return i % 2 === 0 || i >= song.title.length - revealed ? char : '_';
+                }).join(' ');
+            } else {
+                // Reveal some letters in artist
+                const revealed = Math.ceil(song.artist.length / 2);
+                hint = song.artist.split('').map((char, i) => {
+                    return i % 2 === 0 || i >= song.artist.length - revealed ? char : '_';
+                }).join(' ');
+            }
+            
+            elements.hintText.textContent = type === 'title' ? `Titre: ${hint}` : `Artiste: ${hint}`;
+            gameState.hintUsed = true;
+            gameState.score = Math.max(0, gameState.score - 20); // Penalty for using hint
+            updateUI();
+        }
+        
+        // Update progress bar
+        function updateProgress() {
+            const { duration, currentTime } = gameState.audio;
+            const progressPercent = (currentTime / duration) * 100;
+            elements.progressBar.style.width = `${progressPercent}%`;
+            elements.currentTime.textContent = formatTime(currentTime);
+            
+            // For demo purposes, since we don't have full songs
+            if (isNaN(duration)) {
+                const demoDuration = parseInt(elements.songDuration.value);
+                const demoProgress = (currentTime / demoDuration) * 100;
+                if (currentTime >= demoDuration) {
+                    gameState.audio.pause();
+                    songEnded();
+                }
+            }
+        }
+        
+        // Set progress
+        function setProgress(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = gameState.audio.duration;
+            gameState.audio.currentTime = (clickX / width) * duration;
+        }
+        
+        // Set volume
+        function setVolume() {
+            gameState.volume = this.value;
+            gameState.audio.volume = gameState.volume;
+            
+            // Update volume icon
+            if (gameState.volume === '0') {
+                elements.btnVolume.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else if (gameState.volume < 0.5) {
+                elements.btnVolume.innerHTML = '<i class="fas fa-volume-down"></i>';
+            } else {
+                elements.btnVolume.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+        }
+        
+        // Toggle mute
+        function toggleMute() {
+            if (gameState.audio.volume > 0) {
+                gameState.audio.volume = 0;
+                elements.volumeSlider.value = 0;
+                elements.btnVolume.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else {
+                gameState.audio.volume = gameState.volume;
+                elements.volumeSlider.value = gameState.volume;
+                elements.btnVolume.innerHTML = gameState.volume < 0.5 ? 
+                    '<i class="fas fa-volume-down"></i>' : '<i class="fas fa-volume-up"></i>';
+            }
+        }
+        
+        // Start timer (for time attack mode)
+        function startTimer() {
+            clearInterval(gameState.timer);
+            gameState.timeLeft = parseInt(elements.songCount.value) * 30; // 30 seconds per song
+            
+            updateTimerDisplay();
+            
+            gameState.timer = setInterval(() => {
+                gameState.timeLeft--;
+                updateTimerDisplay();
+                
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(gameState.timer);
+                    endGame();
+                }
+            }, 1000);
+        }
+        
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(gameState.timeLeft / 60);
+            const seconds = gameState.timeLeft % 60;
+            elements.timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            
+            // Color coding
+            if (gameState.timeLeft <= 10) {
+                elements.timerDisplay.style.color = 'var(--danger)';
+                elements.timerDisplay.classList.add('pulse');
+            } else if (gameState.timeLeft <= 30) {
+                elements.timerDisplay.style.color = 'var(--warning)';
+                elements.timerDisplay.classList.add('pulse');
+            } else {
+                elements.timerDisplay.style.color = 'var(--warning)';
+                elements.timerDisplay.classList.remove('pulse');
+            }
+        }
+        
+        // Update UI
+        function updateUI() {
+            elements.scoreValue.textContent = gameState.score;
+            elements.streakValue.textContent = gameState.streak;
+            elements.correctValue.textContent = gameState.correctAnswers;
+        }
+        
+        // Update difficulty badge
+        function updateDifficultyBadge() {
+            const difficulty = elements.difficulty.value;
+            elements.difficultyBadge.className = 'difficulty-badge';
+            
+            if (difficulty === 'easy') {
+                elements.difficultyBadge.textContent = 'Facile';
+                elements.difficultyBadge.classList.add('easy');
+            } else if (difficulty === 'medium') {
+                elements.difficultyBadge.textContent = 'Moyen';
+                elements.difficultyBadge.classList.add('medium');
+            } else {
+                elements.difficultyBadge.textContent = 'Difficile';
+                elements.difficultyBadge.classList.add('hard');
+            }
+        }
+        
+        // End game
+        function endGame() {
+            gameState.audio.pause();
+            gameState.gameStarted = false;
+            clearInterval(gameState.timer);
+            
+            // Show results
+            showResults();
+        }
+        
+        // Show results
+        function showResults() {
+            elements.resultsList.innerHTML = '';
+            
+            gameState.results.forEach((result, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                const songInfo = document.createElement('div');
+                songInfo.className = 'result-song';
+                songInfo.textContent = `${index + 1}. ${result.title} - ${result.artist}`;
+                
+                const status = document.createElement('div');
+                status.className = `result-status ${result.correct ? 'correct' : 'incorrect'}`;
+                status.textContent = result.correct ? 'Correct' : (result.skipped ? 'Passé' : 'Incorrect');
+                
+                if (result.hintUsed) {
+                    status.textContent += ' (Indice)';
+                }
+                
+                resultItem.appendChild(songInfo);
+                resultItem.appendChild(status);
+                elements.resultsList.appendChild(resultItem);
+            });
+            
+            // Calculate final score
+            const totalSongs = gameState.results.length;
+            const correctAnswers = gameState.results.filter(r => r.correct).length;
+            const percentage = Math.round((correctAnswers / totalSongs) * 100);
+            
+            elements.finalScore.textContent = `${correctAnswers}/${totalSongs} (${percentage}%)`;
+            
+            // Show modal
+            elements.resultsModal.classList.add('active');
+        }
+        
+        // Close results modal
+        function closeResultsModal() {
+            elements.resultsModal.classList.remove('active');
+        }
+        
+        // Restart game
+        function restartGame() {
+            closeResultsModal();
+            startGame();
+        }
+        
+        // Share results
+        function shareResults() {
+            const correctAnswers = gameState.results.filter(r => r.correct).length;
+            const totalSongs = gameState.results.length;
+            const percentage = Math.round((correctAnswers / totalSongs) * 100);
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Mes résultats du Blind Test Musical',
+                    text: `J'ai obtenu ${correctAnswers}/${totalSongs} (${percentage}%) au Blind Test Musical !`,
+                    url: window.location.href
+                }).catch(err => {
+                    console.log('Error sharing:', err);
+                    fallbackShare();
+                });
+            } else {
+                fallbackShare();
+            }
+        }
+        
+        // Fallback share method
+        function fallbackShare() {
+            const text = `J'ai obtenu ${gameState.correctAnswers}/${gameState.selectedSongs.length} au Blind Test Musical !`;
+            prompt("Copiez ce lien pour partager vos résultats:", text);
+        }
+        
+        // Toggle theme
+        function toggleTheme() {
+            if (document.body.classList.contains('light-theme')) {
+                document.body.classList.remove('light-theme');
+                document.body.classList.add('dark-theme');
+                elements.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else if (document.body.classList.contains('dark-theme')) {
+                document.body.classList.remove('dark-theme');
+                elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                document.body.classList.add('light-theme');
+                elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+        
+        // Helper function to format time
+        function formatTime(seconds) {
+            if (isNaN(seconds)) seconds = 0;
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // Helper function to shuffle array
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+        
+        // Initialize the game when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>

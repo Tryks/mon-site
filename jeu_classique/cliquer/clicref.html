@@ -1,0 +1,1432 @@
+<!--
+pas sur de l'idée
+-->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Jeu de Réaction au Clic</title>
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #ff6b6b;
+            --background-color: #f5f7ff;
+            --text-color: #333;
+            --card-color: #fff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.5s;
+        }
+
+        .dark-mode {
+            --primary-color: #6b8cff;
+            --secondary-color: #ff8c8c;
+            --background-color: #1a1a2e;
+            --text-color: #f0f0f0;
+            --card-color: #16213e;
+        }
+
+        header {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            min-width: 150px;
+            flex-grow: 1;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .game-area {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background-color: var(--card-color);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .target {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            user-select: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .target:hover {
+            transform: scale(1.05);
+        }
+
+        .target:active {
+            transform: scale(0.95);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .settings-panel {
+            background-color: var(--card-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            width: 100%;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .settings-panel.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .settings-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .setting-group {
+            flex: 1;
+            min-width: 250px;
+            margin: 0.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--background-color);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        input[type="color"] {
+            width: 50px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: none;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: var(--card-color);
+            color: var(--text-color);
+        }
+
+        .history-container {
+            width: 100%;
+            background-color: var(--card-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .history-container.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .history-time {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .history-reaction {
+            color: var(--secondary-color);
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--secondary-color);
+            opacity: 0;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(600px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .particle-effect {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-color);
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .difficulty-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .easy {
+            background-color: #4caf50;
+        }
+
+        .medium {
+            background-color: #ff9800;
+        }
+
+        .hard {
+            background-color: #f44336;
+        }
+
+        .expert {
+            background-color: #9c27b0;
+        }
+
+        .custom {
+            background-color: #607d8b;
+        }
+
+        .difficulty-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .achievement-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: gold;
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            display: none;
+            animation: slideIn 0.5s, fadeOut 0.5s 2.5s forwards;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .stats-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stat-card {
+                width: 80%;
+                margin-bottom: 1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 80%;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Super Jeu de Réaction au Clic</h1>
+    </header>
+
+    <div class="game-container">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value" id="score">0</div>
+                <div class="stat-label">Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="time">0.00s</div>
+                <div class="stat-label">Temps moyen</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="best-time">0.00s</div>
+                <div class="stat-label">Meilleur temps</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="targets-hit">0</div>
+                <div class="stat-label">Cibles touchées</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="accuracy">0%</div>
+                <div class="stat-label">Précision</div>
+            </div>
+        </div>
+
+        <div class="game-area" id="gameArea"></div>
+
+        <div class="controls">
+            <button id="startBtn">Commencer</button>
+            <button id="pauseBtn" disabled>Pause</button>
+            <button id="resetBtn">Réinitialiser</button>
+            <button id="settingsBtn">Paramètres</button>
+            <button id="historyBtn">Historique</button>
+        </div>
+
+        <div class="settings-panel" id="settingsPanel">
+            <h2>Paramètres du Jeu</h2>
+            <div class="settings-row">
+                <div class="setting-group">
+                    <label for="gameDuration">Durée du jeu (secondes)</label>
+                    <input type="range" id="gameDuration" min="30" max="300" value="60">
+                    <span id="gameDurationValue">60</span>s
+                </div>
+                <div class="setting-group">
+                    <label for="targetSize">Taille des cibles</label>
+                    <input type="range" id="targetSize" min="20" max="150" value="60">
+                    <span id="targetSizeValue">60</span>px
+                </div>
+            </div>
+            <div class="settings-row">
+                <div class="setting-group">
+                    <label for="targetSpeed">Vitesse d'apparition</label>
+                    <input type="range" id="targetSpeed" min="500" max="3000" value="1500" step="100">
+                    <span id="targetSpeedValue">1500</span>ms
+                </div>
+                <div class="setting-group">
+                    <label for="targetLifetime">Durée de vie des cibles</label>
+                    <input type="range" id="targetLifetime" min="500" max="5000" value="2000" step="100">
+                    <span id="targetLifetimeValue">2000</span>ms
+                </div>
+            </div>
+            <div class="settings-row">
+                <div class="setting-group">
+                    <label for="targetColor">Couleur des cibles</label>
+                    <input type="color" id="targetColor" value="#4a6bff">
+                </div>
+                <div class="setting-group">
+                    <label for="bgColor">Couleur de fond</label>
+                    <input type="color" id="bgColor" value="#f5f7ff">
+                </div>
+                <div class="setting-group">
+                    <label for="targetShape">Forme des cibles</label>
+                    <select id="targetShape">
+                        <option value="circle">Cercle</option>
+                        <option value="square">Carré</option>
+                        <option value="triangle">Triangle</option>
+                        <option value="star">Étoile</option>
+                    </select>
+                </div>
+            </div>
+            <div class="settings-row">
+                <div class="setting-group">
+                    <label for="soundEnabled">Activer les sons</label>
+                    <input type="checkbox" id="soundEnabled" checked>
+                </div>
+                <div class="setting-group">
+                    <label for="particlesEnabled">Effets de particules</label>
+                    <input type="checkbox" id="particlesEnabled" checked>
+                </div>
+                <div class="setting-group">
+                    <label for="movementEnabled">Cibles mouvantes</label>
+                    <input type="checkbox" id="movementEnabled" checked>
+                </div>
+            </div>
+            <button id="saveSettingsBtn">Sauvegarder</button>
+        </div>
+
+        <div class="history-container" id="historyContainer">
+            <h2>Historique des Parties</h2>
+            <div class="history-list" id="historyList"></div>
+            <button id="clearHistoryBtn">Effacer l'historique</button>
+        </div>
+    </div>
+
+    <div class="theme-toggle" id="themeToggle">
+        <span id="themeIcon">🌙</span>
+    </div>
+
+    <div class="modal" id="difficultyModal">
+        <div class="modal-content">
+            <h2>Choisissez la Difficulté</h2>
+            <p>Sélectionnez un niveau de difficulté pour commencer le jeu</p>
+            <div class="difficulty-buttons">
+                <button class="difficulty-btn easy" data-difficulty="easy">Facile</button>
+                <button class="difficulty-btn medium" data-difficulty="medium">Moyen</button>
+                <button class="difficulty-btn hard" data-difficulty="hard">Difficile</button>
+                <button class="difficulty-btn expert" data-difficulty="expert">Expert</button>
+                <button class="difficulty-btn custom" data-difficulty="custom">Personnalisé</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="achievement-badge" id="achievementBadge"></div>
+
+    <audio id="clickSound" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..."></audio>
+    <audio id="successSound" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..."></audio>
+
+    <script>
+        // Éléments du DOM
+        const gameArea = document.getElementById('gameArea');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const historyBtn = document.getElementById('historyBtn');
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const difficultyModal = document.getElementById('difficultyModal');
+        const achievementBadge = document.getElementById('achievementBadge');
+        
+        // Éléments de statistiques
+        const scoreElement = document.getElementById('score');
+        const timeElement = document.getElementById('time');
+        const bestTimeElement = document.getElementById('best-time');
+        const targetsHitElement = document.getElementById('targets-hit');
+        const accuracyElement = document.getElementById('accuracy');
+        
+        // Éléments de paramètres
+        const settingsPanel = document.getElementById('settingsPanel');
+        const historyContainer = document.getElementById('historyContainer');
+        const historyList = document.getElementById('historyList');
+        
+        // Paramètres de jeu
+        const gameDuration = document.getElementById('gameDuration');
+        const gameDurationValue = document.getElementById('gameDurationValue');
+        const targetSize = document.getElementById('targetSize');
+        const targetSizeValue = document.getElementById('targetSizeValue');
+        const targetSpeed = document.getElementById('targetSpeed');
+        const targetSpeedValue = document.getElementById('targetSpeedValue');
+        const targetLifetime = document.getElementById('targetLifetime');
+        const targetLifetimeValue = document.getElementById('targetLifetimeValue');
+        const targetColor = document.getElementById('targetColor');
+        const bgColor = document.getElementById('bgColor');
+        const targetShape = document.getElementById('targetShape');
+        const soundEnabled = document.getElementById('soundEnabled');
+        const particlesEnabled = document.getElementById('particlesEnabled');
+        const movementEnabled = document.getElementById('movementEnabled');
+        
+        // Sons
+        const clickSound = document.getElementById('clickSound');
+        const successSound = document.getElementById('successSound');
+        
+        // Variables du jeu
+        let gameActive = false;
+        let gamePaused = false;
+        let score = 0;
+        let targetsHit = 0;
+        let targetsMissed = 0;
+        let reactionTimes = [];
+        let bestTime = Infinity;
+        let gameTimer;
+        let targetInterval;
+        let remainingTime;
+        let startTime;
+        let currentTargets = [];
+        let gameHistory = JSON.parse(localStorage.getItem('reactionGameHistory')) || [];
+        
+        // Paramètres par défaut
+        const defaultSettings = {
+            gameDuration: 60,
+            targetSize: 60,
+            targetSpeed: 1500,
+            targetLifetime: 2000,
+            targetColor: '#4a6bff',
+            bgColor: '#f5f7ff',
+            targetShape: 'circle',
+            soundEnabled: true,
+            particlesEnabled: true,
+            movementEnabled: true,
+            darkMode: false
+        };
+        
+        let settings = {...defaultSettings};
+        
+        // Charger les paramètres sauvegardés
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('reactionGameSettings');
+            if (savedSettings) {
+                settings = {...settings, ...JSON.parse(savedSettings)};
+            }
+            
+            // Appliquer les paramètres chargés à l'interface
+            gameDuration.value = settings.gameDuration;
+            gameDurationValue.textContent = settings.gameDuration;
+            targetSize.value = settings.targetSize;
+            targetSizeValue.textContent = settings.targetSize;
+            targetSpeed.value = settings.targetSpeed;
+            targetSpeedValue.textContent = settings.targetSpeed;
+            targetLifetime.value = settings.targetLifetime;
+            targetLifetimeValue.textContent = settings.targetLifetime;
+            targetColor.value = settings.targetColor;
+            bgColor.value = settings.bgColor;
+            targetShape.value = settings.targetShape;
+            soundEnabled.checked = settings.soundEnabled;
+            particlesEnabled.checked = settings.particlesEnabled;
+            movementEnabled.checked = settings.movementEnabled;
+            
+            if (settings.darkMode) {
+                document.body.classList.add('dark-mode');
+                themeIcon.textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark-mode');
+                themeIcon.textContent = '🌙';
+            }
+            
+            applyBackgroundColor();
+        }
+        
+        // Sauvegarder les paramètres
+        function saveSettings() {
+            settings = {
+                gameDuration: parseInt(gameDuration.value),
+                targetSize: parseInt(targetSize.value),
+                targetSpeed: parseInt(targetSpeed.value),
+                targetLifetime: parseInt(targetLifetime.value),
+                targetColor: targetColor.value,
+                bgColor: bgColor.value,
+                targetShape: targetShape.value,
+                soundEnabled: soundEnabled.checked,
+                particlesEnabled: particlesEnabled.checked,
+                movementEnabled: movementEnabled.checked,
+                darkMode: document.body.classList.contains('dark-mode')
+            };
+            
+            localStorage.setItem('reactionGameSettings', JSON.stringify(settings));
+            settingsPanel.classList.remove('show');
+            showNotification('Paramètres sauvegardés!');
+        }
+        
+        // Appliquer la couleur de fond
+        function applyBackgroundColor() {
+            gameArea.style.backgroundColor = settings.bgColor;
+        }
+        
+        // Basculer entre les thèmes clair/sombre
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                themeIcon.textContent = '☀️';
+                settings.darkMode = true;
+            } else {
+                themeIcon.textContent = '🌙';
+                settings.darkMode = false;
+            }
+            localStorage.setItem('reactionGameSettings', JSON.stringify(settings));
+        }
+        
+        // Afficher une notification de réussite
+        function showAchievement(message) {
+            achievementBadge.textContent = message;
+            achievementBadge.style.display = 'block';
+            setTimeout(() => {
+                achievementBadge.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Afficher une notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'achievement-badge';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.5s forwards';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 2000);
+        }
+        
+        // Mettre à jour les statistiques
+        function updateStats() {
+            scoreElement.textContent = score;
+            targetsHitElement.textContent = targetsHit;
+            
+            const totalAttempts = targetsHit + targetsMissed;
+            const accuracy = totalAttempts > 0 ? Math.round((targetsHit / totalAttempts) * 100) : 0;
+            accuracyElement.textContent = `${accuracy}%`;
+            
+            const avgTime = reactionTimes.length > 0 
+    ? (reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length)
+    : 0;
+timeElement.textContent = avgTime.toFixed(2) + 's';
+            
+            bestTimeElement.textContent = bestTime === Infinity ? '0.00s' : bestTime.toFixed(2) + 's';
+        }
+        
+        // Créer une cible
+        function createTarget() {
+            if (!gameActive || gamePaused) return;
+            
+            const size = settings.targetSize;
+            const lifetime = settings.targetLifetime;
+            const color = settings.targetColor;
+            const shape = settings.targetShape;
+            
+            const target = document.createElement('div');
+            target.className = 'target';
+            
+            // Position aléatoire dans la zone de jeu
+            const maxX = gameArea.offsetWidth - size;
+            const maxY = gameArea.offsetHeight - size;
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
+            
+            target.style.width = `${size}px`;
+            target.style.height = `${size}px`;
+            target.style.left = `${x}px`;
+            target.style.top = `${y}px`;
+            target.style.backgroundColor = color;
+            
+            // Appliquer la forme
+            if (shape === 'square') {
+                target.style.borderRadius = '4px';
+            } else if (shape === 'triangle') {
+                target.style.clipPath = 'polygon(50% 0%, 0% 100%, 100% 100%)';
+                target.style.backgroundColor = 'transparent';
+                target.style.borderLeft = `${size/2}px solid transparent`;
+                target.style.borderRight = `${size/2}px solid transparent`;
+                target.style.borderBottom = `${size}px solid ${color}`;
+                target.style.width = '0';
+                target.style.height = '0';
+            } else if (shape === 'star') {
+                target.style.clipPath = 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)';
+            }
+            
+            // Animation d'apparition
+            target.style.transform = 'scale(0)';
+            setTimeout(() => {
+                target.style.transform = 'scale(1)';
+            }, 10);
+            
+            // Ajouter un numéro à la cible
+            const targetNumber = document.createElement('span');
+            targetNumber.textContent = currentTargets.length + 1;
+            target.appendChild(targetNumber);
+            
+            // Ajouter la cible à la zone de jeu
+            gameArea.appendChild(target);
+            
+            // Enregistrer le temps d'apparition
+            const appearTime = Date.now();
+            
+            // Gestion du clic sur la cible
+            target.addEventListener('click', (e) => {
+                e.stopPropagation();
+                hitTarget(target, appearTime);
+            });
+            
+            // Mouvement aléatoire si activé
+            let moveInterval;
+            if (settings.movementEnabled) {
+                const speed = 1 + Math.random() * 2;
+                let dx = (Math.random() - 0.5) * speed;
+                let dy = (Math.random() - 0.5) * speed;
+                
+                moveInterval = setInterval(() => {
+                    if (gamePaused) return;
+                    
+                    const rect = target.getBoundingClientRect();
+                    const gameRect = gameArea.getBoundingClientRect();
+                    
+                    let newX = parseFloat(target.style.left) + dx;
+                    let newY = parseFloat(target.style.top) + dy;
+                    
+                    // Rebond sur les bords
+                    if (newX <= 0 || newX >= gameRect.width - rect.width) {
+                        dx = -dx;
+                        newX = parseFloat(target.style.left) + dx;
+                    }
+                    
+                    if (newY <= 0 || newY >= gameRect.height - rect.height) {
+                        dy = -dy;
+                        newY = parseFloat(target.style.top) + dy;
+                    }
+                    
+                    target.style.left = `${newX}px`;
+                    target.style.top = `${newY}px`;
+                }, 16);
+            }
+            
+            // Supprimer la cible après son temps de vie
+            const timeout = setTimeout(() => {
+                if (gameArea.contains(target)) {
+                    missTarget(target);
+                }
+            }, lifetime);
+            
+            // Stocker les informations de la cible
+            currentTargets.push({
+                element: target,
+                appearTime,
+                timeout,
+                moveInterval
+            });
+        }
+        
+        // Toucher une cible
+        function hitTarget(target, appearTime) {
+            if (!gameActive || gamePaused) return;
+            
+            // Calculer le temps de réaction
+            const reactionTime = (Date.now() - appearTime) / 1000;
+            reactionTimes.push(reactionTime);
+            
+            // Mettre à jour le meilleur temps
+            if (reactionTime < bestTime) {
+                bestTime = reactionTime;
+                
+                if (reactionTime < 0.3) {
+                    showAchievement('Super réflexes!');
+                }
+            }
+            
+            // Mettre à jour le score
+            const size = parseInt(target.style.width || target.style.borderBottomWidth);
+            const sizeScore = Math.max(10, 100 - size);
+            const timeScore = Math.max(10, 100 - (reactionTime * 100));
+            const points = Math.round((sizeScore + timeScore) / 2);
+            
+            score += points;
+            targetsHit++;
+            
+            // Jouer un son
+            if (settings.soundEnabled) {
+                clickSound.currentTime = 0;
+                clickSound.play().catch(e => console.log('Son bloqué:', e));
+            }
+            
+            // Effets visuels
+            if (settings.particlesEnabled) {
+                createParticles(target);
+            }
+            
+            // Animation de disparition
+            target.style.transform = 'scale(1.2)';
+            target.style.opacity = '0';
+            
+            // Supprimer la cible après l'animation
+            setTimeout(() => {
+                removeTarget(target);
+            }, 200);
+            
+            // Vérifier les réalisations
+            checkAchievements();
+            
+            // Mettre à jour les statistiques
+            updateStats();
+        }
+        
+        // Rater une cible
+        function missTarget(target) {
+            if (!gameActive || gamePaused) return;
+            
+            targetsMissed++;
+            updateStats();
+            
+            // Animation de disparition
+            target.style.transform = 'scale(0)';
+            target.style.opacity = '0';
+            
+            // Supprimer la cible après l'animation
+            setTimeout(() => {
+                removeTarget(target);
+            }, 200);
+        }
+        
+        // Supprimer une cible
+        function removeTarget(target) {
+            // Trouver la cible dans le tableau currentTargets
+            const index = currentTargets.findIndex(t => t.element === target);
+            if (index !== -1) {
+                const targetData = currentTargets[index];
+                
+                // Nettoyer les intervalles et timeouts
+                clearTimeout(targetData.timeout);
+                if (targetData.moveInterval) {
+                    clearInterval(targetData.moveInterval);
+                }
+                
+                // Supprimer du DOM
+                if (gameArea.contains(target)) {
+                    gameArea.removeChild(target);
+                }
+                
+                // Supprimer du tableau
+                currentTargets.splice(index, 1);
+            }
+        }
+        
+        // Créer des particules pour l'effet visuel
+        function createParticles(target) {
+            const rect = target.getBoundingClientRect();
+            const gameRect = gameArea.getBoundingClientRect();
+            const color = target.style.backgroundColor || settings.targetColor;
+            const particleCount = 10 + Math.floor(Math.random() * 10);
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'confetti';
+                particle.style.backgroundColor = color;
+                particle.style.left = `${rect.left - gameRect.left + rect.width/2}px`;
+                particle.style.top = `${rect.top - gameRect.top + rect.height/2}px`;
+                
+                // Taille et couleur aléatoires
+                const size = 5 + Math.random() * 10;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Animation aléatoire
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 2 + Math.random() * 3;
+                const rotation = Math.random() * 360;
+                
+                particle.style.setProperty('--angle', `${angle}rad`);
+                particle.style.setProperty('--velocity', `${velocity}`);
+                particle.style.setProperty('--rotation', `${rotation}deg`);
+                
+                gameArea.appendChild(particle);
+                
+                // Supprimer après l'animation
+                setTimeout(() => {
+                    if (gameArea.contains(particle)) {
+                        gameArea.removeChild(particle);
+                    }
+                }, 3000);
+            }
+        }
+        
+        // Vérifier les réalisations
+        function checkAchievements() {
+            if (targetsHit === 10) {
+                showAchievement('10 cibles touchées!');
+            } else if (targetsHit === 50) {
+                showAchievement('50 cibles touchées!');
+            } else if (targetsHit === 100) {
+                showAchievement('100 cibles touchées!');
+            }
+            
+            if (score >= 1000) {
+                showAchievement('Score de 1000 points!');
+            } else if (score >= 5000) {
+                showAchievement('Score de 5000 points!');
+            }
+            
+            if (reactionTimes.length >= 5) {
+                const lastFive = reactionTimes.slice(-5);
+                const avg = lastFive.reduce((a, b) => a + b, 0) / lastFive.length;
+                if (avg < 0.5) {
+                    showAchievement('Réflexes rapides!');
+                }
+            }
+        }
+        
+        // Démarrer le jeu
+        function startGame(difficulty) {
+            // Appliquer les paramètres de difficulté
+            if (difficulty && difficulty !== 'custom') {
+                applyDifficultySettings(difficulty);
+            }
+            
+            // Réinitialiser les statistiques
+            score = 0;
+            targetsHit = 0;
+            targetsMissed = 0;
+            reactionTimes = [];
+            updateStats();
+            
+            // Nettoyer les cibles existantes
+            currentTargets.forEach(target => {
+                clearTimeout(target.timeout);
+                if (target.moveInterval) clearInterval(target.moveInterval);
+                if (gameArea.contains(target.element)) {
+                    gameArea.removeChild(target.element);
+                }
+            });
+            currentTargets = [];
+            
+            // Configurer le jeu
+            gameActive = true;
+            gamePaused = false;
+            remainingTime = settings.gameDuration;
+            startTime = Date.now();
+            
+            // Mettre à jour l'interface
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            resetBtn.disabled = false;
+            
+            // Démarrer le timer
+            updateGameTimer();
+            gameTimer = setInterval(updateGameTimer, 1000);
+            
+            // Démarrer l'apparition des cibles
+            targetInterval = setInterval(createTarget, settings.targetSpeed);
+            
+            // Créer la première cible immédiatement
+            setTimeout(createTarget, 500);
+        }
+        
+        // Appliquer les paramètres de difficulté
+        function applyDifficultySettings(difficulty) {
+            switch (difficulty) {
+                case 'easy':
+                    settings.targetSize = 80;
+                    settings.targetSpeed = 2000;
+                    settings.targetLifetime = 3000;
+                    settings.movementEnabled = false;
+                    break;
+                case 'medium':
+                    settings.targetSize = 60;
+                    settings.targetSpeed = 1500;
+                    settings.targetLifetime = 2000;
+                    settings.movementEnabled = true;
+                    break;
+                case 'hard':
+                    settings.targetSize = 40;
+                    settings.targetSpeed = 1000;
+                    settings.targetLifetime = 1500;
+                    settings.movementEnabled = true;
+                    break;
+                case 'expert':
+                    settings.targetSize = 30;
+                    settings.targetSpeed = 700;
+                    settings.targetLifetime = 1000;
+                    settings.movementEnabled = true;
+                    break;
+            }
+            
+            // Mettre à jour l'interface
+            targetSize.value = settings.targetSize;
+            targetSizeValue.textContent = settings.targetSize;
+            targetSpeed.value = settings.targetSpeed;
+            targetSpeedValue.textContent = settings.targetSpeed;
+            targetLifetime.value = settings.targetLifetime;
+            targetLifetimeValue.textContent = settings.targetLifetime;
+            movementEnabled.checked = settings.movementEnabled;
+        }
+        
+        // Mettre à jour le timer du jeu
+        function updateGameTimer() {
+            if (gamePaused) return;
+            
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            remainingTime = Math.max(0, settings.gameDuration - elapsed);
+            
+            if (remainingTime <= 0) {
+                endGame();
+            }
+        }
+        
+        // Mettre le jeu en pause
+        function pauseGame() {
+            if (!gameActive) return;
+            
+            gamePaused = !gamePaused;
+            
+            if (gamePaused) {
+                pauseBtn.textContent = 'Reprendre';
+                clearInterval(targetInterval);
+                clearInterval(gameTimer);
+                
+                // Mettre en pause les mouvements des cibles
+                currentTargets.forEach(target => {
+                    if (target.moveInterval) {
+                        clearInterval(target.moveInterval);
+                        target.moveInterval = null;
+                    }
+                });
+            } else {
+                pauseBtn.textContent = 'Pause';
+                gameTimer = setInterval(updateGameTimer, 1000);
+                targetInterval = setInterval(createTarget, settings.targetSpeed);
+                startTime = Date.now() - (settings.gameDuration - remainingTime) * 1000;
+                
+                // Reprendre les mouvements des cibles
+                currentTargets.forEach(target => {
+                    if (settings.movementEnabled && !target.moveInterval) {
+                        const speed = 1 + Math.random() * 2;
+                        let dx = (Math.random() - 0.5) * speed;
+                        let dy = (Math.random() - 0.5) * speed;
+                        
+                        target.moveInterval = setInterval(() => {
+                            if (gamePaused) return;
+                            
+                            const rect = target.element.getBoundingClientRect();
+                            const gameRect = gameArea.getBoundingClientRect();
+                            
+                            let newX = parseFloat(target.element.style.left) + dx;
+                            let newY = parseFloat(target.element.style.top) + dy;
+                            
+                            if (newX <= 0 || newX >= gameRect.width - rect.width) {
+                                dx = -dx;
+                                newX = parseFloat(target.element.style.left) + dx;
+                            }
+                            
+                            if (newY <= 0 || newY >= gameRect.height - rect.height) {
+                                dy = -dy;
+                                newY = parseFloat(target.element.style.top) + dy;
+                            }
+                            
+                            target.element.style.left = `${newX}px`;
+                            target.element.style.top = `${newY}px`;
+                        }, 16);
+                    }
+                });
+            }
+        }
+        
+        // Terminer le jeu
+        function endGame() {
+            gameActive = false;
+            clearInterval(gameTimer);
+            clearInterval(targetInterval);
+            
+            // Nettoyer les cibles restantes
+            currentTargets.forEach(target => {
+                clearTimeout(target.timeout);
+                if (target.moveInterval) clearInterval(target.moveInterval);
+                if (gameArea.contains(target.element)) {
+                    gameArea.removeChild(target.element);
+                }
+            });
+            currentTargets = [];
+            
+            // Mettre à jour l'interface
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            resetBtn.disabled = false;
+            pauseBtn.textContent = 'Pause';
+            
+            // Jouer un son de fin
+            if (settings.soundEnabled) {
+                successSound.currentTime = 0;
+                successSound.play().catch(e => console.log('Son bloqué:', e));
+            }
+            
+            // Enregistrer la partie dans l'historique
+            // Enregistrer la partie dans l'historique
+const gameResult = {
+    date: new Date().toISOString(),
+    score,
+    targetsHit,
+    accuracy: targetsHit + targetsMissed > 0 
+        ? Math.round((targetsHit / (targetsHit + targetsMissed)) * 100)
+        : 0,
+    averageTime: reactionTimes.length > 0 
+        ? (reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length)
+        : 0,
+    bestTime: bestTime === Infinity ? 0 : bestTime,
+    duration: settings.gameDuration,
+    difficulty: getCurrentDifficulty()
+};
+            
+            gameHistory.unshift(gameResult);
+            if (gameHistory.length > 20) {
+                gameHistory = gameHistory.slice(0, 20);
+            }
+            
+            localStorage.setItem('reactionGameHistory', JSON.stringify(gameHistory));
+            
+            // Afficher un message de fin
+            showNotification(`Partie terminée! Score: ${score}`);
+        }
+        
+        // Obtenir la difficulté actuelle
+        function getCurrentDifficulty() {
+            if (settings.targetSize >= 70 && settings.targetSpeed >= 1800 && !settings.movementEnabled) {
+                return 'Facile';
+            } else if (settings.targetSize >= 50 && settings.targetSpeed >= 1200) {
+                return 'Moyen';
+            } else if (settings.targetSize >= 30 && settings.targetSpeed >= 800) {
+                return 'Difficile';
+            } else if (settings.targetSize < 30 && settings.targetSpeed < 800) {
+                return 'Expert';
+            } else {
+                return 'Personnalisé';
+            }
+        }
+        
+        // Réinitialiser le jeu
+        function resetGame() {
+            if (gameActive) {
+                endGame();
+            }
+            
+            score = 0;
+            targetsHit = 0;
+            targetsMissed = 0;
+            reactionTimes = [];
+            bestTime = Infinity;
+            updateStats();
+            
+            // Nettoyer les cibles restantes
+            currentTargets.forEach(target => {
+                clearTimeout(target.timeout);
+                if (target.moveInterval) clearInterval(target.moveInterval);
+                if (gameArea.contains(target.element)) {
+                    gameArea.removeChild(target.element);
+                }
+            });
+            currentTargets = [];
+            
+            // Mettre à jour l'interface
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            resetBtn.disabled = true;
+            pauseBtn.textContent = 'Pause';
+        }
+        
+        // Afficher l'historique
+        function showHistory() {
+            historyList.innerHTML = '';
+            
+            if (gameHistory.length === 0) {
+                historyList.innerHTML = '<p>Aucune partie enregistrée</p>';
+            } else {
+                gameHistory.forEach(game => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    
+                    const date = new Date(game.date);
+                    const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                    
+                    item.innerHTML = `
+                        <div>
+                            <span class="history-time">${dateStr}</span> -
+                            <span>${game.difficulty}</span>
+                        </div>
+                        <div>
+                            Score: <strong>${game.score}</strong> - 
+                            Précision: <strong>${game.accuracy}%</strong> - 
+                            Temps moyen: <strong>${game.averageTime.toFixed(2)}s</strong>
+                        </div>
+                    `;
+                    
+                    historyList.appendChild(item);
+                });
+            }
+            
+            historyContainer.classList.toggle('show');
+            settingsPanel.classList.remove('show');
+        }
+        
+        // Effacer l'historique
+        function clearHistory() {
+            gameHistory = [];
+            localStorage.setItem('reactionGameHistory', JSON.stringify(gameHistory));
+            showHistory();
+            showNotification('Historique effacé!');
+        }
+        
+        // Gérer les clics en dehors des cibles
+        function handleMissedClick(e) {
+            if (!gameActive || gamePaused || e.target === gameArea) {
+                targetsMissed++;
+                updateStats();
+                
+                // Jouer un son d'erreur si activé
+                if (settings.soundEnabled) {
+                    clickSound.currentTime = 0;
+                    clickSound.play().catch(e => console.log('Son bloqué:', e));
+                }
+            }
+        }
+        
+        // Ouvrir la modal de difficulté
+        function openDifficultyModal() {
+            difficultyModal.style.display = 'flex';
+        }
+        
+        // Fermer la modal de difficulté
+        function closeDifficultyModal() {
+            difficultyModal.style.display = 'none';
+        }
+        
+        // Initialisation
+        function init() {
+            loadSettings();
+            updateStats();
+            
+            // Écouteurs d'événements
+            startBtn.addEventListener('click', openDifficultyModal);
+            pauseBtn.addEventListener('click', pauseGame);
+            resetBtn.addEventListener('click', resetGame);
+            settingsBtn.addEventListener('click', () => {
+                settingsPanel.classList.toggle('show');
+                historyContainer.classList.remove('show');
+            });
+            historyBtn.addEventListener('click', showHistory);
+            saveSettingsBtn.addEventListener('click', saveSettings);
+            clearHistoryBtn.addEventListener('click', clearHistory);
+            themeToggle.addEventListener('click', toggleTheme);
+            gameArea.addEventListener('click', handleMissedClick);
+            
+            // Gestion des paramètres
+            gameDuration.addEventListener('input', () => {
+                gameDurationValue.textContent = gameDuration.value;
+            });
+            
+            targetSize.addEventListener('input', () => {
+                targetSizeValue.textContent = targetSize.value;
+            });
+            
+            targetSpeed.addEventListener('input', () => {
+                targetSpeedValue.textContent = targetSpeed.value;
+            });
+            
+            targetLifetime.addEventListener('input', () => {
+                targetLifetimeValue.textContent = targetLifetime.value;
+            });
+            
+            targetColor.addEventListener('input', () => {
+                // Mettre à jour la couleur des cibles existantes?
+            });
+            
+            bgColor.addEventListener('input', () => {
+                applyBackgroundColor();
+            });
+            
+            // Gestion de la modal de difficulté
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const difficulty = e.target.dataset.difficulty;
+                    closeDifficultyModal();
+                    startGame(difficulty);
+                });
+            });
+            
+            // Fermer la modal en cliquant à l'extérieur
+            difficultyModal.addEventListener('click', (e) => {
+                if (e.target === difficultyModal) {
+                    closeDifficultyModal();
+                }
+            });
+        }
+        
+        // Démarrer l'application
+        init();
+    </script>
+</body>
+</html>

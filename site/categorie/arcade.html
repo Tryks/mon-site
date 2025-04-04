@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcade - GameHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --success: #00b894;
+            --danger: #d63031;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .page-header {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .games-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .game-info {
+            padding: 1.2rem;
+        }
+
+        .game-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .game-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-category {
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .game-rating {
+            display: flex;
+            align-items: center;
+            color: #f39c12;
+            font-weight: 500;
+        }
+
+        .game-rating i {
+            margin-right: 0.3rem;
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .footer-links li {
+            margin: 0 1rem;
+        }
+
+        .footer-links a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .copyright {
+            color: #b2bec3;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                margin-top: 1rem;
+            }
+
+            .nav-links li {
+                margin-left: 0;
+                margin-right: 1rem;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-gamepad"></i>
+                <span>GameHub</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/site/index.html">Accueil</a></li>
+                <li><a href="/site/nouvreau-jeux.html">Nouveautés</a></li>
+                <li><a href="/site/jeux-populaires.html">Populaires</a></li>
+                <li><a href="/site/categories.html" class="active">Catégories</a></li>
+                <li><a href="/site/a-propos.html">À propos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1><i class="fas fa-gamepad"></i> Jeux pour la Catégorie Arcade </h1>
+        <p>Découvrez nos jeux classés par catégories</p>
+    </div>
+
+    <div class="games-container">
+        <div class="games-grid" id="games-grid">
+            <!-- Les jeux seront ajoutés dynamiquement par JavaScript -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="logo">
+                <i class="fas fa-gamepad"></i>
+                <span>GameHub</span>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#">Conditions d'utilisation</a></li>
+                <li><a href="#">Politique de confidentialité</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">FAQ</a></li>
+            </ul>
+            <p class="copyright">© 2023 GameHub. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Données des jeux
+        const games = [
+            
+            {
+                title: "Snake",
+                description: "Contrôlez un serpent qui grandit en mangeant des fruits. Évitez de vous mordre la queue !",
+                category: "arcade",
+                image: "/img/snake.jpg",
+                rating: 4.5,
+                link: "/jeu_classique/snake/snake.html"
+            },
+            {
+                title: "Geometry Dash",
+                description: "Jeu de plateforme rythmique où il faut sauter au bon moment pour éviter les obstacles.",
+                category: "arcade",
+                image: "/img/geometry_dash.jpg",
+                rating: 4.6,
+                link: "/jeu_classique/geometry_dash/geometry_dash.html"
+            },
+            {
+                title: "N'appuie pas sur le bouton",
+                description: "Jeu de réflexes où il faut résister à la tentation d'appuyer sur le bouton.",
+                category: "arcade",
+                image: "/img/bouton.jpg",
+                rating: 4.6,
+                link: "/jeu_classique/bouton_fuyare/accueil.html"
+            }
+        ];
+
+        // Afficher les jeux
+        function displayGames() {
+            const gamesGrid = document.getElementById('games-grid');
+            gamesGrid.innerHTML = '';
+
+            // Récupérer la catégorie depuis l'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+
+            // Filtrer les jeux par catégorie si spécifiée
+            const filteredGames = category 
+                ? games.filter(game => game.category.toLowerCase() === category.toLowerCase())
+                : games;
+
+            filteredGames.forEach(game => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                gameCard.innerHTML = `
+                    <img src="${game.image}" alt="${game.title}">
+                    <div class="game-info">
+                        <h3 class="game-title">${game.title}</h3>
+                        <p class="game-description">${game.description}</p>
+                        <div class="game-meta">
+                            <span class="game-category">${game.category}</span>
+                            <span class="game-rating"><i class="fas fa-star"></i>${game.rating}</span>
+                        </div>
+                    </div>
+                `;
+                
+                // Ajout de l'événement de clic pour la redirection
+                gameCard.addEventListener('click', () => {
+                    window.location.href = game.link;
+                });
+                
+                gamesGrid.appendChild(gameCard);
+            });
+        }
+
+        // Afficher les jeux au chargement de la page
+        document.addEventListener('DOMContentLoaded', displayGames);
+    </script>
+</body>
+</html>

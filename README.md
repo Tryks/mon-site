@@ -1,35 +1,16 @@
 # mon-site
 idées de jeuy a faire :
 
-
-🎲 Jeux Classiques Revisités
-Memory (Jeu de mémoire avec des paires d'images)
-
-Démineur (Version améliorée avec différents thèmes)
-
-Puissance 4 (Avec mode solo contre IA et multijoueur)
-
-Sudoku (Générateur avec 3 niveaux de difficulté)    A FAITS 
-
-Morpion 3D (Variante en 3 niveaux)   A FAIRE
-
 ♠️ Jeux de Cartes
-Solitaire (Klondike, Spider ou FreeCell) A FAIRE
 
 Bataille (Avec animations de cartes)
-
-Poker Texas Hold'em (Version simplifiée)
 
 Uno (Version numérique avec règles personnalisables)
 
 Jeu de 7 familles (Thème personnalisable)
 
 🧩 Jeux de Réflexion
-Mastermind (Décoder la combinaison secrète)
 
-Taquin (Slider puzzle avec images personnalisables)
-
-Picross (Grilles logiques avec créateur de niveaux)
 
 Échecs (Avec tutoriel intégré pour débutants)
 
@@ -38,7 +19,6 @@ Dames (Internationales, anglaises, etc.)
 ✍️ Jeux de Mots
 Wordle (Version française avec partage des résultats)
 
-Scrabble (Solo contre IA ou multijoueur)
 
 Motus (Jeu de télévision adapté)
 
@@ -141,89 +121,84 @@ reglé les probleme sur la page pendu (lettre multiple) et le sudoku
 amélioré le jeu mot de passe, le qcm et le solitaire
 rendre le tout plus beau visuellement
 
+# Cliquer
+
+faire en sort qu'on puisse acheter des truc comme un nouveau skin pour le cliquer ou personalisable,des amelioration, un bouton qui nous améne sur une fenetre avec tout les succès du jeu avec ceux déploquer et ce qui son pas encore débloquer. plus de paramétre et plus beau, l'esthétique des amelioration plus beau et mieux repartie sur l'écran, 
+
+ajouter un truc qui nous permet de voir la prochaine amelioration, plus de skin et de succès,
+essayer de le faire pour une version mobile aussi, reptisire un peu tout parce tout est un petit peu trop grande et ajouter d'autre amélioration pour un jeu encore plus formidable
+
 
 --
 
 # MENU NAV :
 
 
-<nav class="navbar">
-            <div class="navbar-container">
-                <a href="/index.html" class="logo">
-                    <i class="fas fa-gamepad"></i>
-                    <span>Game<span>Hub</span></span>
-                </a>
-    
-                
-                <div class="menu-toggle" id="mobile-menu">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
-                
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="./site/index.html" class="nav-links active">
-                            <i class="fas fa-home"></i> Accueil
-                            <span class="link-underline"></span>
-                        </a>
-                    </li>
+ <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-gamepad"></i>
+                <span>Game<span>Hub</span></span>
+            </a>
 
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-links dropdown-toggle">
-                            <i class="fas fa-info-circle"></i> Jeu de carte
-                            <span class="link-underline"></span>
-                            <i class="fas fa-chevron-down dropdown-icon"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="../jeu_de_carte/blackjack/blackjack.html" class="dropdown-item">Blackjack</a></li>
-                            <li><a href="#" class="dropdown-item">Poker</a></li>
-                            <li><a href="#" class="dropdown-item">Solitaire</a></li>
-                        </ul>
-                    </li>
 
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-links dropdown-toggle">
-                            <i class="fas fa-briefcase"></i> Jeu de devinette
-                            <span class="link-underline"></span>
-                            <i class="fas fa-chevron-down dropdown-icon"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#" class="dropdown-item">Géographie</a></li>
-                            <li><a href="#" class="dropdown-item">puzzel</a></li>
-                            <li><a href="#" class="dropdown-item">Casse tête</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="../jeu_devinette/mot_de_passe.html" class="nav-links">
-                            <i class="fas fa-image"></i> Jeu CLassique
-                            <span class="link-underline"></span>
-                            <i class="fas fa-chevron-down dropdown-icon"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#" class="dropdown-item">Morpion</a></li>
-                            <li><a href="#" class="dropdown-item">Snake</a></li>
-                            <li><a href="#" class="dropdown-item">Pierre-Feuille-Ciseaux</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="../qcm/qcm.html" class="nav-links">
-                            <i class="fas fa-envelope"></i> PLUS
-                            <span class="link-underline"></span>
-                            <i class="fas fa-chevron-down dropdown-icon"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="../index.html">Accueil</a></li>
-                            <li><a href="nouveaux-jeux.html">Nouveautés</a></li>
-                            <li><a href="jeux-populaires.html" class="active">Populaires</a></li>
-                            <li><a href="categories.html">Catégories</a></li>
-                            <li><a href="a-propos.html">À propos</a></li>
-
-                        </ul>
-                    </li>
-                </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
             </div>
-        </nav>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-links active">
+                        <i class="fas fa-home"></i> Accueil
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/nouvreau-jeux.html" class="nav-links active">
+                        <i class="fas fa-home"></i> Nouveautés
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/jeux-populaires.html" class="nav-links active">
+                        <i class="fas fa-home"></i> Populaires
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/categories.html" class="nav-links active">
+                        <i class="fas fa-home"></i> Catégories
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/site/a-propos.html" class="nav-links active">
+                        <i class="fas fa-home"></i> À propos
+                        <span class="link-underline"></span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-links dropdown-toggle">
+                        <i class="fas fa-info-circle"></i> Jeu
+                        <span class="link-underline"></span>
+                        <i class="fas fa-chevron-down dropdown-icon"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="../jeu_de_carte/blackjack/blackjack.html" class="dropdown-item">carte</a></li>
+                        <li><a href="#" class="dropdown-item">Devinette</a></li>
+                        <li><a href="#" class="dropdown-item">Stratégie</a></li>
+                        <li><a href="#" class="dropdown-item">Réflexion</a></li>
+                        <li><a href="#" class="dropdown-item">Arcade</a></li>
+                        <li><a href="#" class="dropdown-item">éducatif</a></li>
+                        <li><a href="#" class="dropdown-item">Cours</a></li>
+                        <li><a href="#" class="dropdown-item">Classique</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
 
 # Changement a faire :
@@ -232,3 +207,8 @@ changer la page index et jeu detaile dans la page site ensuite regarder si tout 
 
 
 il a beaucoup de d'erreurs dans les noms des jeux donc changer au plus vite! 
+
+# PROMPTE 
+
+est ce que tu peux me faire un Wordle (Version française avec partage des résultats)
+. qui est magnifique super beau et avec plein d'option et encore plein d'autre choses d'autre pour rendre l'experience incroyable  et fait le dans un seul fichier

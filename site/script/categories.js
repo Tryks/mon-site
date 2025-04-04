@@ -1,52 +1,67 @@
- // Données des catégories
- const categories = [
+// Données des catégories
+const categories = [
     {
-        name: "Action",
-        icon: "fas fa-fighter-jet",
-        count: 156,
-        description: "Jeux intenses avec des combats et de l'adrénaline"
+        name: "Cartes",
+        icon: "fas fa-club",
+        count: 3,
+        description: "Jeux de cartes classiques et stratégiques",
+        link: "/site/categorie/carte.html"
     },
     {
-        name: "Aventure",
-        icon: "fas fa-map",
-        count: 98,
-        description: "Exploration, quêtes et histoires captivantes"
+        name: "Devinette",
+        icon: "fas fa-question-circle",
+        count: 5,
+        description: "Jeux de déduction et de connaissances",
+        link: "/site/categorie/devinette.html"
     },
     {
         name: "Stratégie",
         icon: "fas fa-chess",
-        count: 87,
-        description: "Réflexion, planification et prise de décision"
+        count: 3,
+        description: "Jeux de réflexion et de planification",
+        link: "/site/categorie/strategie.html"
     },
     {
-        name: "Puzzle",
-        icon: "fas fa-puzzle-piece",
-        count: 112,
-        description: "Énigmes, casse-têtes et défis mentaux"
+        name: "Réflexion",
+        icon: "fas fa-brain",
+        count: 2,
+        description: "Jeux pour stimuler la mémoire et la logique",
+        link: "/site/categorie/reflexion.html"
     },
     {
-        name: "Sport",
-        icon: "fas fa-running",
-        count: 65,
-        description: "Simulations sportives et compétitions"
+        name: "Arcade",
+        icon: "fas fa-gamepad",
+        count: 3,
+        description: "Jeux rapides et addictifs",
+        link: "/site/categorie/arcade.html"
+    },
+    {
+        name: "Éducatif",
+        icon: "fas fa-graduation-cap",
+        count: 4,
+        description: "Jeux pour apprendre en s'amusant",
+        link: "/site/categorie/educatif.html" // Correction de "deucatif" à "educatif"
+    },
+    {
+        name: "Classique",
+        icon: "fas fa-dice",
+        count: 2,
+        description: "Jeux intemporels et universels",
+        link: "/site/categorie/classique.html"
     },
     {
         name: "Course",
         icon: "fas fa-car",
-        count: 73,
-        description: "Vitesse, dépassement et compétition automobile"
+        count: 1,
+        description: "Jeux de vitesse et de conduite",
+        link: "/site/categorie/course.html"
     },
     {
-        name: "Multijoueur",
-        icon: "fas fa-users",
-        count: 124,
-        description: "Jeux en ligne avec d'autres joueurs"
-    },
-    {
-        name: "Simulation",
-        icon: "fas fa-helicopter",
-        count: 56,
-        description: "Expériences réalistes et immersives"
+        name: "Mémoire",
+        icon: "fas fa-brain",
+        count: 1,
+        description: "Jeu de mémoire et de concentration",
+        link: "/site/categorie/memorie.html"
     }
 ];
 
@@ -63,11 +78,12 @@ function displayCategories() {
             <div class="category-icon"><i class="${category.icon}"></i></div>
             <h3 class="category-title">${category.name}</h3>
             <p class="category-count">${category.count} jeux</p>
+            <p class="category-description">${category.description}</p>
         `;
         
-        // Ajouter un événement pour rediriger vers une page de catégorie
+        // Redirection vers la page spécifiée dans l'objet category
         categoryCard.addEventListener('click', () => {
-            window.location.href = `categorie.html?name=${encodeURIComponent(category.name)}`;
+            window.location.href = category.link;
         });
         
         categoriesGrid.appendChild(categoryCard);
@@ -75,4 +91,4 @@ function displayCategories() {
 }
 
 // Afficher toutes les catégories au chargement
-displayCategories();
+document.addEventListener('DOMContentLoaded', displayCategories);

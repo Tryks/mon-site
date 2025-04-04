@@ -1,3 +1,7 @@
+
+//  mauvais js, aller récupérer dans le bureau
+
+
 // Variables d'état du jeu
 let board = Array(9).fill().map(() => Array(9).fill(0));
 let solution = Array(9).fill().map(() => Array(9).fill(0));

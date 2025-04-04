@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrabble Magnifique - Version Complète</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --tile-bg: #f1c40f;
+            --board-bg: #27ae60;
+            --triple-word: #e74c3c;
+            --double-word: #f39c12;
+            --triple-letter: #3498db;
+            --double-letter: #9b59b6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #f1c40f, #e74c3c, #3498db);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            margin: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .instructions h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions ol {
+            padding-left: 1.5rem;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            padding: 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 800px;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .game-board-container {
+            overflow: auto;
+            max-width: 100%;
+            background-color: var(--board-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(15, 50px);
+            grid-template-rows: repeat(15, 50px);
+            gap: 2px;
+            margin: 0 auto;
+        }
+
+        .cell {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .cell.center {
+            background-color: var(--accent);
+        }
+
+        .cell.double-word {
+            background-color: var(--double-word);
+        }
+
+        .cell.triple-word {
+            background-color: var(--triple-word);
+        }
+
+        .cell.double-letter {
+            background-color: var(--double-letter);
+        }
+
+        .cell.triple-letter {
+            background-color: var(--triple-letter);
+        }
+
+        .cell-label {
+            position: absolute;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+        }
+
+        .tile {
+            background-color: var(--tile-bg);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            font-weight: bold;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .tile.blank {
+            background-color: #bdc3c7;
+        }
+
+        .tile-value {
+            font-size: 0.8rem;
+            position: absolute;
+            bottom: 2px;
+            right: 4px;
+        }
+
+        .rack {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            padding: 1rem;
+            background-color: var(--primary);
+            border-radius: 8px;
+            margin-top: auto;
+            min-height: 80px;
+        }
+
+        .rack-tile {
+            width: 60px;
+            height: 60px;
+            background-color: var(--tile-bg);
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.8rem;
+            cursor: grab;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .rack-tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .rack-tile.blank {
+            background-color: #bdc3c7;
+        }
+
+        .rack-tile-value {
+            font-size: 0.8rem;
+            position: absolute;
+            bottom: 2px;
+            right: 4px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--secondary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        button.danger {
+            background-color: var(--accent);
+        }
+
+        button.danger:hover {
+            background-color: #c0392b;
+        }
+
+        button.success {
+            background-color: #2ecc71;
+        }
+
+        button.success:hover {
+            background-color: #27ae60;
+        }
+
+        .player-info {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .player-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.3rem;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .game-info {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.3rem;
+        }
+
+        .tile-bag-info {
+            margin-top: 1rem;
+        }
+
+        .word-validator {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .word-validator h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .word-validator input {
+            margin-bottom: 0.5rem;
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .validation-result {
+            font-weight: bold;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .valid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .invalid {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .messages {
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 0.5rem;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            background-color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.system {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        .message.player {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .message.ai {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .settings-option {
+            margin-bottom: 1rem;
+        }
+
+        .settings-option label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .settings-option input[type="checkbox"] {
+            width: auto;
+        }
+
+        .tile.dragging {
+            opacity: 0.5;
+            transform: scale(1.1);
+        }
+
+        .highlighted {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(241, 196, 15, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); }
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                order: -1;
+            }
+            .game-board {
+                grid-template-columns: repeat(15, 40px);
+                grid-template-rows: repeat(15, 40px);
+            }
+            .rack-tile {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                min-width: 100%;
+            }
+            .game-board {
+                grid-template-columns: repeat(15, 30px);
+                grid-template-rows: repeat(15, 30px);
+            }
+            .rack-tile {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+            button {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Scrabble Magnifique</h1>
+        <p>Le jeu de lettres le plus élégant qui soit</p>
+    </header>
+
+    <div class="instructions">
+        <h3>Comment jouer :</h3>
+        <ol>
+            <li><strong>Glissez-déposez</strong> vos lettres du chevalet vers le plateau</li>
+            <li>Le premier mot doit passer par la <strong>case centrale (étoile rouge)</strong></li>
+            <li>Les mots suivants doivent <strong>se connecter</strong> aux mots existants</li>
+            <li>Cliquez sur <strong>"Valider le mot"</strong> pour confirmer votre coup</li>
+            <li>Utilisez les <strong>cases spéciales</strong> pour marquer plus de points</li>
+        </ol>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="game-board-container">
+                <div class="game-board" id="gameBoard"></div>
+            </div>
+            <div class="rack" id="playerRack"></div>
+            <div class="controls">
+                <button id="validateBtn">Valider le mot</button>
+                <button id="shuffleBtn">Mélanger les lettres</button>
+                <button id="passBtn">Passer son tour</button>
+                <button id="exchangeBtn">Échanger des lettres</button>
+                <button id="newGameBtn">Nouvelle partie</button>
+                <button id="helpBtn">Aide</button>
+                <button id="settingsBtn">Paramètres</button>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="player-info">
+                <h3>Joueur</h3>
+                <p>Score: <span class="score" id="playerScore">0</span></p>
+                <div class="tile-bag-info">
+                    <p>Lettres restantes: <span id="tilesRemaining">100</span></p>
+                </div>
+            </div>
+
+            <div class="game-info">
+                <h3>Informations</h3>
+                <p>Tour: <span id="currentTurn">Joueur</span></p>
+                <p>État: <span id="gameState">En attente...</span></p>
+                
+                <div class="word-validator">
+                    <h4>Vérificateur de mots</h4>
+                    <input type="text" id="wordToValidate" placeholder="Entrez un mot">
+                    <button id="validateWordBtn">Vérifier</button>
+                    <div class="validation-result" id="validationResult"></div>
+                </div>
+            </div>
+
+            <div class="messages" id="gameMessages">
+                <div class="message system">Bienvenue dans Scrabble Magnifique!</div>
+                <div class="message system">Pour commencer, cliquez sur "Nouvelle partie"</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Game Modal -->
+    <div class="modal" id="newGameModal">
+        <div class="modal-content">
+            <h2>Nouvelle Partie</h2>
+            <div class="form-group">
+                <label for="gameMode">Mode de jeu</label>
+                <select id="gameMode">
+                    <option value="solo">Solo contre IA</option>
+                    <option value="multiplayer">Multijoueur local</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="aiDifficulty">Difficulté de l'IA</label>
+                <select id="aiDifficulty">
+                    <option value="easy">Facile</option>
+                    <option value="medium" selected>Moyen</option>
+                    <option value="hard">Difficile</option>
+                    <option value="expert">Expert</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="player1Name">Nom du Joueur 1</label>
+                <input type="text" id="player1Name" value="Joueur">
+            </div>
+            <div class="form-group" id="player2Group">
+                <label for="player2Name">Nom du Joueur 2</label>
+                <input type="text" id="player2Name" value="Adversaire">
+            </div>
+            <div class="modal-buttons">
+                <button id="cancelNewGameBtn">Annuler</button>
+                <button class="success" id="startGameBtn">Commencer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exchange Tiles Modal -->
+    <div class="modal" id="exchangeModal">
+        <div class="modal-content">
+            <h2>Échanger des lettres</h2>
+            <p>Sélectionnez les lettres que vous souhaitez échanger:</p>
+            <div class="rack" id="exchangeRack"></div>
+            <div class="modal-buttons">
+                <button id="cancelExchangeBtn">Annuler</button>
+                <button class="success" id="confirmExchangeBtn">Échanger</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <h2>Aide</h2>
+            <h3>Comment jouer</h3>
+            <p>1. Glissez-déposez vos lettres sur le plateau pour former un mot.</p>
+            <p>2. Le premier mot doit passer par la case centrale (étoile rouge).</p>
+            <p>3. Les mots suivants doivent se connecter aux mots existants.</p>
+            <p>4. Cliquez sur "Valider le mot" pour confirmer votre coup.</p>
+            <p>5. Utilisez les cases spéciales pour marquer plus de points:</p>
+            <ul>
+                <li><span style="color: var(--triple-word);">Rouge</span>: Triple mot</li>
+                <li><span style="color: var(--double-word);">Orange</span>: Double mot</li>
+                <li><span style="color: var(--triple-letter);">Bleu</span>: Triple lettre</li>
+                <li><span style="color: var(--double-letter);">Violet</span>: Double lettre</li>
+            </ul>
+            <h3>Commandes</h3>
+            <p><strong>Mélanger les lettres</strong>: Réorganise vos lettres aléatoirement.</p>
+            <p><strong>Passer son tour</strong>: Passe votre tour sans jouer.</p>
+            <p><strong>Échanger des lettres</strong>: Remplace jusqu'à 7 lettres par de nouvelles.</p>
+            <div class="modal-buttons">
+                <button id="closeHelpBtn">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h2>Paramètres</h2>
+            <div class="settings-option">
+                <label>
+                    <input type="checkbox" id="soundToggle" checked>
+                    Activer les sons
+                </label>
+            </div>
+            <div class="settings-option">
+                <label>
+                    <input type="checkbox" id="animationsToggle" checked>
+                    Activer les animations
+                </label>
+            </div>
+            <div class="settings-option">
+                <label>
+                    <input type="checkbox" id="highlightToggle" checked>
+                    Mettre en évidence les cases spéciales
+                </label>
+            </div>
+            <div class="settings-option">
+                <label for="tileDesign">Design des tuiles:</label>
+                <select id="tileDesign">
+                    <option value="classic">Classique</option>
+                    <option value="modern">Moderne</option>
+                    <option value="elegant">Élégant</option>
+                </select>
+            </div>
+            <div class="settings-option">
+                <label for="theme">Thème:</label>
+                <select id="theme">
+                    <option value="default">Par défaut</option>
+                    <option value="dark">Sombre</option>
+                    <option value="nature">Nature</option>
+                    <option value="ocean">Océan</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button id="cancelSettingsBtn">Annuler</button>
+                <button class="success" id="saveSettingsBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="modal" id="gameOverModal">
+        <div class="modal-content">
+            <h2>Partie Terminée!</h2>
+            <div id="gameOverContent">
+                <p id="gameOverMessage"></p>
+                <p>Scores finaux:</p>
+                <ul id="finalScores"></ul>
+            </div>
+            <div class="modal-buttons">
+                <button class="success" id="newGameAfterOverBtn">Nouvelle partie</button>
+                <button id="closeGameOverBtn">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game constants
+        const LETTER_VALUES = {
+            'A': 1, 'B': 3, 'C': 3, 'D': 2, 'E': 1, 'F': 4, 'G': 2, 'H': 4, 'I': 1, 'J': 8,
+            'K': 10, 'L': 1, 'M': 2, 'N': 1, 'O': 1, 'P': 3, 'Q': 8, 'R': 1, 'S': 1, 'T': 1,
+            'U': 1, 'V': 4, 'W': 10, 'X': 10, 'Y': 10, 'Z': 10, ' ': 0
+        };
+
+        const LETTER_DISTRIBUTION = {
+            'A': 9, 'B': 2, 'C': 2, 'D': 3, 'E': 15, 'F': 2, 'G': 2, 'H': 2, 'I': 8, 'J': 1,
+            'K': 1, 'L': 5, 'M': 3, 'N': 6, 'O': 6, 'P': 2, 'Q': 1, 'R': 6, 'S': 6, 'T': 6,
+            'U': 6, 'V': 2, 'W': 1, 'X': 1, 'Y': 1, 'Z': 1, ' ': 2
+        };
+
+        // Special board positions
+        const TRIPLE_WORD = [
+            [0, 0], [0, 7], [0, 14],
+            [7, 0], [7, 14],
+            [14, 0], [14, 7], [14, 14]
+        ];
+
+        const DOUBLE_WORD = [
+            [1, 1], [2, 2], [3, 3], [4, 4],
+            [1, 13], [2, 12], [3, 11], [4, 10],
+            [10, 4], [11, 3], [12, 2], [13, 1],
+            [10, 10], [11, 11], [12, 12], [13, 13],
+            [7, 7]
+        ];
+
+        const TRIPLE_LETTER = [
+            [1, 5], [1, 9],
+            [5, 1], [5, 5], [5, 9], [5, 13],
+            [9, 1], [9, 5], [9, 9], [9, 13],
+            [13, 5], [13, 9]
+        ];
+
+        const DOUBLE_LETTER = [
+            [0, 3], [0, 11],
+            [2, 6], [2, 8],
+            [3, 0], [3, 7], [3, 14],
+            [6, 2], [6, 6], [6, 8], [6, 12],
+            [7, 3], [7, 11],
+            [8, 2], [8, 6], [8, 8], [8, 12],
+            [11, 0], [11, 7], [11, 14],
+            [12, 6], [12, 8],
+            [14, 3], [14, 11]
+        ];
+
+        // Game state
+        let gameState = {
+            board: Array(15).fill().map(() => Array(15).fill(null)),
+            players: [
+                { name: 'Joueur', score: 0, rack: [] },
+                { name: 'IA', score: 0, rack: [] }
+            ],
+            currentPlayer: 0,
+            tileBag: [],
+            gameMode: 'solo',
+            aiDifficulty: 'medium',
+            gameStarted: false,
+            firstMove: true,
+            placedTiles: [],
+            lastValidWord: null,
+            settings: {
+                sound: true,
+                animations: true,
+                highlight: true,
+                tileDesign: 'classic',
+                theme: 'default'
+            }
+        };
+
+        // DOM elements
+        const gameBoard = document.getElementById('gameBoard');
+        const playerRack = document.getElementById('playerRack');
+        const playerScore = document.getElementById('playerScore');
+        const currentTurn = document.getElementById('currentTurn');
+        const gameStateDisplay = document.getElementById('gameState');
+        const tilesRemaining = document.getElementById('tilesRemaining');
+        const gameMessages = document.getElementById('gameMessages');
+        const wordToValidate = document.getElementById('wordToValidate');
+        const validateWordBtn = document.getElementById('validateWordBtn');
+        const validationResult = document.getElementById('validationResult');
+
+        // Buttons
+        const validateBtn = document.getElementById('validateBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const passBtn = document.getElementById('passBtn');
+        const exchangeBtn = document.getElementById('exchangeBtn');
+        const newGameBtn = document.getElementById('newGameBtn');
+        const helpBtn = document.getElementById('helpBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+
+        // Modals
+        const newGameModal = document.getElementById('newGameModal');
+        const exchangeModal = document.getElementById('exchangeModal');
+        const helpModal = document.getElementById('helpModal');
+        const settingsModal = document.getElementById('settingsModal');
+        const gameOverModal = document.getElementById('gameOverModal');
+
+        // Modal buttons
+        const cancelNewGameBtn = document.getElementById('cancelNewGameBtn');
+        const startGameBtn = document.getElementById('startGameBtn');
+        const cancelExchangeBtn = document.getElementById('cancelExchangeBtn');
+        const confirmExchangeBtn = document.getElementById('confirmExchangeBtn');
+        const closeHelpBtn = document.getElementById('closeHelpBtn');
+        const cancelSettingsBtn = document.getElementById('cancelSettingsBtn');
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        const newGameAfterOverBtn = document.getElementById('newGameAfterOverBtn');
+        const closeGameOverBtn = document.getElementById('closeGameOverBtn');
+
+        // Form elements
+        const gameModeSelect = document.getElementById('gameMode');
+        const aiDifficultySelect = document.getElementById('aiDifficulty');
+        const player1NameInput = document.getElementById('player1Name');
+        const player2NameInput = document.getElementById('player2Name');
+        const player2Group = document.getElementById('player2Group');
+
+        // Settings elements
+        const soundToggle = document.getElementById('soundToggle');
+        const animationsToggle = document.getElementById('animationsToggle');
+        const highlightToggle = document.getElementById('highlightToggle');
+        const tileDesignSelect = document.getElementById('tileDesign');
+        const themeSelect = document.getElementById('theme');
+
+        // Initialize the game
+        function initGame() {
+            createBoard();
+            setupEventListeners();
+            updateUI();
+            showNewGameModal();
+        }
+
+        // Create the game board
+        function createBoard() {
+            gameBoard.innerHTML = '';
+            
+            for (let row = 0; row < 15; row++) {
+                for (let col = 0; col < 15; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    
+                    // Check for special cells
+                    if (row === 7 && col === 7) {
+                        cell.classList.add('center');
+                        const label = document.createElement('span');
+                        label.className = 'cell-label';
+                        label.textContent = '★';
+                        cell.appendChild(label);
+                    } else if (TRIPLE_WORD.some(pos => pos[0] === row && pos[1] === col)) {
+                        cell.classList.add('triple-word');
+                        const label = document.createElement('span');
+                        label.className = 'cell-label';
+                        label.textContent = 'x3';
+                        cell.appendChild(label);
+                    } else if (DOUBLE_WORD.some(pos => pos[0] === row && pos[1] === col)) {
+                        cell.classList.add('double-word');
+                        const label = document.createElement('span');
+                        label.className = 'cell-label';
+                        label.textContent = 'x2';
+                        cell.appendChild(label);
+                    } else if (TRIPLE_LETTER.some(pos => pos[0] === row && pos[1] === col)) {
+                        cell.classList.add('triple-letter');
+                        const label = document.createElement('span');
+                        label.className = 'cell-label';
+                        label.textContent = 'x3';
+                        cell.appendChild(label);
+                    } else if (DOUBLE_LETTER.some(pos => pos[0] === row && pos[1] === col)) {
+                        cell.classList.add('double-letter');
+                        const label = document.createElement('span');
+                        label.className = 'cell-label';
+                        label.textContent = 'x2';
+                        cell.appendChild(label);
+                    }
+                    
+                    gameBoard.appendChild(cell);
+                }
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Game buttons
+            validateBtn.addEventListener('click', validateWord);
+            shuffleBtn.addEventListener('click', shuffleRack);
+            passBtn.addEventListener('click', passTurn);
+            exchangeBtn.addEventListener('click', showExchangeModal);
+            newGameBtn.addEventListener('click', showNewGameModal);
+            helpBtn.addEventListener('click', showHelpModal);
+            settingsBtn.addEventListener('click', showSettingsModal);
+            
+            // Word validator
+            validateWordBtn.addEventListener('click', validateCustomWord);
+            wordToValidate.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') validateCustomWord();
+            });
+            
+            // Modal buttons
+            cancelNewGameBtn.addEventListener('click', hideNewGameModal);
+            startGameBtn.addEventListener('click', startNewGame);
+            cancelExchangeBtn.addEventListener('click', hideExchangeModal);
+            confirmExchangeBtn.addEventListener('click', exchangeTiles);
+            closeHelpBtn.addEventListener('click', hideHelpModal);
+            cancelSettingsBtn.addEventListener('click', hideSettingsModal);
+            saveSettingsBtn.addEventListener('click', saveSettings);
+            newGameAfterOverBtn.addEventListener('click', showNewGameModal);
+            closeGameOverBtn.addEventListener('click', hideGameOverModal);
+            
+            // Game mode change
+            gameModeSelect.addEventListener('change', () => {
+                if (gameModeSelect.value === 'multiplayer') {
+                    player2Group.style.display = 'block';
+                    player2NameInput.value = 'Joueur 2';
+                } else {
+                    player2Group.style.display = 'none';
+                    player2NameInput.value = 'IA';
+                }
+            });
+            
+            // Drag and drop for tiles
+            setupDragAndDrop();
+        }
+
+        // Setup drag and drop functionality
+        function setupDragAndDrop() {
+            let draggedTile = null;
+            
+            // Rack tiles
+            playerRack.addEventListener('mousedown', (e) => {
+                if (e.target.classList.contains('rack-tile')) {
+                    draggedTile = e.target;
+                    draggedTile.classList.add('dragging');
+                    
+                    // Create a clone for dragging visual
+                    const clone = draggedTile.cloneNode(true);
+                    clone.style.position = 'absolute';
+                    clone.style.pointerEvents = 'none';
+                    clone.style.zIndex = '1000';
+                    clone.style.width = `${draggedTile.offsetWidth}px`;
+                    clone.style.height = `${draggedTile.offsetHeight}px`;
+                    clone.style.left = `${e.pageX - draggedTile.offsetWidth / 2}px`;
+                    clone.style.top = `${e.pageY - draggedTile.offsetHeight / 2}px`;
+                    clone.id = 'drag-clone';
+                    document.body.appendChild(clone);
+                    
+                    // Hide original while dragging
+                    draggedTile.style.visibility = 'hidden';
+                }
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                const clone = document.getElementById('drag-clone');
+                if (clone) {
+                    clone.style.left = `${e.pageX - clone.offsetWidth / 2}px`;
+                    clone.style.top = `${e.pageY - clone.offsetHeight / 2}px`;
+                }
+            });
+            
+            document.addEventListener('mouseup', (e) => {
+                if (draggedTile) {
+                    draggedTile.classList.remove('dragging');
+                    draggedTile.style.visibility = 'visible';
+                    
+                    const clone = document.getElementById('drag-clone');
+                    if (clone) document.body.removeChild(clone);
+                    
+                    // Check if dropped on a board cell
+                    const cell = document.elementFromPoint(e.clientX, e.clientY);
+                    if (cell && cell.classList.contains('cell')) {
+                        const row = parseInt(cell.dataset.row);
+                        const col = parseInt(cell.dataset.col);
+                        
+                        // Check if cell is empty
+                        if (!gameState.board[row][col]) {
+                            // Remove from rack
+                            const tileIndex = Array.from(playerRack.children).indexOf(draggedTile);
+                            if (tileIndex !== -1) {
+                                const tile = gameState.players[0].rack[tileIndex];
+                                
+                                // Place on board
+                                gameState.board[row][col] = tile;
+                                gameState.placedTiles.push({ row, col, tile });
+                                
+                                // Remove from rack
+                                gameState.players[0].rack.splice(tileIndex, 1);
+                                
+                                // Update UI
+                                updateBoard();
+                                updateRack();
+                                
+                                // Play sound
+                                if (gameState.settings.sound) {
+                                    playSound('place');
+                                }
+                            }
+                        }
+                    }
+                    
+                    draggedTile = null;
+                }
+            });
+            
+            // Allow dropping tiles back to rack
+            playerRack.addEventListener('mouseup', (e) => {
+                if (draggedTile) {
+                    // If dropping on rack, just reset position
+                    draggedTile.classList.remove('dragging');
+                    draggedTile.style.visibility = 'visible';
+                    
+                    const clone = document.getElementById('drag-clone');
+                    if (clone) document.body.removeChild(clone);
+                    
+                    draggedTile = null;
+                }
+            });
+            
+            // Prevent default drag behavior
+            document.addEventListener('dragstart', (e) => {
+                e.preventDefault();
+            });
+        }
+
+        // Start a new game
+        function startNewGame() {
+            // Reset game state
+            gameState.board = Array(15).fill().map(() => Array(15).fill(null));
+            gameState.players[0].score = 0;
+            gameState.players[1].score = 0;
+            gameState.currentPlayer = 0;
+            gameState.firstMove = true;
+            gameState.placedTiles = [];
+            gameState.lastValidWord = null;
+            gameState.gameStarted = true;
+            
+            // Set game mode and names
+            gameState.gameMode = gameModeSelect.value;
+            gameState.players[0].name = player1NameInput.value || 'Joueur';
+            
+            if (gameState.gameMode === 'multiplayer') {
+                gameState.players[1].name = player2NameInput.value || 'Joueur 2';
+            } else {
+                gameState.players[1].name = 'IA';
+                gameState.aiDifficulty = aiDifficultySelect.value;
+            }
+            
+            // Initialize tile bag
+            initializeTileBag();
+            
+            // Draw initial tiles
+            gameState.players[0].rack = drawTiles(7);
+            gameState.players[1].rack = drawTiles(7);
+            
+            // Update UI
+            updateBoard();
+            updateRack();
+            updateUI();
+            
+            // Hide modal
+            hideNewGameModal();
+            
+            // Add game start message
+            addMessage(`Nouvelle partie commencée! Mode: ${gameState.gameMode === 'solo' ? 'Solo contre IA' : 'Multijoueur'}`, 'system');
+            
+            // If AI's turn first (random)
+            if (Math.random() < 0.5 && gameState.gameMode === 'solo') {
+                gameState.currentPlayer = 1;
+                updateUI();
+                setTimeout(aiPlay, 1000);
+            }
+        }
+
+        // Initialize the tile bag
+        function initializeTileBag() {
+            gameState.tileBag = [];
+            
+            for (const [letter, count] of Object.entries(LETTER_DISTRIBUTION)) {
+                for (let i = 0; i < count; i++) {
+                    gameState.tileBag.push({
+                        letter: letter,
+                        value: LETTER_VALUES[letter],
+                        isBlank: letter === ' '
+                    });
+                }
+            }
+            
+            // Shuffle the tile bag
+            shuffleArray(gameState.tileBag);
+        }
+
+        // Draw tiles from the bag
+        function drawTiles(count) {
+            const drawn = [];
+            
+            for (let i = 0; i < count; i++) {
+                if (gameState.tileBag.length > 0) {
+                    drawn.push(gameState.tileBag.pop());
+                }
+            }
+            
+            return drawn;
+        }
+
+        // Shuffle array (Fisher-Yates algorithm)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Validate the current word
+        function validateWord() {
+            if (gameState.placedTiles.length === 0) {
+                addMessage("Vous n'avez placé aucune lettre!", 'system');
+                return;
+            }
+            
+            // Check if first move goes through center
+            if (gameState.firstMove) {
+                const centerTile = gameState.placedTiles.find(t => t.row === 7 && t.col === 7);
+                if (!centerTile) {
+                    addMessage("Le premier mot doit passer par la case centrale!", 'system');
+                    returnRackTiles();
+                    return;
+                }
+            }
+            
+            // Get all words formed
+            const { mainWord, secondaryWords } = getAllWordsFormed();
+            
+            // Validate main word
+            if (mainWord.length < 2) {
+                addMessage("Le mot principal doit avoir au moins 2 lettres!", 'system');
+                returnRackTiles();
+                return;
+            }
+            
+            // Check if connected to existing words (except first move)
+            if (!gameState.firstMove) {
+                const isConnected = checkConnectedToExisting();
+                if (!isConnected) {
+                    addMessage("Votre mot doit être connecté à un mot existant!", 'system');
+                    returnRackTiles();
+                    return;
+                }
+            }
+            
+            // Validate all words
+            const allWordsValid = validateAllWords(mainWord, secondaryWords);
+            if (!allWordsValid) {
+                returnRackTiles();
+                return;
+            }
+            
+            // Calculate score
+            const score = calculateScore(mainWord, secondaryWords);
+            gameState.players[gameState.currentPlayer].score += score;
+            
+            // Add message
+            addMessage(`Mot valide: "${mainWord}" (${score} points)`, 'player');
+            if (secondaryWords.length > 0) {
+                addMessage(`Mots secondaires: ${secondaryWords.map(w => `"${w.word}" (${w.score})`).join(', ')}`, 'player');
+            }
+            
+            // Update game state
+            gameState.firstMove = false;
+            gameState.lastValidWord = mainWord;
+            gameState.placedTiles = [];
+            
+            // Refill rack
+            refillRack();
+            
+            // Switch player
+            switchPlayer();
+            
+            // Update UI
+            updateUI();
+            
+            // Play sound
+            if (gameState.settings.sound) {
+                playSound('valid');
+            }
+            
+            // If next player is AI, make a move
+            if (gameState.gameMode === 'solo' && gameState.currentPlayer === 1) {
+                setTimeout(aiPlay, 1500);
+            }
+        }
+
+        // Get all words formed by the current placement
+        function getAllWordsFormed() {
+            const mainWord = { direction: '', letters: [] };
+            const secondaryWords = [];
+            
+            // Determine if word is horizontal or vertical
+            if (gameState.placedTiles.length === 1) {
+                // Single tile - check both directions
+                const tile = gameState.placedTiles[0];
+                
+                // Check horizontal
+                const hLetters = getWordInDirection(tile.row, tile.col, 0, 1);
+                if (hLetters.length > 1) {
+                    mainWord.direction = 'horizontal';
+                    mainWord.letters = hLetters;
+                }
+                
+                // Check vertical
+                const vLetters = getWordInDirection(tile.row, tile.col, 1, 0);
+                if (vLetters.length > 1) {
+                    if (hLetters.length > 1) {
+                        // Both directions - add as secondary word
+                        secondaryWords.push({
+                            direction: 'vertical',
+                            letters: vLetters
+                        });
+                    } else {
+                        mainWord.direction = 'vertical';
+                        mainWord.letters = vLetters;
+                    }
+                }
+            } else {
+                // Multiple tiles - check alignment
+                const firstTile = gameState.placedTiles[0];
+                const secondTile = gameState.placedTiles[1];
+                
+                if (firstTile.row === secondTile.row) {
+                    // Horizontal word
+                    mainWord.direction = 'horizontal';
+                    const minCol = Math.min(...gameState.placedTiles.map(t => t.col));
+                    const maxCol = Math.max(...gameState.placedTiles.map(t => t.col));
+                    const row = firstTile.row;
+                    
+                    for (let col = minCol; col <= maxCol; col++) {
+                        if (gameState.board[row][col]) {
+                            mainWord.letters.push({
+                                row, col,
+                                tile: gameState.board[row][col]
+                            });
+                        } else {
+                            // Check for existing tiles beyond placed tiles
+                            const existing = getWordInDirection(row, col, 0, 1);
+                            if (existing.length > 1) {
+                                mainWord.letters.push(...existing);
+                            }
+                        }
+                    }
+                    
+                    // Sort by column
+                    mainWord.letters.sort((a, b) => a.col - b.col);
+                    
+                    // Check for vertical secondary words
+                    for (const tile of gameState.placedTiles) {
+                        const vLetters = getWordInDirection(tile.row, tile.col, 1, 0);
+                        if (vLetters.length > 1) {
+                            secondaryWords.push({
+                                direction: 'vertical',
+                                letters: vLetters
+                            });
+                        }
+                    }
+                } else if (firstTile.col === secondTile.col) {
+                    // Vertical word
+                    mainWord.direction = 'vertical';
+                    const minRow = Math.min(...gameState.placedTiles.map(t => t.row));
+                    const maxRow = Math.max(...gameState.placedTiles.map(t => t.row));
+                    const col = firstTile.col;
+                    
+                    for (let row = minRow; row <= maxRow; row++) {
+                        if (gameState.board[row][col]) {
+                            mainWord.letters.push({
+                                row, col,
+                                tile: gameState.board[row][col]
+                            });
+                        } else {
+                            // Check for existing tiles beyond placed tiles
+                            const existing = getWordInDirection(row, col, 1, 0);
+                            if (existing.length > 1) {
+                                mainWord.letters.push(...existing);
+                            }
+                        }
+                    }
+                    
+                    // Sort by row
+                    mainWord.letters.sort((a, b) => a.row - b.row);
+                    
+                    // Check for horizontal secondary words
+                    for (const tile of gameState.placedTiles) {
+                        const hLetters = getWordInDirection(tile.row, tile.col, 0, 1);
+                        if (hLetters.length > 1) {
+                            secondaryWords.push({
+                                direction: 'horizontal',
+                                letters: hLetters
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // Convert to word strings and positions
+            const mainWordStr = mainWord.letters.map(l => l.tile.letter).join('');
+            const mainWordPositions = mainWord.letters.map(l => ({ row: l.row, col: l.col }));
+            
+            const secondaryWordsInfo = secondaryWords.map(w => {
+                const wordStr = w.letters.map(l => l.tile.letter).join('');
+                const positions = w.letters.map(l => ({ row: l.row, col: l.col }));
+                return { word: wordStr, positions };
+            });
+            
+            return { 
+                mainWord: mainWordStr, 
+                mainWordPositions,
+                secondaryWords: secondaryWordsInfo 
+            };
+        }
+
+        // Get word in a direction from a starting position
+        function getWordInDirection(startRow, startCol, rowStep, colStep) {
+            const letters = [];
+            
+            // Move backward to start of word
+            let row = startRow;
+            let col = startCol;
+            while (row >= 0 && col >= 0 && gameState.board[row][col]) {
+                row -= rowStep;
+                col -= colStep;
+            }
+            
+            // Move forward to end of word
+            row += rowStep;
+            col += colStep;
+            while (row < 15 && col < 15 && gameState.board[row][col]) {
+                letters.push({
+                    row, col,
+                    tile: gameState.board[row][col]
+                });
+                row += rowStep;
+                col += colStep;
+            }
+            
+            return letters;
+        }
+
+        // Check if placed tiles are connected to existing words
+        function checkConnectedToExisting() {
+            for (const tile of gameState.placedTiles) {
+                const { row, col } = tile;
+                
+                // Check adjacent cells
+                const directions = [
+                    { dr: -1, dc: 0 }, // up
+                    { dr: 1, dc: 0 },  // down
+                    { dr: 0, dc: -1 }, // left
+                    { dr: 0, dc: 1 }   // right
+                ];
+                
+                for (const dir of directions) {
+                    const newRow = row + dir.dr;
+                    const newCol = col + dir.dc;
+                    
+                    if (newRow >= 0 && newRow < 15 && newCol >= 0 && newCol < 15) {
+                        if (gameState.board[newRow][newCol] && !gameState.placedTiles.some(t => t.row === newRow && t.col === newCol)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            
+            return false;
+        }
+
+        // Validate all words against dictionary
+        function validateAllWords(mainWord, secondaryWords) {
+            // In a real implementation, you would check against a dictionary
+            // For this example, we'll assume all words are valid except a few obvious invalid ones
+            
+            const invalidWords = ['ABC', 'XYZ', 'QQ', 'QZ', 'ZX'];
+            
+            if (invalidWords.includes(mainWord.toUpperCase())) {
+                addMessage(`"${mainWord}" n'est pas un mot valide!`, 'system');
+                return false;
+            }
+            
+            for (const wordInfo of secondaryWords) {
+                if (invalidWords.includes(wordInfo.word.toUpperCase())) {
+                    addMessage(`"${wordInfo.word}" n'est pas un mot valide!`, 'system');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        // Calculate score for a play
+        function calculateScore(mainWord, secondaryWords) {
+            let totalScore = 0;
+            let wordMultiplier = 1;
+            const mainWordLetters = [];
+            
+            // Calculate main word score
+            for (const tile of gameState.placedTiles) {
+                const cell = document.querySelector(`.cell[data-row="${tile.row}"][data-col="${tile.col}"]`);
+                let letterMultiplier = 1;
+                
+                if (cell.classList.contains('double-letter') && !cell.dataset.used) {
+                    letterMultiplier = 2;
+                    cell.dataset.used = 'true';
+                } else if (cell.classList.contains('triple-letter') && !cell.dataset.used) {
+                    letterMultiplier = 3;
+                    cell.dataset.used = 'true';
+                }
+                
+                const letterScore = tile.tile.value * letterMultiplier;
+                mainWordLetters.push(letterScore);
+                
+                if (cell.classList.contains('double-word') && !cell.dataset.used) {
+                    wordMultiplier *= 2;
+                    cell.dataset.used = 'true';
+                } else if (cell.classList.contains('triple-word') && !cell.dataset.used) {
+                    wordMultiplier *= 3;
+                    cell.dataset.used = 'true';
+                }
+            }
+            
+            const mainWordBaseScore = mainWordLetters.reduce((sum, score) => sum + score, 0);
+            totalScore += mainWordBaseScore * wordMultiplier;
+            
+            // Calculate secondary words scores
+            for (const wordInfo of secondaryWords) {
+                let secondaryWordScore = 0;
+                let secondaryWordMultiplier = 1;
+                
+                for (const pos of wordInfo.positions) {
+                    const cell = document.querySelector(`.cell[data-row="${pos.row}"][data-col="${pos.col}"]`);
+                    const tile = gameState.board[pos.row][pos.col];
+                    let letterMultiplier = 1;
+                    
+                    // Only apply multipliers for newly placed tiles
+                    const isNewTile = gameState.placedTiles.some(t => t.row === pos.row && t.col === pos.col);
+                    
+                    if (isNewTile) {
+                        if (cell.classList.contains('double-letter') && !cell.dataset.used) {
+                            letterMultiplier = 2;
+                        } else if (cell.classList.contains('triple-letter') && !cell.dataset.used) {
+                            letterMultiplier = 3;
+                        }
+                    }
+                    
+                    secondaryWordScore += tile.value * letterMultiplier;
+                    
+                    if (isNewTile) {
+                        if (cell.classList.contains('double-word') && !cell.dataset.used) {
+                            secondaryWordMultiplier *= 2;
+                        } else if (cell.classList.contains('triple-word') && !cell.dataset.used) {
+                            secondaryWordMultiplier *= 3;
+                        }
+                    }
+                }
+                
+                totalScore += secondaryWordScore * secondaryWordMultiplier;
+            }
+            
+            // Bingo bonus (using all 7 letters)
+            if (gameState.placedTiles.length === 7) {
+                totalScore += 50;
+                addMessage("Bingo! +50 points pour avoir utilisé toutes vos lettres!", 'player');
+            }
+            
+            return totalScore;
+        }
+
+        // Return placed tiles to rack
+        function returnRackTiles() {
+            for (const tile of gameState.placedTiles) {
+                gameState.players[0].rack.push(tile.tile);
+                gameState.board[tile.row][tile.col] = null;
+            }
+            
+            gameState.placedTiles = [];
+            updateBoard();
+            updateRack();
+            
+            // Play sound
+            if (gameState.settings.sound) {
+                playSound('invalid');
+            }
+        }
+
+        // Refill player's rack
+        function refillRack() {
+            const player = gameState.currentPlayer;
+            const needed = 7 - gameState.players[player].rack.length;
+            
+            if (needed > 0 && gameState.tileBag.length > 0) {
+                const newTiles = drawTiles(needed);
+                gameState.players[player].rack.push(...newTiles);
+                
+                if (player === 0) {
+                    updateRack();
+                }
+            }
+        }
+
+        // Switch to next player
+        function switchPlayer() {
+            gameState.currentPlayer = (gameState.currentPlayer + 1) % gameState.players.length;
+            
+            // Check if game is over
+            if (isGameOver()) {
+                endGame();
+            }
+        }
+
+        // Check if game is over
+        function isGameOver() {
+            // Game is over when:
+            // 1. A player has no tiles left and the tile bag is empty
+            // 2. Both players pass consecutively
+            // 3. No valid moves left (not implemented in this simplified version)
+            
+            const player1Empty = gameState.players[0].rack.length === 0;
+            const player2Empty = gameState.players[1].rack.length === 0;
+            const bagEmpty = gameState.tileBag.length === 0;
+            
+            return (player1Empty || player2Empty) && bagEmpty;
+        }
+
+        // End the game
+        function endGame() {
+            // Deduct remaining tiles from players' scores
+            for (let i = 0; i < gameState.players.length; i++) {
+                const remainingValue = gameState.players[i].rack.reduce((sum, tile) => sum + tile.value, 0);
+                gameState.players[i].score = Math.max(0, gameState.players[i].score - remainingValue);
+                
+                if (remainingValue > 0) {
+                    addMessage(`${gameState.players[i].name} perd ${remainingValue} points pour les lettres restantes`, 'system');
+                }
+            }
+            
+            // Update UI
+            updateUI();
+            
+            // Determine winner
+            let winnerIndex = 0;
+            if (gameState.players[1].score > gameState.players[0].score) {
+                winnerIndex = 1;
+            } else if (gameState.players[1].score === gameState.players[0].score) {
+                winnerIndex = -1; // Tie
+            }
+            
+            // Show game over modal
+            showGameOverModal(winnerIndex);
+            
+            // Play sound
+            if (gameState.settings.sound) {
+                playSound(winnerIndex === 0 ? 'win' : 'lose');
+            }
+        }
+
+        // Shuffle player's rack
+        function shuffleRack() {
+            shuffleArray(gameState.players[0].rack);
+            updateRack();
+            
+            // Play sound
+            if (gameState.settings.sound) {
+                playSound('shuffle');
+            }
+        }
+
+        // Pass turn
+        function passTurn() {
+            addMessage(`${gameState.players[gameState.currentPlayer].name} passe son tour`, 'system');
+            gameState.placedTiles = [];
+            switchPlayer();
+            
+            // If next player is AI, make a move
+            if (gameState.gameMode === 'solo' && gameState.currentPlayer === 1) {
+                setTimeout(aiPlay, 1500);
+            }
+        }
+
+        // AI player logic
+        function aiPlay() {
+            // Simple AI implementation - in a real game, this would be more sophisticated
+            
+            // Difficulty adjustments
+            let thinkTime = 1000;
+            let successRate = 0.7;
+            
+            switch (gameState.aiDifficulty) {
+                case 'easy':
+                    thinkTime = 2000;
+                    successRate = 0.4;
+                    break;
+                case 'medium':
+                    thinkTime = 1500;
+                    successRate = 0.7;
+                    break;
+                case 'hard':
+                    thinkTime = 1000;
+                    successRate = 0.85;
+                    break;
+                case 'expert':
+                    thinkTime = 500;
+                    successRate = 0.95;
+                    break;
+            }
+            
+            // Simulate thinking
+            gameStateDisplay.textContent = "L'IA réfléchit...";
+            
+            setTimeout(() => {
+                // Random chance to pass (lower chance on higher difficulties)
+                if (Math.random() > successRate * 1.2) {
+                    passTurn();
+                    return;
+                }
+                
+                // Try to find a valid word
+                const validMoves = findValidMoves(gameState.players[1].rack);
+                
+                if (validMoves.length > 0 && Math.random() < successRate) {
+                    // Choose a random valid move (weighted by score)
+                    validMoves.sort((a, b) => b.score - a.score);
+                    const topMoves = validMoves.slice(0, Math.max(3, Math.floor(validMoves.length * 0.3)));
+                    const move = topMoves[Math.floor(Math.random() * topMoves.length)];
+                    
+                    // Place the tiles
+                    for (const placement of move.placements) {
+                        gameState.board[placement.row][placement.col] = placement.tile;
+                        gameState.placedTiles.push({
+                            row: placement.row,
+                            col: placement.col,
+                            tile: placement.tile
+                        });
+                        
+                        // Remove from AI's rack
+                        const tileIndex = gameState.players[1].rack.findIndex(t => 
+                            t.letter === placement.tile.letter && t.value === placement.tile.value
+                        );
+                        if (tileIndex !== -1) {
+                            gameState.players[1].rack.splice(tileIndex, 1);
+                        }
+                    }
+                    
+                    // Calculate score
+                    const { mainWord, secondaryWords } = getAllWordsFormed();
+                    const score = calculateScore(mainWord, secondaryWords);
+                    gameState.players[1].score += score;
+                    
+                    // Add message
+                    addMessage(`L'IA joue: "${mainWord}" (${score} points)`, 'ai');
+                    if (secondaryWords.length > 0) {
+                        addMessage(`Mots secondaires: ${secondaryWords.map(w => `"${w.word}" (${w.score})`).join(', ')}`, 'ai');
+                    }
+                    
+                    // Update game state
+                    gameState.firstMove = false;
+                    gameState.lastValidWord = mainWord;
+                    gameState.placedTiles = [];
+                    
+                    // Refill rack
+                    refillRack();
+                    
+                    // Switch player
+                    switchPlayer();
+                    
+                    // Update UI
+                    updateBoard();
+                    updateUI();
+                    
+                    // Play sound
+                    if (gameState.settings.sound) {
+                        playSound('place');
+                    }
+                } else {
+                    // No valid move found or failed due to difficulty
+                    passTurn();
+                }
+            }, thinkTime);
+        }
+
+        // Find all valid moves for given rack
+        function findValidMoves(rack) {
+            const validMoves = [];
+            
+            // In a real implementation, this would use a dictionary and try all possible combinations
+            // For this example, we'll just use some predefined words based on the rack letters
+            
+            const rackLetters = rack.map(t => t.letter).join('');
+            
+            // Some example words the AI might try
+            const possibleWords = [
+                'TABLE', 'CHAIR', 'HOUSE', 'DOG', 'CAT', 'BOOK', 'COMPUTER',
+                'PHONE', 'WATER', 'FIRE', 'TREE', 'FLOWER', 'SUN', 'MOON',
+                'STAR', 'PLANET', 'CAR', 'BIKE', 'ROAD', 'STREET', 'CITY'
+            ];
+            
+            // Find words that can be formed with the rack letters
+            for (const word of possibleWords) {
+                const lettersNeeded = word.split('');
+                const rackCopy = [...rackLetters];
+                let canFormWord = true;
+                
+                for (const letter of lettersNeeded) {
+                    const index = rackCopy.indexOf(letter);
+                    if (index === -1) {
+                        // Check for blank tile
+                        const blankIndex = rackCopy.indexOf(' ');
+                        if (blankIndex === -1) {
+                            canFormWord = false;
+                            break;
+                        } else {
+                            rackCopy.splice(blankIndex, 1);
+                        }
+                    } else {
+                        rackCopy.splice(index, 1);
+                    }
+                }
+                
+                if (canFormWord) {
+                    // Try to place the word on the board
+                    const placements = tryPlaceWord(word, rack);
+                    if (placements.length > 0) {
+                        const { mainWord, secondaryWords } = getAllWordsFormed();
+                        const score = calculateScore(mainWord, secondaryWords);
+                        
+                        validMoves.push({
+                            word,
+                            placements,
+                            score
+                        });
+                        
+                        // Reset placements for next try
+                        for (const placement of placements) {
+                            gameState.board[placement.row][placement.col] = null;
+                        }
+                        gameState.placedTiles = [];
+                    }
+                }
+            }
+            
+            return validMoves;
+        }
+
+        // Try to place a word on the board
+        function tryPlaceWord(word, rack) {
+            const placements = [];
+            const letters = word.split('');
+            const rackCopy = [...rack];
+            
+            // Try horizontal placement
+            for (let row = 0; row < 15; row++) {
+                for (let col = 0; col <= 15 - letters.length; col++) {
+                    let valid = true;
+                    let usesExisting = false;
+                    
+                    // Check if word fits and connects to existing tiles
+                    for (let i = 0; i < letters.length; i++) {
+                        const cell = gameState.board[row][col + i];
+                        
+                        if (cell) {
+                            if (cell.letter !== letters[i]) {
+                                valid = false;
+                                break;
+                            }
+                            usesExisting = true;
+                        }
+                    }
+                    
+                    // For first move, must cover center
+                    if (gameState.firstMove) {
+                        const coversCenter = row === 7 && col <= 7 && col + letters.length > 7;
+                        if (!coversCenter) {
+                            valid = false;
+                        }
+                    } else if (!usesExisting) {
+                        // Must connect to existing word
+                        let connects = false;
+                        for (let i = 0; i < letters.length; i++) {
+                            // Check adjacent cells
+                            const directions = [
+                                { dr: -1, dc: 0 }, // up
+                                { dr: 1, dc: 0 },  // down
+                                { dr: 0, dc: -1 }, // left
+                                { dr: 0, dc: 1 }   // right
+                            ];
+                            
+                            for (const dir of directions) {
+                                const newRow = row + dir.dr;
+                                const newCol = col + i + dir.dc;
+                                
+                                if (newRow >= 0 && newRow < 15 && newCol >= 0 && newCol < 15) {
+                                    if (gameState.board[newRow][newCol]) {
+                                        connects = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            if (connects) break;
+                        }
+                        
+                        if (!connects) {
+                            valid = false;
+                        }
+                    }
+                    
+                    if (valid) {
+                        // Try to place the word
+                        const wordPlacements = [];
+                        const rackLettersUsed = [];
+                        
+                        for (let i = 0; i < letters.length; i++) {
+                            if (!gameState.board[row][col + i]) {
+                                // Find the tile in the rack
+                                let tileIndex = rackCopy.findIndex(t => t.letter === letters[i]);
+                                if (tileIndex === -1) {
+                                    // Use blank tile
+                                    tileIndex = rackCopy.findIndex(t => t.letter === ' ');
+                                    if (tileIndex === -1) {
+                                        valid = false;
+                                        break;
+                                    }
+                                }
+                                
+                                const tile = rackCopy[tileIndex];
+                                wordPlacements.push({
+                                    row,
+                                    col: col + i,
+                                    tile: {
+                                        letter: letters[i],
+                                        value: tile.letter === ' ' ? 0 : tile.value,
+                                        isBlank: tile.letter === ' '
+                                    }
+                                });
+                                
+                                rackLettersUsed.push(tileIndex);
+                            }
+                        }
+                        
+                        if (valid) {
+                            // Add to placements
+                            placements.push(...wordPlacements);
+                            
+                            // Place on board temporarily
+                            for (const placement of wordPlacements) {
+                                gameState.board[placement.row][placement.col] = placement.tile;
+                                gameState.placedTiles.push({
+                                    row: placement.row,
+                                    col: placement.col,
+                                    tile: placement.tile
+                                });
+                            }
+                            
+                            return placements;
+                        }
+                    }
+                }
+            }
+            
+            // Try vertical placement (similar logic)
+            // ... (implementation would be similar to horizontal)
+            
+            return placements;
+        }
+
+        // Validate a custom word (for the word validator)
+        function validateCustomWord() {
+            const word = wordToValidate.value.trim().toUpperCase();
+            
+            if (!word) {
+                validationResult.textContent = "Veuillez entrer un mot";
+                validationResult.className = "validation-result invalid";
+                return;
+            }
+            
+            // In a real implementation, you would check against a dictionary
+            // For this example, we'll just check length and some invalid words
+            
+            if (word.length < 2) {
+                validationResult.textContent = "Le mot doit avoir au moins 2 lettres";
+                validationResult.className = "validation-result invalid";
+                return;
+            }
+            
+            const invalidWords = ['ABC', 'XYZ', 'QQ', 'QZ', 'ZX'];
+            
+            if (invalidWords.includes(word)) {
+                validationResult.textContent = `"${word}" n'est pas un mot valide`;
+                validationResult.className = "validation-result invalid";
+            } else {
+                validationResult.textContent = `"${word}" est un mot valide`;
+                validationResult.className = "validation-result valid";
+            }
+        }
+
+        // Exchange tiles
+        function exchangeTiles() {
+            const selectedTiles = Array.from(document.querySelectorAll('#exchangeRack .rack-tile.selected'));
+            
+            if (selectedTiles.length === 0) {
+                addMessage("Sélectionnez des lettres à échanger", 'system');
+                return;
+            }
+            
+            if (gameState.tileBag.length < selectedTiles.length) {
+                addMessage("Il n'y a pas assez de lettres dans le sac pour cet échange", 'system');
+                hideExchangeModal();
+                return;
+            }
+            
+            // Get tiles to exchange
+            const tilesToExchange = [];
+            for (const tileEl of selectedTiles) {
+                const tileIndex = parseInt(tileEl.dataset.index);
+                tilesToExchange.push(gameState.players[0].rack[tileIndex]);
+            }
+            
+            // Remove from rack
+            for (let i = tilesToExchange.length - 1; i >= 0; i--) {
+                const tileIndex = parseInt(selectedTiles[i].dataset.index);
+                gameState.players[0].rack.splice(tileIndex, 1);
+            }
+            
+            // Add to tile bag
+            gameState.tileBag.push(...tilesToExchange);
+            shuffleArray(gameState.tileBag);
+            
+            // Draw new tiles
+            const newTiles = drawTiles(tilesToExchange.length);
+            gameState.players[0].rack.push(...newTiles);
+            
+            // Update UI
+            updateRack();
+            hideExchangeModal();
+            
+            // Switch player
+            switchPlayer();
+            
+            // Add message
+            addMessage(`${gameState.players[0].name} échange ${tilesToExchange.length} lettres`, 'player');
+            
+            // If next player is AI, make a move
+            if (gameState.gameMode === 'solo' && gameState.currentPlayer === 1) {
+                setTimeout(aiPlay, 1500);
+            }
+            
+            // Play sound
+            if (gameState.settings.sound) {
+                playSound('exchange');
+            }
+        }
+
+        // Update the game board UI
+        function updateBoard() {
+            // Clear all tiles from board UI
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                cell.innerHTML = cell.querySelector('.cell-label') ? cell.querySelector('.cell-label').outerHTML : '';
+            });
+            
+            // Add tiles to board
+            for (let row = 0; row < 15; row++) {
+                for (let col = 0; col < 15; col++) {
+                    const tile = gameState.board[row][col];
+                    if (tile) {
+                        const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                        const tileEl = document.createElement('div');
+                        tileEl.className = `tile ${tile.isBlank ? 'blank' : ''}`;
+                        tileEl.textContent = tile.letter;
+                        
+                        if (!tile.isBlank) {
+                            const valueEl = document.createElement('span');
+                            valueEl.className = 'tile-value';
+                            valueEl.textContent = tile.value;
+                            tileEl.appendChild(valueEl);
+                        }
+                        
+                        cell.appendChild(tileEl);
+                    }
+                }
+            }
+            
+            // Highlight special cells if setting is enabled
+            if (gameState.settings.highlight) {
+                const specialCells = document.querySelectorAll('.cell:not(.center):not(.tile)');
+                specialCells.forEach(cell => {
+                    if (cell.classList.contains('double-word') || 
+                        cell.classList.contains('triple-word') || 
+                        cell.classList.contains('double-letter') || 
+                        cell.classList.contains('triple-letter')) {
+                        cell.classList.add('highlighted');
+                    }
+                });
+            } else {
+                document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
+            }
+        }
+
+        // Update player's rack UI
+        function updateRack() {
+            playerRack.innerHTML = '';
+            
+            gameState.players[0].rack.forEach((tile, index) => {
+                const tileEl = document.createElement('div');
+                tileEl.className = `rack-tile ${tile.isBlank ? 'blank' : ''}`;
+                tileEl.textContent = tile.letter;
+                tileEl.dataset.index = index;
+                
+                if (!tile.isBlank) {
+                    const valueEl = document.createElement('span');
+                    valueEl.className = 'tile-value';
+                    valueEl.textContent = tile.value;
+                    tileEl.appendChild(valueEl);
+                }
+                
+                playerRack.appendChild(tileEl);
+            });
+            
+            // Add click event for exchange selection
+            if (exchangeModal.classList.contains('active')) {
+                const rackTiles = document.querySelectorAll('#exchangeRack .rack-tile');
+                rackTiles.forEach(tile => {
+                    tile.addEventListener('click', () => {
+                        tile.classList.toggle('selected');
+                    });
+                });
+            }
+        }
+
+        // Update game info UI
+        function updateUI() {
+            // Update scores
+            playerScore.textContent = gameState.players[0].score;
+            
+            // Update current turn
+            currentTurn.textContent = gameState.players[gameState.currentPlayer].name;
+            
+            // Update game state
+            if (!gameState.gameStarted) {
+                gameStateDisplay.textContent = "En attente...";
+            } else if (gameState.currentPlayer === 0) {
+                gameStateDisplay.textContent = "À vous de jouer!";
+            } else if (gameState.gameMode === 'solo') {
+                gameStateDisplay.textContent = "Tour de l'IA";
+            } else {
+                gameStateDisplay.textContent = `Tour de ${gameState.players[1].name}`;
+            }
+            
+            // Update tiles remaining
+            tilesRemaining.textContent = gameState.tileBag.length;
+        }
+
+        // Add message to game log
+        function addMessage(text, type = 'system') {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = text;
+            gameMessages.appendChild(messageEl);
+            gameMessages.scrollTop = gameMessages.scrollHeight;
+        }
+
+        // Play sound
+        function playSound(type) {
+            // In a real implementation, you would play actual sound files
+            console.log(`Playing sound: ${type}`);
+        }
+
+        // Show new game modal
+        function showNewGameModal() {
+            newGameModal.classList.add('active');
+        }
+
+        // Hide new game modal
+        function hideNewGameModal() {
+            newGameModal.classList.remove('active');
+        }
+
+        // Show exchange modal
+        function showExchangeModal() {
+            if (gameState.currentPlayer !== 0) {
+                addMessage("Ce n'est pas votre tour!", 'system');
+                return;
+            }
+            
+            if (gameState.tileBag.length < 7) {
+                addMessage("Il n'y a pas assez de lettres dans le sac pour un échange", 'system');
+                return;
+            }
+            
+            exchangeModal.classList.add('active');
+            
+            // Create rack for exchange selection
+            const exchangeRack = document.getElementById('exchangeRack');
+            exchangeRack.innerHTML = '';
+            
+            gameState.players[0].rack.forEach((tile, index) => {
+                const tileEl = document.createElement('div');
+                tileEl.className = `rack-tile ${tile.isBlank ? 'blank' : ''}`;
+                tileEl.textContent = tile.letter;
+                tileEl.dataset.index = index;
+                
+                if (!tile.isBlank) {
+                    const valueEl = document.createElement('span');
+                    valueEl.className = 'tile-value';
+                    valueEl.textContent = tile.value;
+                    tileEl.appendChild(valueEl);
+                }
+                
+                tileEl.addEventListener('click', () => {
+                    tileEl.classList.toggle('selected');
+                });
+                
+                exchangeRack.appendChild(tileEl);
+            });
+        }
+
+        // Hide exchange modal
+        function hideExchangeModal() {
+            exchangeModal.classList.remove('active');
+        }
+
+        // Show help modal
+        function showHelpModal() {
+            helpModal.classList.add('active');
+        }
+
+        // Hide help modal
+        function hideHelpModal() {
+            helpModal.classList.remove('active');
+        }
+
+        // Show settings modal
+        function showSettingsModal() {
+            // Load current settings
+            soundToggle.checked = gameState.settings.sound;
+            animationsToggle.checked = gameState.settings.animations;
+            highlightToggle.checked = gameState.settings.highlight;
+            tileDesignSelect.value = gameState.settings.tileDesign;
+            themeSelect.value = gameState.settings.theme;
+            
+            settingsModal.classList.add('active');
+        }
+
+        // Hide settings modal
+        function hideSettingsModal() {
+            settingsModal.classList.remove('active');
+        }
+
+        // Save settings
+        function saveSettings() {
+            gameState.settings = {
+                sound: soundToggle.checked,
+                animations: animationsToggle.checked,
+                highlight: highlightToggle.checked,
+                tileDesign: tileDesignSelect.value,
+                theme: themeSelect.value
+            };
+            
+            // Apply theme
+            applyTheme(gameState.settings.theme);
+            
+            hideSettingsModal();
+            addMessage("Paramètres enregistrés", 'system');
+        }
+
+        // Apply selected theme
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            
+            switch (theme) {
+                case 'dark':
+                    root.style.setProperty('--primary', '#1a1a1a');
+                    root.style.setProperty('--secondary', '#4a4a4a');
+                    root.style.setProperty('--light', '#2d2d2d');
+                    root.style.setProperty('--dark', '#ffffff');
+                    root.style.setProperty('--board-bg', '#3a3a3a');
+                    break;
+                case 'nature':
+                    root.style.setProperty('--primary', '#2e7d32');
+                    root.style.setProperty('--secondary', '#689f38');
+                    root.style.setProperty('--accent', '#d84315');
+                    root.style.setProperty('--board-bg', '#558b2f');
+                    break;
+                case 'ocean':
+                    root.style.setProperty('--primary', '#0277bd');
+                    root.style.setProperty('--secondary', '#0288d1');
+                    root.style.setProperty('--accent', '#f57c00');
+                    root.style.setProperty('--board-bg', '#0097a7');
+                    break;
+                default: // default theme
+                    root.style.setProperty('--primary', '#2c3e50');
+                    root.style.setProperty('--secondary', '#3498db');
+                    root.style.setProperty('--accent', '#e74c3c');
+                    root.style.setProperty('--light', '#ecf0f1');
+                    root.style.setProperty('--dark', '#2c3e50');
+                    root.style.setProperty('--board-bg', '#27ae60');
+                    break;
+            }
+        }
+
+        // Show game over modal
+        function showGameOverModal(winnerIndex) {
+            const gameOverMessage = document.getElementById('gameOverMessage');
+            const finalScores = document.getElementById('finalScores');
+            
+            if (winnerIndex === -1) {
+                gameOverMessage.textContent = "Match nul!";
+            } else {
+                gameOverMessage.textContent = `${gameState.players[winnerIndex].name} gagne la partie!`;
+            }
+            
+            finalScores.innerHTML = '';
+            gameState.players.forEach(player => {
+                const li = document.createElement('li');
+                li.textContent = `${player.name}: ${player.score} points`;
+                finalScores.appendChild(li);
+            });
+            
+            gameOverModal.classList.add('active');
+        }
+
+        // Hide game over modal
+        function hideGameOverModal() {
+            gameOverModal.classList.remove('active');
+        }
+
+        // Initialize the game when page loads
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+</html>
