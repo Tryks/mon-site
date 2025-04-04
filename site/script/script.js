@@ -159,6 +159,14 @@ const games = [
         image: "../img/bouton.jpg",
         rating: 4.6,
         link: "../jeu_classique/bouton_fuyare/accueil.html"
+    },
+    {
+        title: "Clique",
+        description: "Jeu de réflexes où il faut résister à la tentation d'appuyer sur le bouton.",
+        category: "classique",
+        image: "/img/cliquer.jpg",
+        rating: 4.6,
+        link: "../jeu_classique/cliquer/cliquer.html"
     }
 ];
 
