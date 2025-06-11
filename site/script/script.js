@@ -167,6 +167,22 @@ const games = [
         image: "/img/cliquer.jpg",
         rating: 4.6,
         link: "../jeu_classique/cliquer/cliquer.html"
+    },
+    {
+        title: "reaction master",
+        description: "Jeu de réflexes où il faut résister à la tentation d'appuyer sur le bouton.",
+        category: "classique",
+        image: "/img/cliquer.jpg",
+        rating: 4.6,
+        link: "../jeu_classique/reaction-master/reaction-master.html"
+    },
+    {
+        title: "memory blitz",
+        description: "Jeu de réflexes où il faut résister à la tentation d'appuyer sur le bouton.",
+        category: "classique",
+        image: "/img/cliquer.jpg",
+        rating: 4.6,
+        link: "../jeu_devinette/memory-blitz/memory-blitz.html"
     }
 ];
 

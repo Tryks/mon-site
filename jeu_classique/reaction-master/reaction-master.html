@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reaction Master</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0d0d0d, #1c1c1c);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc80;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .menu, #gameUI {
+      text-align: center;
+    }
+
+    button {
+      padding: 12px 28px;
+      background: #00ffcc;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 10px;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #00ccaa;
+    }
+
+    #gameArea {
+      position: relative;
+      width: 90vw;
+      max-width: 600px;
+      height: 60vh;
+      margin: 20px auto;
+      background: #111;
+      border: 2px solid #00ffcc;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .circle {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #00ffcc, #007766);
+      box-shadow: 0 0 20px #00ffccaa;
+      transition: transform 0.1s;
+    }
+
+    #scoreBoard {
+      margin-top: 10px;
+      font-size: 1.2rem;
+    }
+
+    #message {
+      font-size: 1.4rem;
+      margin-top: 20px;
+      color: #ff4444;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="menu" id="mainMenu">
+    <h1>🎯 Reaction Master</h1>
+    <button onclick="startGame()">Jouer</button>
+    <button onclick="resetHighScore()">Reset Record</button>
+  </div>
+
+  <div id="gameUI" class="hidden">
+    <div id="scoreBoard">
+      Score : <span id="score">0</span> | 🏆 Record : <span id="highScore">0</span>
+    </div>
+    <div id="gameArea"></div>
+    <div id="message"></div>
+    <button onclick="returnToMenu()">Retour Menu</button>
+  </div>
+
+  <script>
+    const gameArea = document.getElementById("gameArea");
+    const startBtn = document.getElementById("startBtn");
+    const scoreDisplay = document.getElementById("score");
+    const highScoreDisplay = document.getElementById("highScore");
+    const message = document.getElementById("message");
+
+    const mainMenu = document.getElementById("mainMenu");
+    const gameUI = document.getElementById("gameUI");
+
+    let score = 0;
+    let highScore = localStorage.getItem("reactionHighScore") || 0;
+    let circle;
+    let timeoutID;
+    let gameActive = false;
+
+    highScoreDisplay.textContent = highScore;
+
+    function createCircle() {
+      if (circle) circle.remove();
+
+      const size = 70;
+      const x = Math.random() * (gameArea.clientWidth - size);
+      const y = Math.random() * (gameArea.clientHeight - size);
+
+      circle = document.createElement("div");
+      circle.classList.add("circle");
+      circle.style.left = `${x}px`;
+      circle.style.top = `${y}px`;
+      gameArea.appendChild(circle);
+
+      circle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        score++;
+        updateScore();
+        clearTimeout(timeoutID);
+        nextRound();
+      });
+
+      timeoutID = setTimeout(() => {
+        endGame("⏱️ Trop lent !");
+      }, Math.max(500, 1500 - score * 20)); // accélère
+    }
+
+    function updateScore() {
+      scoreDisplay.textContent = score;
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("reactionHighScore", highScore);
+        highScoreDisplay.textContent = highScore;
+      }
+    }
+
+    function nextRound() {
+      setTimeout(createCircle, 400);
+    }
+
+    function endGame(reason) {
+      gameActive = false;
+      if (circle) circle.remove();
+      message.textContent = `${reason} Score final : ${score}`;
+    }
+
+    function startGame() {
+      score = 0;
+      updateScore();
+      message.textContent = "";
+      mainMenu.classList.add("hidden");
+      gameUI.classList.remove("hidden");
+      gameActive = true;
+      createCircle();
+    }
+
+    function returnToMenu() {
+      gameActive = false;
+      if (circle) circle.remove();
+      message.textContent = "";
+      mainMenu.classList.remove("hidden");
+      gameUI.classList.add("hidden");
+    }
+
+    function resetHighScore() {
+      localStorage.removeItem("reactionHighScore");
+      highScore = 0;
+      highScoreDisplay.textContent = "0";
+      alert("Le record a été réinitialisé !");
+    }
+
+    gameArea.addEventListener("click", () => {
+      if (gameActive) {
+        endGame("❌ Mauvais clic !");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>🚀 Space Taps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #111, #000);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      margin: 15px 0 5px;
+      text-shadow: 0 0 10px #0ff;
+    }
+    canvas {
+      background: #000;
+      border: 2px solid #0ff;
+      border-radius: 15px;
+      margin: 10px;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .btn {
+      background: #0ff;
+      color: #000;
+      border: none;
+      padding: 10px 15px;
+      font-weight: bold;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .btn:hover { background: #0cc; }
+    #info { font-size: 1rem; margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <h1>🚀 Space Taps</h1>
+  <canvas id="gameCanvas" width="400" height="500"></canvas>
+  <div class="controls">
+    <button class="btn" onclick="startGame()">🎮 Jouer</button>
+    <button class="btn" onclick="toggleMusic()">🎵 Musique</button>
+  </div>
+  <div id="info">⏱️ Score : <span id="score">0</span> | 🏆 Record : <span id="highScore">0</span> | 🔥 Combo : <span id="combo">x1</span></div>
+  <audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_9868f84642.mp3" type="audio/mpeg">
+  </audio>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.getElementById("score");
+    const highScoreEl = document.getElementById("highScore");
+    const comboEl = document.getElementById("combo");
+    const music = document.getElementById("bgMusic");
+
+    const arrows = ["ArrowLeft", "ArrowUp", "ArrowDown", "ArrowRight"];
+    const colors = ["#f00", "#0f0", "#ff0", "#0ff"];
+
+    let objects = [], gameLoop, score = 0, combo = 1, highScore = localStorage.getItem("spaceTapsScore") || 0;
+    highScoreEl.textContent = highScore;
+
+    function startGame() {
+      objects = [];
+      score = 0;
+      combo = 1;
+      scoreEl.textContent = 0;
+      comboEl.textContent = "x1";
+      cancelAnimationFrame(gameLoop);
+      gameLoop = requestAnimationFrame(update);
+    }
+
+    function update() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawObjects();
+      moveObjects();
+      spawnObject();
+      gameLoop = requestAnimationFrame(update);
+    }
+
+    function drawObjects() {
+      for (let obj of objects) {
+        ctx.fillStyle = obj.color;
+        ctx.fillRect(obj.x, obj.y, 50, 50);
+        ctx.fillStyle = "#000";
+        ctx.font = "20px Arial";
+        ctx.fillText(obj.key.replace("Arrow", ""), obj.x + 10, obj.y + 30);
+      }
+    }
+
+    function moveObjects() {
+      for (let obj of objects) obj.y += 3;
+      objects = objects.filter(obj => obj.y < canvas.height);
+    }
+
+    function spawnObject() {
+      if (Math.random() < 0.02 + combo * 0.001) {
+        const index = Math.floor(Math.random() * 4);
+        const key = arrows[index];
+        const x = index * 100 + 25;
+        objects.push({ x, y: 0, key, color: colors[index] });
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      const matchIndex = objects.findIndex(obj => obj.key === e.key && obj.y > 400 && obj.y < 480);
+      if (matchIndex !== -1) {
+        objects.splice(matchIndex, 1);
+        combo++;
+        score += 10 * combo;
+      } else {
+        combo = 1;
+      }
+      scoreEl.textContent = score;
+      comboEl.textContent = "x" + combo;
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("spaceTapsScore", score);
+        highScoreEl.textContent = score;
+      }
+    });
+
+    function toggleMusic() {
+      if (music.paused) music.play();
+      else music.pause();
+    }
+  </script>
+</body>
+</html>
